@@ -73,12 +73,14 @@ with tabs[0]:
     with col_a:
         st.markdown('<div class="section-header">Regional Market Share</div>', unsafe_allow_html=True)
         region_df = pd.DataFrame({
-            "Region": ["North America", "Europe", "Asia-Pacific"],
-            "Share (%)": [56.55, 26.0, 24.0],
+            "Region": ["North America", "Europe", "Asia-Pacific", "Latin America", "Middle East & Africa"],
+            "Share (%)": [56.55, 26.0, 24.0, 8.5, 5.0],
             "Key Driver": [
                 "R&D infrastructure & funding",
                 "Aesthetic & wellness adoption",
-                "K-beauty & biotech investment"
+                "K-beauty & biotech investment",
+                "Medical tourism & aesthetic procedures",
+                "Luxury longevity & wellness clinics"
             ]
         })
         fig = px.pie(region_df, names="Region", values="Share (%)",
