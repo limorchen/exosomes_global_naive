@@ -87,7 +87,7 @@ with tabs[0]:
                      color_discrete_sequence=["#1e3a5f","#2e6da4","#7ec8e3"],
                      hole=0.4)
         fig.update_traces(textposition="outside", textinfo="percent+label")
-        fig.update_layout(margin=dict(t=20,b=20), showlegend=False, height=300)
+        fig.update_layout(margin=dict(t=20,b=80), showlegend=True, height=380)
         st.plotly_chart(fig, use_container_width=True)
         st.dataframe(region_df, hide_index=True, use_container_width=True)
 
