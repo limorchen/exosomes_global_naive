@@ -57,7 +57,7 @@ with tabs[0]:
 
     c1, c2, c3, c4 = st.columns(4)
     kpis = [
-        ("$177.4B", "Market Size (2024)"),
+        ("$177.4M", "Market Size (2024)"),
         ("$794.2M", "Projected Size (2030)"),
         ("28.73%", "CAGR 2025–2030"),
         ("~$2,500", "Cost/Dose (2026)"),
