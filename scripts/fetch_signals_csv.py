@@ -64,11 +64,18 @@ def make_hash(text):
     return hashlib.md5(text.encode()).hexdigest()[:12]
 
 def load_existing_hashes():
+    """Load both hashes and event-text hashes to catch duplicates either way."""
     if not os.path.exists(SIGNALS_FILE):
         return set()
+    hashes = set()
     with open(SIGNALS_FILE, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
-        return {row.get("hash","") for row in reader if row.get("hash")}
+        for row in reader:
+            if row.get("hash"):
+                hashes.add(row["hash"])
+            if row.get("event"):
+                hashes.add(make_hash(row["event"]))
+    return hashes
 
 def fetch_articles():
     cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=LOOKBACK_DAYS)
@@ -212,3 +219,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
