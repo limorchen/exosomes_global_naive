@@ -12,21 +12,65 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import json
-from datetime import date
 
 st.set_page_config(
     layout="wide",
     page_title="Global MSC Exosome Market | March 2026",
     page_icon="🧬",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 
 # ══════════════════════════════════════════════════════════════
-# DATA CONFIG — swap these dicts / CSVs for live-update feeds
+# CONFIG
 # ══════════════════════════════════════════════════════════════
-REPORT_DATE = "March 2026"
-DATA_VERSION = "v2.0"
+REPORT_DATE  = "March 2026"
+DATA_VERSION = "v2.1-live"
+
+# ── Change these to match your GitHub repo ───────────────────
+GITHUB_USER = "limorchen"
+GITHUB_REPO = "exosomes_global_naive"
+BRANCH      = "main"
+RAW_BASE    = f"https://raw.githubusercontent.com/{GITHUB_USER}/{GITHUB_REPO}/{BRANCH}/data"
+
+# ══════════════════════════════════════════════════════════════
+# LIVE DATA LOADER
+# ══════════════════════════════════════════════════════════════
+@st.cache_data(ttl=3600)
+def load_csv(filename):
+    """Load a CSV from the GitHub repo. Returns (dataframe, error_string)."""
+    try:
+        df = pd.read_csv(f"{RAW_BASE}/{filename}")
+        df.columns = [c.strip() for c in df.columns]
+        return df, None
+    except Exception as e:
+        return None, str(e)
+
+@st.cache_data(ttl=3600)
+def load_last_run():
+    df, err = load_csv("meta.csv")
+    if err or df is None:
+        return "Not yet run"
+    row = df[df["key"] == "last_run"]
+    return row["value"].values[0] if not row.empty else "Unknown"
+
+def get_live_or_static(live_df, static_df):
+    """Return live data if available, fall back to static."""
+    if live_df is not None and not live_df.empty:
+        return live_df, True
+    return static_df, False
+
+def live_badge(is_live, last_run):
+    if is_live:
+        st.caption(f"🟢 Live data — last auto-updated: {last_run}")
+    else:
+        st.caption("🟡 Showing static baseline data")
+
+# ── Load all live data once at startup ───────────────────────
+live_signals,      signals_err  = load_csv("signals.csv")
+live_distributors, dist_err     = load_csv("distributors.csv")
+live_regulatory,   reg_err      = load_csv("regulatory.csv")
+live_pricing,      price_err    = load_csv("pricing.csv")
+last_run                        = load_last_run()
 
 # ── CUSTOM CSS ─────────────────────────────────────────────────
 st.markdown("""
@@ -87,6 +131,28 @@ st.markdown("""
   [data-testid="stDataFrame"] thead th { background:#1e3a5f !important; color:#fff !important; }
 </style>
 """, unsafe_allow_html=True)
+
+# ── Header ──────────────────────────────────────────────────────
+# ── Sidebar — live data status ───────────────────────────────
+with st.sidebar:
+    st.markdown("### 🔄 Live Data Status")
+    st.markdown(f"**Last auto-update:**  \n{last_run}")
+    st.markdown("---")
+    for label, df, err in [
+        ("Signals",      live_signals,      signals_err),
+        ("Distributors", live_distributors, dist_err),
+        ("Regulatory",   live_regulatory,   reg_err),
+        ("Pricing",      live_pricing,      price_err),
+    ]:
+        if err:
+            st.warning(f"{label}: using static data")
+        else:
+            st.success(f"✅ {label}: {len(df)} rows")
+    st.markdown("---")
+    if st.button("🔄 Refresh now"):
+        st.cache_data.clear()
+        st.rerun()
+    st.caption(f"Source: github.com/{GITHUB_USER}/{GITHUB_REPO}")
 
 # ── Header ──────────────────────────────────────────────────────
 col_h1, col_h2 = st.columns([3, 1])
@@ -312,7 +378,7 @@ with tabs[2]:
     # ── Full distributor table ───────────────────────────────────
     st.markdown('<div class="section-header">Global Distributor Intelligence</div>', unsafe_allow_html=True)
 
-    dist_df = pd.DataFrame([
+    dist_df_static = pd.DataFrame([
         # Europe
         {"Distributor":"Jolifill",             "Region":"Europe",   "Territory":"Germany",         "Brands":"EXOXE, EXOMIDE, EXOJUV",       "Approach":"Direct e-commerce + professional",     "Priority":"🟢 High",  "Channel":"Aesthetic"},
         {"Distributor":"Croma-Pharma",         "Region":"Europe",   "Territory":"Austria/DACH",    "Brands":"Aesthetic Mgmt Partners",      "Approach":"Strategic regional partnerships",      "Priority":"🟢 High",  "Channel":"Aesthetic"},
@@ -343,6 +409,12 @@ with tabs[2]:
         {"Distributor":"Medical Spa chains",   "Region":"USA",      "Territory":"USA (TX,FL,AZ)",  "Brands":"Post-procedure adjuncts",      "Approach":"Direct clinic supply — cosmetic only","Priority":"🟡 Medium","Channel":"Aesthetic"},
         {"Distributor":"US CDMO channel",      "Region":"USA",      "Territory":"USA",             "Brands":"Biotech/pharma clinical",      "Approach":"GMP supply for Phase I/II trials",   "Priority":"🟡 Medium","Channel":"Research/CDMO"},
     ])
+    dist_df, dist_is_live = get_live_or_static(live_distributors, dist_df_static)
+    # Ensure expected columns exist when reading from CSV
+    for col in ["Distributor","Region","Territory","Brands","Approach","Priority","Channel"]:
+        if col.lower() in dist_df.columns and col not in dist_df.columns:
+            dist_df = dist_df.rename(columns={col.lower(): col})
+    live_badge(dist_is_live, last_run)
 
     col_f1, col_f2 = st.columns([1, 3])
     with col_f1:
@@ -748,39 +820,62 @@ with tabs[5]:
     # ── Signals table ────────────────────────────────────────────
     st.markdown('<div class="section-header">Key Market Signals (2023–2026)</div>', unsafe_allow_html=True)
 
-    signals = pd.DataFrame([
-        {"Date":"Jan 2026",  "Type":"Regulatory",   "Event":"Philippine FDA Cosmetic Notification — UnicoCell",                "Impact":"ASEAN gateway validated; blueprint for TH, MY, ID",             "Sentiment":"🟢 Positive"},
-        {"Date":"May 2025",  "Type":"Enforcement",  "Event":"FDA warning letter — Florida IV exosome clinic",                 "Impact":"US IV channel high risk; pivot to topical/cosmetic",             "Sentiment":"🔴 Risk"},
-        {"Date":"Late 2025", "Type":"Regulatory",   "Event":"ANVISA-COFEPRIS MoU fully operational",                         "Impact":"Single approval pathway for Brazil and Mexico",                  "Sentiment":"🟢 Positive"},
-        {"Date":"Feb 2025",  "Type":"Investment",   "Event":"ExoLab Italia raises €5M Series A (plant-derived)",             "Impact":"Plant-derived trend in EU; BM-MSC must emphasize superiority",  "Sentiment":"🟡 Neutral"},
-        {"Date":"Jan 2025",  "Type":"Regulatory",   "Event":"Thai FDA drafting new health product import/export policy",     "Impact":"Favourable regulatory window to enter Thailand now",             "Sentiment":"🟢 Positive"},
-        {"Date":"Mar 2024",  "Type":"Partnership",  "Event":"Croma-Pharma × Aesthetic Management Partners (EU)",             "Impact":"DACH region actively seeking new regenerative brands",           "Sentiment":"🟢 Positive"},
-        {"Date":"Ongoing 2025","Type":"Enforcement","Event":"FDA: 12+ warning letters total on exosome products",            "Impact":"US market = cosmetic channel only for next 3–5 years",           "Sentiment":"🔴 Risk"},
-        {"Date":"Jul 2023",  "Type":"M&A",          "Event":"ExoCoBio acquires majority stake in US BENEV",                  "Impact":"Market consolidating; window to establish brand now",            "Sentiment":"🟢 Positive"},
-        {"Date":"2021",      "Type":"Regulatory",   "Event":"Thai FDA launches HSA Singapore Reliance Route",               "Impact":"Singapore approval fast-tracks SEA / Thailand entry",            "Sentiment":"🟢 Positive"},
-        {"Date":"Ongoing",   "Type":"Structural",   "Event":"Lyophilisation segment $50–60M → $100M+ by 2030",              "Impact":"Cold-chain barrier eliminated globally",                         "Sentiment":"🟢 Positive"},
+    # ── Static baseline (fallback if live data unavailable) ──────
+    STATIC_SIGNALS = pd.DataFrame([
+        {"date":"Jan 2026",    "type":"Regulatory",  "event":"Philippine FDA Cosmetic Notification — UnicoCell",           "impact":"ASEAN gateway validated; blueprint for TH, MY, ID",            "sentiment":"🟢 Positive", "territory":"Philippines"},
+        {"date":"May 2025",    "type":"Enforcement", "event":"FDA warning letter — Florida IV exosome clinic",             "impact":"US IV channel high risk; pivot to topical/cosmetic",            "sentiment":"🔴 Risk",     "territory":"USA"},
+        {"date":"Late 2025",   "type":"Regulatory",  "event":"ANVISA-COFEPRIS MoU fully operational",                     "impact":"Single approval pathway for Brazil and Mexico",                 "sentiment":"🟢 Positive", "territory":"LATAM"},
+        {"date":"Feb 2025",    "type":"Investment",  "event":"ExoLab Italia raises EU5M Series A (plant-derived)",        "impact":"Plant-derived trend in EU; BM-MSC must emphasize superiority", "sentiment":"🟡 Neutral",  "territory":"EU"},
+        {"date":"Jan 2025",    "type":"Regulatory",  "event":"Thai FDA drafting new health product import/export policy", "impact":"Favourable regulatory window to enter Thailand now",            "sentiment":"🟢 Positive", "territory":"Thailand"},
+        {"date":"Mar 2024",    "type":"Partnership", "event":"Croma-Pharma x Aesthetic Management Partners (EU)",         "impact":"DACH region actively seeking new regenerative brands",          "sentiment":"🟢 Positive", "territory":"EU"},
+        {"date":"Ongoing 2025","type":"Enforcement", "event":"FDA: 12+ warning letters total on exosome products",        "impact":"US market = cosmetic channel only for next 3-5 years",          "sentiment":"🔴 Risk",     "territory":"USA"},
+        {"date":"Jul 2023",    "type":"M&A",         "event":"ExoCoBio acquires majority stake in US BENEV",              "impact":"Market consolidating; window to establish brand now",           "sentiment":"🟢 Positive", "territory":"USA"},
+        {"date":"2021",        "type":"Regulatory",  "event":"Thai FDA launches HSA Singapore Reliance Route",            "impact":"Singapore approval fast-tracks SEA/Thailand entry",             "sentiment":"🟢 Positive", "territory":"Thailand/SEA"},
+        {"date":"Ongoing",     "type":"Structural",  "event":"Lyophilisation segment $50-60M growing to $100M+ by 2030", "impact":"Cold-chain barrier eliminated globally",                        "sentiment":"🟢 Positive", "territory":"Global"},
     ])
 
+    # ── Merge live + static ───────────────────────────────────────
+    if live_signals is not None and not live_signals.empty:
+        # Normalise column names from CSV
+        ls = live_signals.copy()
+        ls.columns = [c.lower().strip() for c in ls.columns]
+        # Combine live on top, static below, deduplicate on event text
+        combined = pd.concat([ls, STATIC_SIGNALS], ignore_index=True)
+        combined = combined.drop_duplicates(subset=["event"], keep="first")
+        signals  = combined
+        live_badge(True, last_run)
+    else:
+        signals = STATIC_SIGNALS
+        live_badge(False, last_run)
+
+    # Ensure column names are capitalised for display
+    signals_display = signals.rename(columns={
+        "date":"Date","type":"Type","event":"Event",
+        "impact":"Impact","sentiment":"Sentiment","territory":"Territory",
+    })
+
     col_sm = st.columns(4)
-    col_sm[0].metric("🟢 Positive Signals", len(signals[signals["Sentiment"].str.contains("Positive")]))
-    col_sm[1].metric("🔴 Risk Signals",     len(signals[signals["Sentiment"].str.contains("Risk")]))
-    col_sm[2].metric("🟡 Neutral/Watch",    len(signals[signals["Sentiment"].str.contains("Neutral")]))
-    col_sm[3].metric("📋 Total Tracked",    len(signals))
+    col_sm[0].metric("🟢 Positive Signals", len(signals_display[signals_display["Sentiment"].str.contains("Positive", na=False)]))
+    col_sm[1].metric("🔴 Risk Signals",     len(signals_display[signals_display["Sentiment"].str.contains("Risk",     na=False)]))
+    col_sm[2].metric("🟡 Neutral/Watch",    len(signals_display[signals_display["Sentiment"].str.contains("Neutral",  na=False)]))
+    col_sm[3].metric("📋 Total Tracked",    len(signals_display))
 
     type_filter = st.multiselect(
         "Filter by Signal Type",
-        options=signals["Type"].unique().tolist(),
-        default=signals["Type"].unique().tolist(),
+        options=sorted(signals_display["Type"].dropna().unique().tolist()),
+        default=sorted(signals_display["Type"].dropna().unique().tolist()),
     )
+
+    display_cols = [c for c in ["Date","Type","Event","Impact","Sentiment","Territory"] if c in signals_display.columns]
     st.dataframe(
-        signals[signals["Type"].isin(type_filter)],
-        hide_index=True, use_container_width=True, height=280,
+        signals_display[signals_display["Type"].isin(type_filter)][display_cols],
+        hide_index=True, use_container_width=True, height=300,
     )
 
     col_t1, col_t2 = st.columns(2)
     with col_t1:
         st.markdown('<div class="section-header">Signal Distribution</div>', unsafe_allow_html=True)
-        sig_cnt = signals["Type"].value_counts().reset_index()
+        sig_cnt = signals_display["Type"].value_counts().reset_index()
         sig_cnt.columns = ["Type", "Count"]
         fig_sig = px.bar(
             sig_cnt.sort_values("Count"), x="Count", y="Type", orientation="h",
@@ -792,6 +887,7 @@ with tabs[5]:
             coloraxis_showscale=False, xaxis_title="Number of Signals", yaxis_title="",
         )
         st.plotly_chart(fig_sig, use_container_width=True)
+
 
     with col_t2:
         st.markdown('<div class="section-header">Emerging Trends (2025–2030)</div>', unsafe_allow_html=True)
