@@ -89,15 +89,15 @@ REG_ROWS = [
 ]
 
 # ── PRICING ───────────────────────────────────────────────────────────────────
-PRICE_HEADERS = ["market","end_user_low","end_user_high","b2b_low","b2b_high","last_updated","change_flag"]
+PRICE_HEADERS = ["market","retail_vial_low","retail_vial_high","b2b_est_low","b2b_est_high","oop_treatment_low","oop_treatment_high","last_updated","change_flag","confidence"]
 PRICE_ROWS = [
-    ["Germany/EU",      280, 450, 140, 225, "Mar 2026", ""],
-    ["UAE/GCC",         350, 600, 175, 300, "Mar 2026", ""],
-    ["USA (aesthetic)", 300, 550, 150, 275, "Mar 2026", ""],
-    ["Australia",       350, 600, 175, 300, "Mar 2026", ""],
-    ["Mexico/LATAM",    200, 350, 100, 175, "Mar 2026", ""],
-    ["Thailand",        180, 300,  90, 150, "Mar 2026", ""],
-    ["Philippines/SEA", 150, 250,  75, 125, "Mar 2026", ""],
+    ["Germany/EU",      37,  125, 50, 100, 400,  2300, "Mar 2026", "", "🟢 Retail confirmed; B2B estimate only"],
+    ["UAE/GCC",         0,   0,   90, 175, 1500, 5500, "Mar 2026", "", "🟡 No retail data; OOP from clinic sources"],
+    ["USA (aesthetic)", 75,  125, 75, 150, 900,  6500, "Mar 2026", "", "🟢 Retail confirmed; OOP from BioInformant"],
+    ["Australia",       0,   0,   90, 175, 500,  5500, "Mar 2026", "", "🟡 No retail data; estimate only"],
+    ["Mexico/LATAM",    0,   0,   50, 100, 3000, 5000, "Mar 2026", "", "🟢 OOP confirmed Bookimed; B2B estimate"],
+    ["Thailand",        0,   0,   40, 90,  2000, 4000, "Mar 2026", "", "🟢 OOP confirmed Bookimed; B2B estimate"],
+    ["Philippines/SEA", 0,   0,   30, 60,  400,  2000, "Mar 2026", "", "🟡 Limited data; estimate only"],
 ]
 
 # ── META ──────────────────────────────────────────────────────────────────────
