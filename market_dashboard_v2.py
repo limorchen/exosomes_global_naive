@@ -133,27 +133,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── Header ──────────────────────────────────────────────────────
-# ── Sidebar — live data status ───────────────────────────────
-with st.sidebar:
-    st.markdown("### 🔄 Live Data Status")
-    st.markdown(f"**Last auto-update:**  \n{last_run}")
-    st.markdown("---")
-    for label, df, err in [
-        ("Signals",      live_signals,      signals_err),
-        ("Distributors", live_distributors, dist_err),
-        ("Regulatory",   live_regulatory,   reg_err),
-        ("Pricing",      live_pricing,      price_err),
-    ]:
-        if err:
-            st.warning(f"{label}: using static data")
-        else:
-            st.success(f"✅ {label}: {len(df)} rows")
-    st.markdown("---")
-    if st.button("🔄 Refresh now"):
-        st.cache_data.clear()
-        st.rerun()
-    st.caption(f"Source: github.com/{GITHUB_USER}/{GITHUB_REPO}")
-
 # ── Header ──────────────────────────────────────────────────────
 col_h1, col_h2 = st.columns([3, 1])
 with col_h1:
@@ -163,12 +142,23 @@ with col_h1:
         f"**|**  Bone Marrow MSC Source  **|**  {REPORT_DATE}  **|**  {DATA_VERSION}"
     )
 with col_h2:
+    # ── Live data status bar ──────────────────────────────────
+    all_live = all(df is not None for df in [live_signals, live_distributors, live_regulatory, live_pricing])
+    status_color  = "#3db07a" if all_live else "#f0a030"
+    status_label  = "🟢 Live data" if all_live else "🟡 Partial data"
+    total_signals = len(live_signals) if live_signals is not None else 0
     st.markdown(
-        f"""<div style="text-align:right;padding-top:12px;">
+        f"""<div style="text-align:right;padding-top:8px;">
         <span style="background:#1e3a5f;color:#7ec8e3;padding:4px 10px;border-radius:6px;font-size:.8rem;">
-        🗓 Last updated: {REPORT_DATE}</span></div>""",
+        🗓 Last updated: {REPORT_DATE}</span><br><br>
+        <span style="background:{status_color};color:#fff;padding:4px 10px;border-radius:6px;font-size:.8rem;font-weight:600;">
+        {status_label} · {total_signals} signals · auto-updated: {last_run}</span>
+        </div>""",
         unsafe_allow_html=True,
     )
+    if st.button("🔄 Refresh data"):
+        st.cache_data.clear()
+        st.rerun()
 
 st.markdown("---")
 
@@ -979,3 +969,4 @@ st.markdown(
     </div>""",
     unsafe_allow_html=True,
 )
+
