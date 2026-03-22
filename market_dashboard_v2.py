@@ -1027,21 +1027,22 @@ with tabs[5]:
         {"date":"Jan 2026",    "type":"Regulatory",  "event":"Philippine FDA Cosmetic Notification — UnicoCell",           "impact":"ASEAN gateway validated; blueprint for TH, MY, ID",            "sentiment":"🟢 Positive", "territory":"Philippines"},
         {"date":"May 2025",    "type":"Enforcement", "event":"FDA warning letter — Florida IV exosome clinic",             "impact":"US IV channel high risk; pivot to topical/cosmetic",            "sentiment":"🔴 Risk",     "territory":"USA"},
         {"date":"Late 2025",   "type":"Regulatory",  "event":"ANVISA-COFEPRIS MoU fully operational",                     "impact":"Single approval pathway for Brazil and Mexico",                 "sentiment":"🟢 Positive", "territory":"LATAM"},
-        {"date":"Feb 2025",    "type":"Investment",  "event":"ExoLab Italia raises EU5M Series A (plant-derived)",        "impact":"Plant-derived trend in EU; BM-MSC must emphasize superiority", "sentiment":"🟡 Neutral",  "territory":"EU"},
-        {"date":"Jan 2025",    "type":"Regulatory",  "event":"Thai FDA drafting new health product import/export policy", "impact":"Favourable regulatory window to enter Thailand now",            "sentiment":"🟢 Positive", "territory":"Thailand"},
-        {"date":"Mar 2024",    "type":"Partnership", "event":"Croma-Pharma x Aesthetic Management Partners (EU)",         "impact":"DACH region actively seeking new regenerative brands",          "sentiment":"🟢 Positive", "territory":"EU"},
-        {"date":"Ongoing 2025","type":"Enforcement", "event":"FDA: 12+ warning letters total on exosome products",        "impact":"US market = cosmetic channel only for next 3-5 years",          "sentiment":"🔴 Risk",     "territory":"USA"},
-        {"date":"Jul 2023",    "type":"M&A",         "event":"ExoCoBio acquires majority stake in US BENEV",              "impact":"Market consolidating; window to establish brand now",           "sentiment":"🟢 Positive", "territory":"USA"},
-        {"date":"2021",        "type":"Regulatory",  "event":"Thai FDA launches HSA Singapore Reliance Route",            "impact":"Singapore approval fast-tracks SEA/Thailand entry",             "sentiment":"🟢 Positive", "territory":"Thailand/SEA"},
-        {"date":"Ongoing",     "type":"Structural",  "event":"Lyophilisation segment $50-60M growing to $100M+ by 2030", "impact":"Cold-chain barrier eliminated globally",                        "sentiment":"🟢 Positive", "territory":"Global"},
+        {"date":"Jan 2026",    "type":"Regulatory",  "event":"Philippine FDA Cosmetic Notification — UnicoCell",           "impact":"ASEAN gateway validated; blueprint for TH, MY, ID",            "sentiment":"🟢 Positive", "territory":"Philippines", "source":"UnicoCell Biomed press release, Jan 2026; CIRS Group — cirs-group.com/en/cosmetics/philippines-amends-asean-cosmetic-directive"},
+        {"date":"May 2025",    "type":"Enforcement", "event":"FDA warning letter — Florida IV exosome clinic",             "impact":"US IV channel high risk; pivot to topical/cosmetic",            "sentiment":"🔴 Risk",     "territory":"USA",          "source":"HealthE1 Medical — healthe1.com; Atlantis Bioscience regulatory roadmap Oct 2025"},
+        {"date":"Late 2025",   "type":"Regulatory",  "event":"ANVISA-COFEPRIS MoU fully operational",                     "impact":"Single approval pathway for Brazil and Mexico",                 "sentiment":"🟢 Positive", "territory":"LATAM",        "source":"DIA Global Forum, Nov 2025 — globalforum.diaglobal.org/issue/november-2025/anvisa-cofepris-strategy-and-vision"},
+        {"date":"Feb 2025",    "type":"Investment",  "event":"ExoLab Italia raises EU5M Series A (plant-derived)",        "impact":"Plant-derived trend in EU; BM-MSC must emphasize superiority", "sentiment":"🟡 Neutral",  "territory":"EU",           "source":"ExoLab Italia press release, Feb 2025 (industry news)"},
+        {"date":"Jan 2025",    "type":"Regulatory",  "event":"Thai FDA drafting new health product import/export policy", "impact":"Favourable regulatory window to enter Thailand now",            "sentiment":"🟢 Positive", "territory":"Thailand",     "source":"NutraIngredients, Jan 2025; ClinRegs Thailand Aug 2025 — clinregs.niaid.nih.gov"},
+        {"date":"Mar 2024",    "type":"Partnership", "event":"Croma-Pharma x Aesthetic Management Partners (EU)",         "impact":"DACH region actively seeking new regenerative brands",          "sentiment":"🟢 Positive", "territory":"EU",           "source":"Croma-Pharma press release, Mar 2024 (industry news)"},
+        {"date":"Ongoing 2025","type":"Enforcement", "event":"FDA: 12+ warning letters total on exosome products",        "impact":"US market = cosmetic channel only for next 3-5 years",          "sentiment":"🔴 Risk",     "territory":"USA",          "source":"Atlantis Bioscience Oct 2025 — FDA warning letter database; FDA Public Safety Notification on Exosome Products"},
+        {"date":"Jul 2023",    "type":"M&A",         "event":"ExoCoBio acquires majority stake in US BENEV",              "impact":"Market consolidating; window to establish brand now",           "sentiment":"🟢 Positive", "territory":"USA",          "source":"ExoCoBio / BENEV press release, Jul 2023 (industry news)"},
+        {"date":"2021",        "type":"Regulatory",  "event":"Thai FDA launches HSA Singapore Reliance Route",            "impact":"Singapore approval fast-tracks SEA/Thailand entry",             "sentiment":"🟢 Positive", "territory":"Thailand/SEA", "source":"HSA Singapore — hsa.gov.sg/cosmetic-products/asean-cosmetic-directive; Asia Actual Thailand guide"},
+        {"date":"Ongoing",     "type":"Structural",  "event":"Lyophilisation segment $50-60M growing to $100M+ by 2030", "impact":"Cold-chain barrier eliminated globally",                        "sentiment":"🟢 Positive", "territory":"Global",       "source":"QY Research — Exosome Lyophilization Global Market Forecast 2026–2032"},
     ])
 
     # ── Merge live + static ───────────────────────────────────────
     if live_signals is not None and not live_signals.empty:
-        # Normalise column names from CSV
         ls = live_signals.copy()
         ls.columns = [c.lower().strip() for c in ls.columns]
-        # Combine live on top, static below, deduplicate on event text
         combined = pd.concat([ls, STATIC_SIGNALS], ignore_index=True)
         combined = combined.drop_duplicates(subset=["event"], keep="first")
         signals  = combined
@@ -1054,6 +1055,7 @@ with tabs[5]:
     signals_display = signals.rename(columns={
         "date":"Date","type":"Type","event":"Event",
         "impact":"Impact","sentiment":"Sentiment","territory":"Territory",
+        "source":"Source",
     })
 
     col_sm = st.columns(4)
@@ -1068,11 +1070,12 @@ with tabs[5]:
         default=sorted(signals_display["Type"].dropna().unique().tolist()),
     )
 
-    display_cols = [c for c in ["Date","Type","Event","Impact","Sentiment","Territory"] if c in signals_display.columns]
+    display_cols = [c for c in ["Date","Type","Event","Impact","Sentiment","Territory","Source"] if c in signals_display.columns]
     st.dataframe(
         signals_display[signals_display["Type"].isin(type_filter)][display_cols],
-        hide_index=True, use_container_width=True, height=300,
+        hide_index=True, use_container_width=True, height=320,
     )
+    st.caption("Source column shows citation for manually curated baseline signals. Auto-fetched signals include source URL from Google News RSS.")
 
     col_t1, col_t2 = st.columns(2)
     with col_t1:
