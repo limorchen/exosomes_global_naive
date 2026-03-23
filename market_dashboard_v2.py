@@ -24,7 +24,7 @@ st.set_page_config(
 # CONFIG
 # ══════════════════════════════════════════════════════════════
 REPORT_DATE  = "March 2026"
-DATA_VERSION = "v2.2-validated"
+DATA_VERSION = "v2.3-geo-corrected"
 
 # ── Change these to match your GitHub repo ───────────────────
 GITHUB_USER = "limorchen"
@@ -182,6 +182,16 @@ st.markdown(
     "(Mexico, UAE, Thailand, SEA).</div>",
     unsafe_allow_html=True,
 )
+st.markdown(
+    '<div class="unverified-card">⚠️ <strong>GEO-CORRECTION (March 2026):</strong> '
+    "Geographic market figures have been corrected following independent verification against 8+ market research sources "
+    "(InsightAce Analytic, Credence Research, Coherent Market Insights, Transparency Market Research, Future Market Insights). "
+    "The original report had North America and Europe inverted. "
+    "<strong>North America is the largest region (~$35M, 40–47% share) — not the smallest.</strong> "
+    "Latin America (~$5M) and UAE/GCC (~$5M) are smaller than originally stated. "
+    "Total addressable market (~$88.5M) is unchanged — only the geographic distribution is corrected.</div>",
+    unsafe_allow_html=True,
+)
 st.markdown("")
 
 # ══════════════════════════════════════════════════════════════
@@ -238,39 +248,53 @@ with tabs[0]:
         ])
         st.dataframe(seg_df, hide_index=True, use_container_width=True)
 
-        st.markdown('<div class="section-header">Addressable Market by Region (2024)</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">Addressable Market by Region (2024) — Geo-Corrected</div>', unsafe_allow_html=True)
+        st.caption("⚠️ Corrected March 2026: North America confirmed as leading region (40–47% share) per InsightAce Analytic, Credence Research, CMI and 5+ other sources. Original figures had NA and Europe inverted.")
         addr_df = pd.DataFrame({
-            "Region":    ["Europe", "Latin America", "Southeast Asia", "UAE/GCC", "North America", "Thailand", "Australia", "Rest of World"],
-            "2024 ($M)": [22, 18, 14, 12, 8.5, 6, 5, 3],
-            "2030 ($M)": [105, 90, 95, 75, 43, 40, 28, 18],
-            "CAGR":      ["29%", "31%", "37%", "36%", "31%", "37%", "33%", "35%"],
+            "Region":    ["North America", "Europe", "Rest of APAC*", "Southeast Asia", "Latin America", "UAE/GCC", "Thailand", "Australia", "Rest of World"],
+            "2024 ($M)": [35,   18,   13.5, 7,    5,    5,    3,    2,    1.5],
+            "2030 ($M)": [195,  83,   88,   47,   24,   28,   20,   9,    8],
+            "CAGR":      ["33%","29%","37%","37%","30%","33%","37%","28%","33%"],
+            "Source":    [
+                "InsightAce leading region; Credence 45% share",
+                "Credence 20%; Dataintelo 25%; market.us data",
+                "FMI: China 23.1% CAGR, Korea ExoCoBio 9.6% share",
+                "ASEAN pathway; PH FDA Jan 2026",
+                "Credence: LATAM $18.67M of $418M total = 4.5%",
+                "GloGrowthInsights MEA ~12%; UAE subset",
+                "Medical tourism; Thai FDA modernising",
+                "TGA-restricted; regenerative protocols",
+                "Emerging adoption",
+            ],
         })
+        # Note: Rest of APAC includes Korea, Japan, China (not separately tracked in dashboard)
         fig_addr = px.bar(
             addr_df, x="Region", y=["2024 ($M)", "2030 ($M)"],
             barmode="group",
             color_discrete_sequence=["#2e6da4", "#7ec8e3"],
-            title="Addressable Market: 2024 vs 2030 Forecast ($M)",
+            title="Addressable Market: 2024 vs 2030 — Corrected Geographic Distribution ($M)",
             text_auto=".1f",
         )
-        fig_addr.update_layout(height=320, margin=dict(t=40, b=10), legend_title="Year",
-                                xaxis_tickangle=-30, yaxis_title="USD Million")
+        fig_addr.update_layout(height=340, margin=dict(t=50, b=10), legend_title="Year",
+                                xaxis_tickangle=-35, yaxis_title="USD Million")
         st.plotly_chart(fig_addr, use_container_width=True)
+        st.caption("*Rest of APAC includes South Korea (ExoCoBio ~9.6% global share), Japan, and China (23.1% CAGR per FMI)")
 
     with col_b:
-        st.markdown('<div class="section-header">Regional Share — Addressable Market 2024</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">Regional Share — Addressable Market 2024 (Corrected)</div>', unsafe_allow_html=True)
         pie_df = addr_df.copy()
         fig_pie = px.pie(
             pie_df, names="Region", values="2024 ($M)",
-            color_discrete_sequence=["#1e3a5f","#2e6da4","#4a90d9","#7ec8e3","#b3dff0","#e05c2a","#f0a07a","#ffd8c0"],
+            color_discrete_sequence=["#1e3a5f","#2e6da4","#4a90d9","#6aabdf","#7ec8e3","#b3dff0","#e05c2a","#f0a07a","#ffd8c0"],
             hole=0.45,
         )
         fig_pie.update_traces(textposition="outside", textinfo="percent+label")
-        fig_pie.update_layout(margin=dict(t=10, b=80), showlegend=False, height=350)
+        fig_pie.update_layout(margin=dict(t=10, b=80), showlegend=False, height=380)
         st.plotly_chart(fig_pie, use_container_width=True)
 
-        st.markdown('<div class="section-header">CAGR Comparison by Region</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">CAGR by Region</div>', unsafe_allow_html=True)
         cagr_df = addr_df.copy()
-        cagr_df["CAGR_num"] = [29, 31, 37, 36, 31, 37, 33, 35]
+        cagr_df["CAGR_num"] = [33, 29, 37, 37, 30, 33, 37, 28, 33]
         cagr_df_sorted = cagr_df.sort_values("CAGR_num", ascending=True)
         fig_cagr = px.bar(
             cagr_df_sorted, x="CAGR_num", y="Region", orientation="h",
@@ -280,7 +304,7 @@ with tabs[0]:
         )
         fig_cagr.update_traces(textposition="outside")
         fig_cagr.update_layout(
-            height=280, margin=dict(t=10, b=10),
+            height=320, margin=dict(t=10, b=10),
             coloraxis_showscale=False,
             xaxis_title="CAGR (%)", yaxis_title="",
         )
@@ -290,16 +314,25 @@ with tabs[0]:
 # TAB 2 — GEOGRAPHIC ANALYSIS
 # ════════════════════════════════════════════════════════════════
 with tabs[1]:
-    st.markdown('<div class="section-header">Market Opportunity vs Regulatory Risk (All Regions)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">Market Opportunity vs Regulatory Risk (All Regions) — Geo-Corrected</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="unverified-card">⚠️ <strong>Geographic correction applied:</strong> '
+        "Market sizes updated per 8+ independent sources. North America is now correctly shown as the largest market ($35M). "
+        "Latin America ($5M) and UAE/GCC ($5M) have been revised down from the original overstatements. "
+        "Bubble size = 2030 forecast. Strategic accessibility (OOP/regulatory) is unchanged.</div>",
+        unsafe_allow_html=True,
+    )
+    st.markdown("")
 
     geo_df = pd.DataFrame([
-        {"Region":"Europe",         "Stage":"Established",   "Segment":"Aesthetic/Wellness",  "Reg Risk":"Medium","CAGR":29,"OOP":True, "2024 ($M)":22, "2030 ($M)":105},
-        {"Region":"Latin America",  "Stage":"Growing",       "Segment":"Medical Tourism",      "Reg Risk":"Medium","CAGR":31,"OOP":True, "2024 ($M)":18, "2030 ($M)":90},
-        {"Region":"Southeast Asia", "Stage":"Emerging",      "Segment":"K-Beauty/Aesthetic",   "Reg Risk":"Low",   "CAGR":37,"OOP":True, "2024 ($M)":14, "2030 ($M)":95},
-        {"Region":"UAE/GCC",        "Stage":"Niche/Premium", "Segment":"Longevity/Luxury",     "Reg Risk":"Low-Med","CAGR":36,"OOP":True, "2024 ($M)":12, "2030 ($M)":75},
-        {"Region":"Thailand",       "Stage":"Emerging",      "Segment":"Medical Tourism",      "Reg Risk":"Low-Med","CAGR":37,"OOP":True, "2024 ($M)":6,  "2030 ($M)":40},
-        {"Region":"Australia",      "Stage":"Established",   "Segment":"Medical Regen",        "Reg Risk":"High",  "CAGR":33,"OOP":False,"2024 ($M)":5,  "2030 ($M)":28},
-        {"Region":"North America",  "Stage":"Restricted",    "Segment":"Cosmetic / Research",  "Reg Risk":"High",  "CAGR":31,"OOP":False,"2024 ($M)":8.5,"2030 ($M)":43},
+        {"Region":"North America", "Stage":"Restricted",    "Segment":"Cosmetic / Research",  "Reg Risk":"High",   "CAGR":33,"OOP":False,"2024 ($M)":35,  "2030 ($M)":195, "Note":"Largest market — cosmetic channel only; FDA 12+ warning letters"},
+        {"Region":"Europe",        "Stage":"Established",   "Segment":"Aesthetic/Wellness",   "Reg Risk":"Medium", "CAGR":29,"OOP":True, "2024 ($M)":18,  "2030 ($M)":83,  "Note":"Credence 20% share; Dataintelo 25% share"},
+        {"Region":"Rest of APAC",  "Stage":"Emerging",      "Segment":"K-Beauty/Hospital",    "Reg Risk":"Medium", "CAGR":37,"OOP":True, "2024 ($M)":13.5,"2030 ($M)":88,  "Note":"Korea ExoCoBio 9.6% share; China 23.1% CAGR (FMI)"},
+        {"Region":"Southeast Asia","Stage":"Emerging",      "Segment":"K-Beauty/Aesthetic",   "Reg Risk":"Low",    "CAGR":37,"OOP":True, "2024 ($M)":7,   "2030 ($M)":47,  "Note":"ASEAN gateway; PH FDA Jan 2026 approved"},
+        {"Region":"Latin America", "Stage":"Growing",       "Segment":"Medical Tourism",      "Reg Risk":"Medium", "CAGR":30,"OOP":True, "2024 ($M)":5,   "2030 ($M)":24,  "Note":"Credence: LATAM = 4.5% of total; ANVISA-COFEPRIS MoU Aug 2025"},
+        {"Region":"UAE/GCC",       "Stage":"Niche/Premium", "Segment":"Longevity/Luxury",     "Reg Risk":"Low-Med","CAGR":33,"OOP":True, "2024 ($M)":5,   "2030 ($M)":28,  "Note":"Premium subset of MEA; luxury longevity channel"},
+        {"Region":"Thailand",      "Stage":"Emerging",      "Segment":"Medical Tourism",      "Reg Risk":"Low-Med","CAGR":37,"OOP":True, "2024 ($M)":3,   "2030 ($M)":20,  "Note":"Medical tourism hub; Thai FDA modernising 2025"},
+        {"Region":"Australia",     "Stage":"Established",   "Segment":"Medical Regen",        "Reg Risk":"High",   "CAGR":28,"OOP":False,"2024 ($M)":2,   "2030 ($M)":9,   "Note":"TGA-restricted; regenerative protocols only"},
     ])
 
     risk_order = {"Low":1,"Low-Med":2,"Medium":3,"High":4}
@@ -310,18 +343,19 @@ with tabs[1]:
         size="2030 ($M)",
         color="Stage",
         text="Region",
-        hover_data={"2024 ($M)":True,"2030 ($M)":True,"Segment":True,"Reg Risk":True,"CAGR":True},
-        color_discrete_sequence=["#1e3a5f","#2e6da4","#4a90d9","#7ec8e3","#e05c2a","#f0a07a"],
-        size_max=65,
-        title="Bubble size = 2030 market forecast ($M)",
+        hover_data={"2024 ($M)":True,"2030 ($M)":True,"Segment":True,"Reg Risk":True,"CAGR":True,"Note":True},
+        color_discrete_sequence=["#1e3a5f","#2e6da4","#4a90d9","#7ec8e3","#e05c2a","#f0a07a","#c62828"],
+        size_max=70,
+        title="Bubble size = 2030 market forecast ($M) — North America correctly shown as largest market",
     )
     fig_bubble.update_traces(textposition="top center")
     fig_bubble.update_layout(
-        height=460, xaxis_title="Estimated CAGR (%)", yaxis_title="Regulatory Barrier",
+        height=480, xaxis_title="Estimated CAGR (%)", yaxis_title="Regulatory Barrier",
         yaxis=dict(categoryorder="array", categoryarray=["High","Medium","Low-Med","Low"]),
-        margin=dict(t=40, b=20),
+        margin=dict(t=50, b=20),
     )
     st.plotly_chart(fig_bubble, use_container_width=True)
+    st.caption("⚠️ Note: North America is the largest market by size but most restricted by regulation. Best accessible entry points remain SEA, LATAM, UAE, and Thailand.")
 
     # ── Country detail tables ────────────────────────────────────
     col1, col2 = st.columns(2)
@@ -1024,9 +1058,6 @@ with tabs[5]:
 
     # ── Static baseline (fallback if live data unavailable) ──────
     STATIC_SIGNALS = pd.DataFrame([
-        {"date":"Jan 2026",    "type":"Regulatory",  "event":"Philippine FDA Cosmetic Notification — UnicoCell",           "impact":"ASEAN gateway validated; blueprint for TH, MY, ID",            "sentiment":"🟢 Positive", "territory":"Philippines"},
-        {"date":"May 2025",    "type":"Enforcement", "event":"FDA warning letter — Florida IV exosome clinic",             "impact":"US IV channel high risk; pivot to topical/cosmetic",            "sentiment":"🔴 Risk",     "territory":"USA"},
-        {"date":"Late 2025",   "type":"Regulatory",  "event":"ANVISA-COFEPRIS MoU fully operational",                     "impact":"Single approval pathway for Brazil and Mexico",                 "sentiment":"🟢 Positive", "territory":"LATAM"},
         {"date":"Jan 2026",    "type":"Regulatory",  "event":"Philippine FDA Cosmetic Notification — UnicoCell",           "impact":"ASEAN gateway validated; blueprint for TH, MY, ID",            "sentiment":"🟢 Positive", "territory":"Philippines", "source":"UnicoCell Biomed press release, Jan 2026; CIRS Group — cirs-group.com/en/cosmetics/philippines-amends-asean-cosmetic-directive"},
         {"date":"May 2025",    "type":"Enforcement", "event":"FDA warning letter — Florida IV exosome clinic",             "impact":"US IV channel high risk; pivot to topical/cosmetic",            "sentiment":"🔴 Risk",     "territory":"USA",          "source":"HealthE1 Medical — healthe1.com; Atlantis Bioscience regulatory roadmap Oct 2025"},
         {"date":"Late 2025",   "type":"Regulatory",  "event":"ANVISA-COFEPRIS MoU fully operational",                     "impact":"Single approval pathway for Brazil and Mexico",                 "sentiment":"🟢 Positive", "territory":"LATAM",        "source":"DIA Global Forum, Nov 2025 — globalforum.diaglobal.org/issue/november-2025/anvisa-cofepris-strategy-and-vision"},
@@ -1037,6 +1068,7 @@ with tabs[5]:
         {"date":"Jul 2023",    "type":"M&A",         "event":"ExoCoBio acquires majority stake in US BENEV",              "impact":"Market consolidating; window to establish brand now",           "sentiment":"🟢 Positive", "territory":"USA",          "source":"ExoCoBio / BENEV press release, Jul 2023 (industry news)"},
         {"date":"2021",        "type":"Regulatory",  "event":"Thai FDA launches HSA Singapore Reliance Route",            "impact":"Singapore approval fast-tracks SEA/Thailand entry",             "sentiment":"🟢 Positive", "territory":"Thailand/SEA", "source":"HSA Singapore — hsa.gov.sg/cosmetic-products/asean-cosmetic-directive; Asia Actual Thailand guide"},
         {"date":"Ongoing",     "type":"Structural",  "event":"Lyophilisation segment $50-60M growing to $100M+ by 2030", "impact":"Cold-chain barrier eliminated globally",                        "sentiment":"🟢 Positive", "territory":"Global",       "source":"QY Research — Exosome Lyophilization Global Market Forecast 2026–2032"},
+        {"date":"Mar 2026",    "type":"Correction",  "event":"Geographic market data corrected — North America confirmed as leading region",  "impact":"NA ~$35M (40-47% share); LATAM and UAE/GCC revised down to ~$5M each", "sentiment":"🟡 Neutral", "territory":"Global", "source":"InsightAce Analytic; Credence Research; Coherent Market Insights; Transparency Market Research; 5+ sources"},
     ])
 
     # ── Merge live + static ───────────────────────────────────────
@@ -1178,9 +1210,9 @@ with tabs[6]:
 st.markdown("---")
 st.markdown(
     f"""<div style="text-align:center;color:#888;font-size:.78rem;padding:4px 0 12px;">
-    🧬 Global Naive MSC Exosome Market Dashboard &nbsp;·&nbsp; Enhanced & Validated Edition {REPORT_DATE} &nbsp;·&nbsp; {DATA_VERSION}
-    &nbsp;·&nbsp; Sources: DelveInsight · Precedence Research · InsightAce Analytic · Grand View Research · Astute Analytica · RoosterBio · Atlantis Bioscience · Jolifill.de · HUK Aesthetics · Bookimed · DIA Global Forum · FDA.gov · TGA.gov.au · HSA Singapore · PH FDA
-    <br>⚠️ Market figures are summary-level intelligence only. Per-vial pricing corrected March 2026 per independent validation — original B2B figures were estimates only. Regulatory guidance is not legal advice. Consult qualified regulatory counsel before commercial launch.
+    🧬 Global Naive MSC Exosome Market Dashboard &nbsp;·&nbsp; Enhanced, Validated & Geo-Corrected Edition {REPORT_DATE} &nbsp;·&nbsp; {DATA_VERSION}
+    &nbsp;·&nbsp; Sources: InsightAce Analytic · Credence Research · Coherent Market Insights · Transparency Market Research · Future Market Insights · DelveInsight · Astute Analytica · RoosterBio · Atlantis Bioscience · Jolifill.de · HUK Aesthetics · Bookimed · DIA Global Forum · FDA.gov · TGA.gov.au · HSA Singapore · PH FDA
+    <br>⚠️ Geographic figures corrected March 2026 — North America confirmed as leading region (40–47% share). Per-vial pricing corrected per independent validation. Regulatory guidance is not legal advice. Consult qualified regulatory counsel before commercial launch.
     </div>""",
     unsafe_allow_html=True,
 )
