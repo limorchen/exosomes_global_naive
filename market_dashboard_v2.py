@@ -24,7 +24,7 @@ st.set_page_config(
 # CONFIG
 # ══════════════════════════════════════════════════════════════
 REPORT_DATE  = "March 2026"
-DATA_VERSION = "v2.3-geo-corrected"
+DATA_VERSION = "v2.4-strategic"
 
 # ── Change these to match your GitHub repo ───────────────────
 GITHUB_USER = "limorchen"
@@ -241,26 +241,40 @@ with tabs[0]:
     with col_a:
         st.markdown('<div class="section-header">Market Segments — Size, Forecast & Access</div>', unsafe_allow_html=True)
         seg_df = pd.DataFrame([
-            {"Segment": "Exosome Diagnostics",        "2024 ($M)": 83.5,  "2030 ($M)": 1100, "CAGR": "47.6%", "Access Now?": "Partial"},
-            {"Segment": "Research Tools & Isolation", "2024 ($M)": 414,   "2030 ($M)": 1200, "CAGR": "11.6%", "Access Now?": "✅ Yes"},
-            {"Segment": "Regen Aesthetics",           "2024 ($M)": 81.1,  "2030 ($M)": 1700, "CAGR": "35.9%", "Access Now?": "✅ Yes — PRIMARY"},
-            {"Segment": "Therapeutics (approved)",    "2024 ($M)": 0,     "2030 ($M)": 80,   "CAGR": "17–18%","Access Now?": "❌ No approval"},
+            {"Segment": "Exosome Diagnostics",        "2024 ($M)": 119.3, "2030 ($M)": 2560,  "CAGR": "47.6%", "Access Now?": "Partial — 1 approved IVD"},
+            {"Segment": "Research Tools & Isolation", "2024 ($M)": 177.4, "2030 ($M)": 794,   "CAGR": "28.7%", "Access Now?": "✅ Yes — B2B reagents/kits"},
+            {"Segment": "Regen Aesthetics",           "2024 ($M)": 81.1,  "2030 ($M)": 1700,  "CAGR": "35.9%", "Access Now?": "✅ Yes — PRIMARY"},
+            {"Segment": "Cosmetic Applications (broader)", "2024 ($M)": 1800, "2030 ($M)": 26600,"CAGR": "~20%","Access Now?": "✅ Yes — includes retail"},
+            {"Segment": "Exosome Therapy (incl. procedure fees)", "2024 ($M)": 58120,"2030 ($M)": 307040,"CAGR": "~35%","Access Now?": "Service revenue — not product"},
+            {"Segment": "Therapeutics (approved drugs)", "2024 ($M)": 0,   "2030 ($M)": 80,    "CAGR": "17–18%","Access Now?": "❌ No approval anywhere"},
         ])
         st.dataframe(seg_df, hide_index=True, use_container_width=True)
+        st.markdown(
+            '<div class="unverified-card">💡 <strong>Why do market sizes range from $177M to $58B?</strong> '
+            "These are not contradictory — they measure fundamentally different things. "
+            "$177M (Grand View) = B2B value of kits, reagents, and vials sold. "
+            "$81M (InsightAce) = regen aesthetics exosome products specifically. "
+            "$1.8B (TMR) = broader cosmetic applications including retail. "
+            "$58B (Precedence) = total 'Exosome Therapy' sector <em>including hospital labor, procedure fees, and capital equipment</em> — not product sales. "
+            "For a BM-MSC exosome <em>manufacturer</em>, the relevant figure is the <strong>$81–177M product B2B market</strong>.</div>",
+            unsafe_allow_html=True,
+        )
+        st.markdown("")
 
         st.markdown('<div class="section-header">Addressable Market by Region (2024) — Geo-Corrected</div>', unsafe_allow_html=True)
-        st.caption("⚠️ Corrected March 2026: North America confirmed as leading region (40–47% share) per InsightAce Analytic, Credence Research, CMI and 5+ other sources. Original figures had NA and Europe inverted.")
+        st.caption("⚠️ Corrected March 2026: North America confirmed as leading region. CEE (Poland, Romania, Czech Republic) added as emerging hub.")
         addr_df = pd.DataFrame({
-            "Region":    ["North America", "Europe", "Rest of APAC*", "Southeast Asia", "Latin America", "UAE/GCC", "Thailand", "Australia", "Rest of World"],
-            "2024 ($M)": [35,   18,   13.5, 7,    5,    5,    3,    2,    1.5],
-            "2030 ($M)": [195,  83,   88,   47,   24,   28,   20,   9,    8],
-            "CAGR":      ["33%","29%","37%","37%","30%","33%","37%","28%","33%"],
+            "Region":    ["North America", "Europe (W)", "Rest of APAC*", "Southeast Asia", "CEE (PL/RO/CZ)", "Latin America", "UAE/GCC", "Thailand", "Australia", "Rest of World"],
+            "2024 ($M)": [35,   15,   13.5, 7,    3,    5,    5,    3,    2,    1.5],
+            "2030 ($M)": [195,  68,   88,   47,   15,   24,   28,   20,   9,    8],
+            "CAGR":      ["33%","28%","37%","37%","32%","30%","33%","37%","28%","33%"],
             "Source":    [
-                "InsightAce leading region; Credence 45% share",
+                "InsightAce leading region; Credence 45% share; FL medspa $1.2B",
                 "Credence 20%; Dataintelo 25%; market.us data",
                 "FMI: China 23.1% CAGR, Korea ExoCoBio 9.6% share",
                 "ASEAN pathway; PH FDA Jan 2026",
-                "Credence: LATAM $18.67M of $418M total = 4.5%",
+                "Romania $300.9M cosmetic surgery; Poland $4.8M est.; CEE CAGR 10.1%",
+                "Credence: LATAM = 4.5% of total; ANVISA-COFEPRIS MoU Aug 2025",
                 "GloGrowthInsights MEA ~12%; UAE subset",
                 "Medical tourism; Thai FDA modernising",
                 "TGA-restricted; regenerative protocols",
@@ -285,7 +299,7 @@ with tabs[0]:
         pie_df = addr_df.copy()
         fig_pie = px.pie(
             pie_df, names="Region", values="2024 ($M)",
-            color_discrete_sequence=["#1e3a5f","#2e6da4","#4a90d9","#6aabdf","#7ec8e3","#b3dff0","#e05c2a","#f0a07a","#ffd8c0"],
+            color_discrete_sequence=["#1e3a5f","#2e6da4","#4a90d9","#6aabdf","#7ec8e3","#a8d5e8","#b3dff0","#e05c2a","#f0a07a","#ffd8c0"],
             hole=0.45,
         )
         fig_pie.update_traces(textposition="outside", textinfo="percent+label")
@@ -294,7 +308,7 @@ with tabs[0]:
 
         st.markdown('<div class="section-header">CAGR by Region</div>', unsafe_allow_html=True)
         cagr_df = addr_df.copy()
-        cagr_df["CAGR_num"] = [33, 29, 37, 37, 30, 33, 37, 28, 33]
+        cagr_df["CAGR_num"] = [33, 28, 37, 37, 32, 30, 33, 37, 28, 33]
         cagr_df_sorted = cagr_df.sort_values("CAGR_num", ascending=True)
         fig_cagr = px.bar(
             cagr_df_sorted, x="CAGR_num", y="Region", orientation="h",
@@ -325,8 +339,9 @@ with tabs[1]:
     st.markdown("")
 
     geo_df = pd.DataFrame([
-        {"Region":"North America", "Stage":"Restricted",    "Segment":"Cosmetic / Research",  "Reg Risk":"High",   "CAGR":33,"OOP":False,"2024 ($M)":35,  "2030 ($M)":195, "Note":"Largest market — cosmetic channel only; FDA 12+ warning letters"},
-        {"Region":"Europe",        "Stage":"Established",   "Segment":"Aesthetic/Wellness",   "Reg Risk":"Medium", "CAGR":29,"OOP":True, "2024 ($M)":18,  "2030 ($M)":83,  "Note":"Credence 20% share; Dataintelo 25% share"},
+        {"Region":"North America", "Stage":"Restricted",    "Segment":"Cosmetic / Research",  "Reg Risk":"High",   "CAGR":33,"OOP":False,"2024 ($M)":35,  "2030 ($M)":195, "Note":"Largest market — cosmetic channel only; FL medspa $1.2B; Nevada SB128/AB148"},
+        {"Region":"Europe (W)",    "Stage":"Established",   "Segment":"Aesthetic/Wellness",   "Reg Risk":"Medium", "CAGR":28,"OOP":True, "2024 ($M)":15,  "2030 ($M)":68,  "Note":"Credence 20% share; Germany, France, Italy lead"},
+        {"Region":"CEE",           "Stage":"Emerging",      "Segment":"Medical Tourism Hub",  "Reg Risk":"Low",    "CAGR":32,"OOP":True, "2024 ($M)":3,   "2030 ($M)":15,  "Note":"Romania $300.9M cosmetic surgery; Poland $4.8M; Prague sessions ~$320"},
         {"Region":"Rest of APAC",  "Stage":"Emerging",      "Segment":"K-Beauty/Hospital",    "Reg Risk":"Medium", "CAGR":37,"OOP":True, "2024 ($M)":13.5,"2030 ($M)":88,  "Note":"Korea ExoCoBio 9.6% share; China 23.1% CAGR (FMI)"},
         {"Region":"Southeast Asia","Stage":"Emerging",      "Segment":"K-Beauty/Aesthetic",   "Reg Risk":"Low",    "CAGR":37,"OOP":True, "2024 ($M)":7,   "2030 ($M)":47,  "Note":"ASEAN gateway; PH FDA Jan 2026 approved"},
         {"Region":"Latin America", "Stage":"Growing",       "Segment":"Medical Tourism",      "Reg Risk":"Medium", "CAGR":30,"OOP":True, "2024 ($M)":5,   "2030 ($M)":24,  "Note":"Credence: LATAM = 4.5% of total; ANVISA-COFEPRIS MoU Aug 2025"},
@@ -375,10 +390,19 @@ with tabs[1]:
 
         st.markdown('<div class="section-header">US & Australia Detail</div>', unsafe_allow_html=True)
         us_au_df = pd.DataFrame([
-            {"Territory":"USA",       "Stage":"Restricted", "Channel":"Cosmetic topical only",  "Key Risk":"12+ FDA warning letters", "Entry":"Aesthetic/CDMO supply only"},
-            {"Territory":"Australia", "Stage":"High TGA",   "Channel":"TGA-registered clinics", "Key Risk":"PBAC ATMPs only",         "Entry":"Biogenix partnership model"},
+            {"Territory":"USA — Florida",  "Stage":"State-permissive","Channel":"MedSpa + elective physician use","Key Regulation":"FL Statute §456.47 — informed consent required; structured elective pathway","Entry":"Direct-to-clinic cosmetic; FL medspa market $1.2B (2024) → $2.5B (2034)"},
+            {"Territory":"USA — Nevada",   "Stage":"State-permissive","Channel":"Anti-aging / performance protocols","Key Regulation":"SB128 + AB148 — licensed physicians may perform non-FDA-approved cell therapies","Entry":"Las Vegas destination clinic model; positioned as performance/longevity enhancement"},
+            {"Territory":"USA — Other",    "Stage":"Restricted",      "Channel":"Cosmetic topical only",           "Key Regulation":"Federal FDA — 12+ warning letters; IV/therapeutic channel closed","Entry":"OEM white-label to medspas; CDMO supply to clinical sponsors only"},
+            {"Territory":"Australia",      "Stage":"High TGA",        "Channel":"TGA-registered clinics",          "Key Regulation":"PBAC ATMPs only","Entry":"Biogenix-style TGA-compliant partnership model"},
         ])
         st.dataframe(us_au_df, hide_index=True, use_container_width=True)
+        st.markdown(
+            '<div class="signal-card">🇺🇸 <strong>Florida opportunity:</strong> South Florida (Miami-Dade, Broward, Palm Beach) medspa market '
+            "estimated at <strong>$199.51M in 2024 → $1.09B by 2033</strong> at 20.69% CAGR. "
+            "Florida Statute §456.47 creates a structured state-monitored pathway for elective physician use — "
+            "the most actionable US sub-market for exosome product entry today.</div>",
+            unsafe_allow_html=True,
+        )
 
     with col2:
         st.markdown('<div class="section-header">Asia-Pacific, LATAM & ME Detail</div>', unsafe_allow_html=True)
@@ -393,6 +417,22 @@ with tabs[1]:
             {"Territory":"UAE/GCC",     "Region":"ME",    "Maturity":"Premium",  "Note":"Luxury longevity; DUBIMED 40yr network"},
         ])
         st.dataframe(apac_df, hide_index=True, use_container_width=True)
+
+        st.markdown('<div class="section-header">🆕 Central & Eastern Europe (CEE) — Emerging Hub</div>', unsafe_allow_html=True)
+        cee_df = pd.DataFrame([
+            {"Country":"Romania",        "Market Size (2024)":"$300.9M cosmetic surgery", "2032 Forecast":"$589.7M", "CAGR":"~8%",   "Key Driver":"High demand corrective treatments; medical tourism from W. Europe","Session Price":"~$400–800"},
+            {"Country":"Poland",         "Market Size (2024)":"$4.8M est. (aesthetic med)","2030 Forecast":"$14.5M", "CAGR":"~20%",  "Key Driver":"Regional distribution hub; LaserMe + ASCE+ protocol active","Session Price":"~$500 (2,000 PLN)"},
+            {"Country":"Czech Republic", "Market Size (2024)":"$2.1M est. (bioregen)",    "2033 Forecast":"$6.8M",  "CAGR":"~16%",  "Key Driver":"Clinical expansion in Prague; tech-forward clinic network","Session Price":"~$320 (7,500 CZK)"},
+        ])
+        st.dataframe(cee_df, hide_index=True, use_container_width=True)
+        st.markdown(
+            '<div class="signal-card">🌍 <strong>CEE Strategic Value:</strong> Exosome injectables are the fastest-growing '
+            "segment in the European bioregenerative aesthetic market through 2033 (CAGR 10.1%). "
+            "CEE session prices ($320–800) vs US ($4,900 average in Miami/Las Vegas) make CEE a high-volume, "
+            "lower-margin channel — ideal for driving distributor stocking and brand establishment before entering W. Europe at premium pricing. "
+            "Target distributors: Teoxane Polska (Poland/CEE) already active in EPICEXOSOME distribution.</div>",
+            unsafe_allow_html=True,
+        )
 
         st.markdown('<div class="section-header">End User Profiles</div>', unsafe_allow_html=True)
         eu_df = pd.DataFrame([
@@ -419,7 +459,10 @@ with tabs[2]:
         {"Distributor":"Croma-Pharma",         "Region":"Europe",   "Territory":"Austria/DACH",    "Brands":"Aesthetic Mgmt Partners",      "Approach":"Strategic regional partnerships",      "Priority":"🟢 High",  "Channel":"Aesthetic"},
         {"Distributor":"Teoxane France",       "Region":"Europe",   "Territory":"France",          "Brands":"Teoxane proprietary",          "Approach":"Direct subsidiary model",             "Priority":"🟡 Medium","Channel":"Aesthetic"},
         {"Distributor":"Taumedika S.r.l.",     "Region":"Europe",   "Territory":"Italy",           "Brands":"Karisma Exo Care",             "Approach":"Specialist aesthetic networks",        "Priority":"🟡 Medium","Channel":"Aesthetic"},
-        {"Distributor":"Teoxane Polska",       "Region":"Europe",   "Territory":"Poland/CEE",      "Brands":"EPICEXOSOME",                  "Approach":"Emerging market expansion",           "Priority":"🟡 Medium","Channel":"Aesthetic"},
+        {"Distributor":"Teoxane Polska",       "Region":"CEE",      "Territory":"Poland/CEE",      "Brands":"EPICEXOSOME",                  "Approach":"Emerging market expansion; LaserMe+ASCE+ protocol", "Priority":"🟢 High",  "Channel":"Aesthetic"},
+        {"Distributor":"LaserMe Clinics",      "Region":"CEE",      "Territory":"Poland",          "Brands":"ASCE+ / multi-brand",          "Approach":"High-volume clinic chain; ~500 USD/session","Priority":"🟢 High", "Channel":"Aesthetic"},
+        {"Distributor":"Prague Bioregen network","Region":"CEE",    "Territory":"Czech Republic",  "Brands":"Local + EU brands",            "Approach":"Clinical expansion; ~320 USD/session",  "Priority":"🟡 Medium","Channel":"Medical/Aesthetic"},
+        {"Distributor":"Romanian aesthetic distributors","Region":"CEE","Territory":"Romania",     "Brands":"EU aesthetic brands",          "Approach":"$300.9M cosmetic surgery market; W.EU medical tourism inflow","Priority":"🟢 High","Channel":"Aesthetic"},
         # LATAM
         {"Distributor":"Giostar Mexico",       "Region":"LATAM",    "Territory":"Mexico (Cancun)", "Brands":"Multiple MSC brands",          "Approach":"Medical tourism + ortho",             "Priority":"🟢 High",  "Channel":"Medical/Ortho"},
         {"Distributor":"PRMEDICA",             "Region":"LATAM",    "Territory":"Mexico (Cabos)",  "Brands":"MSC exosomes",                 "Approach":"Inflammatory modulation",             "Priority":"🟡 Medium","Channel":"Medical"},
@@ -675,13 +718,15 @@ with tabs[4]:
 
         # ── Per-10B observed data ─────────────────────────────────
         p10b_df = pd.DataFrame([
-            {"Product":"EXOMIDE (Jolifill, Germany)", "Source Type":"Retail","Vial Size":"5mL","Vial Price":"€115 (~$125)","10B Low":250,"10B High":250,"Confidence":"🟢 High","Source":"Jolifill.de — confirmed"},
-            {"Product":"EXOGEN (HUK Aesthetics, UK)", "Source Type":"Retail","Vial Size":"1mg+6mL","Vial Price":"£60 2-vial kit","10B Low":37, "10B High":75, "Confidence":"🟢 High","Source":"HUK Aesthetics — confirmed"},
-            {"Product":"EXOJUV (plant-derived)",      "Source Type":"Wholesale","Vial Size":"6B/vial","Vial Price":"$150–200","10B Low":250,"10B High":333,"Confidence":"🟡 Med","Source":"MedicaDepot wholesale"},
-            {"Product":"EXOBLOOM (Dermax)",           "Source Type":"Wholesale","Vial Size":"5B+/vial","Vial Price":"$120–180","10B Low":240,"10B High":360,"Confidence":"🟡 Med","Source":"DermaxMed B2B"},
-            {"Product":"ReBellaXO (UC-MSC, R3)",      "Source Type":"Wholesale","Vial Size":"15B/cc","Vial Price":"$300–450","10B Low":200,"10B High":300,"Confidence":"🟡 Med","Source":"R3 Stem Cell 2024"},
-            {"Product":"Generic BM-MSC (Alibaba B2B)","Source Type":"B2B Bulk","Vial Size":"1mg≈10–15B","Vial Price":"$180–280/mg","10B Low":150,"10B High":280,"Confidence":"🟡 Med","Source":"Alibaba supplier data 2024–25"},
-            {"Product":"BENEV (ExoCoBio US)",         "Source Type":"Professional","Vial Size":"20–30B est.","Vial Price":"$400–600","10B Low":160,"10B High":250,"Confidence":"🟡 Med","Source":"US professional channel est."},
+            {"Product":"EXOMIDE (Jolifill, Germany)",    "Source Type":"Retail",      "Vial Size":"5mL",       "Vial Price":"€115 (~$125)","10B Low":250,"10B High":250,"Confidence":"🟢 High","Source":"Jolifill.de — confirmed"},
+            {"Product":"EXOGEN (HUK Aesthetics, UK)",    "Source Type":"Retail",      "Vial Size":"1mg+6mL",   "Vial Price":"£60 2-vial kit","10B Low":37,"10B High":75,"Confidence":"🟢 High","Source":"HUK Aesthetics — confirmed"},
+            {"Product":"EXOXE Exosomes (50mg, EU/CEE)",  "Source Type":"Retail",      "Vial Size":"50mg",      "Vial Price":"~$85 (80 EUR)","10B Low":60,"10B High":90,"Confidence":"🟢 High","Source":"EU/CEE retail — confirmed"},
+            {"Product":"Selastin Exo Plus (100mg, Poland)","Source Type":"Retail",    "Vial Size":"100mg liquid","Vial Price":"~$50 (46 EUR)","10B Low":35,"10B High":55,"Confidence":"🟢 High","Source":"Poland/CEE retail — confirmed"},
+            {"Product":"EXOJUV (plant-derived)",         "Source Type":"Wholesale",   "Vial Size":"6B/vial",   "Vial Price":"$150–200","10B Low":250,"10B High":333,"Confidence":"🟡 Med","Source":"MedicaDepot wholesale"},
+            {"Product":"EXOBLOOM (Dermax)",              "Source Type":"Wholesale",   "Vial Size":"5B+/vial",  "Vial Price":"$120–180","10B Low":240,"10B High":360,"Confidence":"🟡 Med","Source":"DermaxMed B2B"},
+            {"Product":"ReBellaXO (UC-MSC, R3)",         "Source Type":"Wholesale",   "Vial Size":"15B/cc",    "Vial Price":"$300–450","10B Low":200,"10B High":300,"Confidence":"🟡 Med","Source":"R3 Stem Cell 2024"},
+            {"Product":"Generic BM-MSC (Alibaba B2B)",   "Source Type":"B2B Bulk",    "Vial Size":"1mg≈10–15B","Vial Price":"$180–280/mg","10B Low":150,"10B High":280,"Confidence":"🟡 Med","Source":"Alibaba supplier data 2024–25"},
+            {"Product":"BENEV (ExoCoBio US)",            "Source Type":"Professional","Vial Size":"20–30B est.","Vial Price":"$400–600","10B Low":160,"10B High":250,"Confidence":"🟡 Med","Source":"US professional channel est."},
         ])
         p10b_df["10B Mid"] = ((p10b_df["10B Low"] + p10b_df["10B High"]) / 2).astype(int)
 
@@ -793,6 +838,47 @@ with tabs[4]:
             hide_index=True, use_container_width=True,
         )
         st.caption("Sources: Bookimed clinic data (Mexico, Thailand); R3 Stem Cell Mexico pricing; BioInformant US market research; EDEN Aesthetics Dubai protocol data.")
+        st.markdown("")
+
+        # ── US vs CEE OOP comparison ──────────────────────────────
+        st.markdown('<div class="section-header">🆕 OOP Price Comparison — US (FL/NV) vs CEE (Poland/Prague)</div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="validated-card">✅ CEE prices confirmed from clinic sources: Poland LaserMe+ASCE+ ~2,000 PLN (~$500/session); '
+            "Prague skin therapy ~7,500 CZK (~$320/session). US averages: Miami/Las Vegas single session ~$4,900; comprehensive plan up to $15,000.</div>",
+            unsafe_allow_html=True,
+        )
+        cee_oop = pd.DataFrame([
+            {"Indication":"Facial Skin Rejuvenation","US (FL/NV) Low":400, "US (FL/NV) High":900, "CEE (PL/CZ) Low":150,"CEE (PL/CZ) High":300},
+            {"Indication":"Hair Restoration",        "US (FL/NV) Low":900, "US (FL/NV) High":2300,"CEE (PL/CZ) Low":400,"CEE (PL/CZ) High":650},
+            {"Indication":"Joint Pain / Ortho",      "US (FL/NV) Low":1500,"US (FL/NV) High":3500,"CEE (PL/CZ) Low":600,"CEE (PL/CZ) High":1200},
+            {"Indication":"Longevity IV Drip",       "US (FL/NV) Low":3750,"US (FL/NV) High":5500,"CEE (PL/CZ) Low":1200,"CEE (PL/CZ) High":2500},
+        ])
+        cee_oop["US Mid"]  = (cee_oop["US (FL/NV) Low"]  + cee_oop["US (FL/NV) High"])  / 2
+        cee_oop["CEE Mid"] = (cee_oop["CEE (PL/CZ) Low"] + cee_oop["CEE (PL/CZ) High"]) / 2
+
+        fig_cee = go.Figure()
+        for indication, us_mid, cee_mid in zip(cee_oop["Indication"], cee_oop["US Mid"], cee_oop["CEE Mid"]):
+            fig_cee.add_trace(go.Bar(name=f"US — {indication}", x=["US (FL/NV)"], y=[us_mid],
+                marker_color="#1e3a5f", showlegend=False,
+                text=f"${int(us_mid):,}", textposition="outside"))
+            fig_cee.add_trace(go.Bar(name=f"CEE — {indication}", x=["CEE (PL/CZ)"], y=[cee_mid],
+                marker_color="#7ec8e3", showlegend=False,
+                text=f"${int(cee_mid):,}", textposition="outside"))
+
+        # Cleaner grouped bar
+        fig_cee2 = px.bar(
+            cee_oop.melt(id_vars="Indication", value_vars=["US Mid","CEE Mid"],
+                         var_name="Market", value_name="OOP ($)"),
+            x="Indication", y="OOP ($)", color="Market", barmode="group",
+            color_discrete_map={"US Mid":"#1e3a5f","CEE Mid":"#7ec8e3"},
+            text_auto=",.0f",
+            title="OOP Patient Price: US (Florida/Nevada) vs CEE (Poland/Czech Republic)",
+        )
+        fig_cee2.update_traces(textposition="outside")
+        fig_cee2.update_layout(height=360, margin=dict(t=50,b=10), xaxis_tickangle=-15,
+                               yaxis_title="OOP Price (USD)", legend_title="Market")
+        st.plotly_chart(fig_cee2, use_container_width=True)
+        st.caption("CEE pricing represents ~30–50% discount vs US. High-volume CEE channel compensates for lower per-session margin with throughput from W. European medical tourists.")
 
     # ── Sub-tab 3: B2B DERIVED FROM 10B DATA ─────────────────────
     with subtabs[2]:
@@ -1069,6 +1155,9 @@ with tabs[5]:
         {"date":"2021",        "type":"Regulatory",  "event":"Thai FDA launches HSA Singapore Reliance Route",            "impact":"Singapore approval fast-tracks SEA/Thailand entry",             "sentiment":"🟢 Positive", "territory":"Thailand/SEA", "source":"HSA Singapore — hsa.gov.sg/cosmetic-products/asean-cosmetic-directive; Asia Actual Thailand guide"},
         {"date":"Ongoing",     "type":"Structural",  "event":"Lyophilisation segment $50-60M growing to $100M+ by 2030", "impact":"Cold-chain barrier eliminated globally",                        "sentiment":"🟢 Positive", "territory":"Global",       "source":"QY Research — Exosome Lyophilization Global Market Forecast 2026–2032"},
         {"date":"Mar 2026",    "type":"Correction",  "event":"Geographic market data corrected — North America confirmed as leading region",  "impact":"NA ~$35M (40-47% share); LATAM and UAE/GCC revised down to ~$5M each", "sentiment":"🟡 Neutral", "territory":"Global", "source":"InsightAce Analytic; Credence Research; Coherent Market Insights; Transparency Market Research; 5+ sources"},
+        {"date":"2024–2025",   "type":"Geographic",  "event":"CEE (Poland, Romania, Czech Republic) emerges as medical tourism hub for exosome aesthetics", "impact":"Romania $300.9M cosmetic surgery; Poland LaserMe+ASCE+ ~$500/session; Prague ~$320/session", "sentiment":"🟢 Positive", "territory":"CEE", "source":"Strategic reconciliation report 2026; Romanian cosmetic surgery market data; Polish aesthetic medicine estimates"},
+        {"date":"Active",      "type":"Regulatory",  "event":"Florida Statute §456.47 — structured elective pathway for non-FDA-approved exosome use", "impact":"FL medspa market $1.2B (2024) → $2.5B (2034); South FL $199.51M → $1.09B by 2033 at 20.69% CAGR", "sentiment":"🟢 Positive", "territory":"USA — Florida", "source":"Strategic reconciliation report 2026; Florida medical spa market data"},
+        {"date":"Active",      "type":"Regulatory",  "event":"Nevada SB128 + AB148 — licensed physicians may perform non-FDA-approved cell therapies", "impact":"Las Vegas established as destination hub for exosome anti-aging / performance protocols", "sentiment":"🟢 Positive", "territory":"USA — Nevada", "source":"Strategic reconciliation report 2026; Nevada state legislation"},
     ])
 
     # ── Merge live + static ───────────────────────────────────────
@@ -1170,6 +1259,10 @@ with tabs[6]:
          "Both actively seeking new regenerative brands. DUBIMED: 40-year exclusive relationships; Croma-Pharma: signed new distribution deal Mar 2024."),
         ("MEDIUM",   "signal-card",   "US strategy: cosmetic topical + CDMO only",
          "OEM/white-label for medspas and post-laser protocols. Consider GMP supply to clinical-stage US biotech for Phase I/II trials."),
+        ("MEDIUM",   "signal-card",   "US strategy: Florida + Nevada state-permissive model",
+         "Florida §456.47 provides structured informed-consent pathway for elective physician use. Nevada SB128/AB148 similarly permits licensed physician use. Direct-to-clinic in FL/NV medspas captures the $1.2B Florida medspa market while remaining federally compliant — no therapeutic claims."),
+        ("MEDIUM",   "signal-card",   "CEE (Poland, Romania, Czech Republic) as high-volume entry channel",
+         "Target Teoxane Polska (already EPICEXOSOME distributor) and Romanian aesthetic distributors. CEE session prices ($320–800) vs US ($4,900) drive volume. Romania's $300.9M cosmetic surgery market attracts W. European medical tourists. LaserMe+ASCE+ Poland protocol active at ~$500/session."),
         ("MEDIUM",   "signal-card",   "Thailand: appoint local licensed importer",
          "All imports require locally registered Thai entity holding import license. Foreign manufacturers must appoint local representative."),
     ]
@@ -1210,9 +1303,9 @@ with tabs[6]:
 st.markdown("---")
 st.markdown(
     f"""<div style="text-align:center;color:#888;font-size:.78rem;padding:4px 0 12px;">
-    🧬 Global Naive MSC Exosome Market Dashboard &nbsp;·&nbsp; Enhanced, Validated & Geo-Corrected Edition {REPORT_DATE} &nbsp;·&nbsp; {DATA_VERSION}
-    &nbsp;·&nbsp; Sources: InsightAce Analytic · Credence Research · Coherent Market Insights · Transparency Market Research · Future Market Insights · DelveInsight · Astute Analytica · RoosterBio · Atlantis Bioscience · Jolifill.de · HUK Aesthetics · Bookimed · DIA Global Forum · FDA.gov · TGA.gov.au · HSA Singapore · PH FDA
-    <br>⚠️ Geographic figures corrected March 2026 — North America confirmed as leading region (40–47% share). Per-vial pricing corrected per independent validation. Regulatory guidance is not legal advice. Consult qualified regulatory counsel before commercial launch.
+    🧬 Global Naive MSC Exosome Market Dashboard &nbsp;·&nbsp; Enhanced, Validated, Geo-Corrected & Strategic Edition {REPORT_DATE} &nbsp;·&nbsp; {DATA_VERSION}
+    &nbsp;·&nbsp; Sources: InsightAce Analytic · Credence Research · CMI · TMR · FMI · DelveInsight · Astute Analytica · RoosterBio · Atlantis Bioscience · Jolifill.de · HUK Aesthetics · Bookimed · DIA Global Forum · FDA.gov · TGA.gov.au · HSA Singapore · PH FDA · Florida Statute §456.47 · Nevada SB128/AB148
+    <br>⚠️ Geographic figures corrected March 2026. Market valuations range from $177M (B2B products) to $58B (total therapy sector incl. procedure fees) — these are not contradictory. Per-vial pricing corrected per independent validation. Regulatory guidance is not legal advice.
     </div>""",
     unsafe_allow_html=True,
 )
