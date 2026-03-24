@@ -24,7 +24,7 @@ st.set_page_config(
 # CONFIG
 # ══════════════════════════════════════════════════════════════
 REPORT_DATE  = "March 2026"
-DATA_VERSION = "v2.4-strategic"
+DATA_VERSION = "v2.1-live"
 
 # ── Change these to match your GitHub repo ───────────────────
 GITHUB_USER = "limorchen"
@@ -118,17 +118,6 @@ st.markdown("""
     border-left:4px solid #c62828; background:#ffeaea;
     padding:9px 14px; border-radius:4px; margin:5px 0; line-height:1.5;
   }
-  .validated-card {
-    border-left:4px solid #3db07a; background:#edfaf3;
-    padding:9px 14px; border-radius:4px; margin:5px 0; line-height:1.5;
-  }
-  .unverified-card {
-    border-left:4px solid #f0a030; background:#fffbeb;
-    padding:9px 14px; border-radius:4px; margin:5px 0; line-height:1.5;
-  }
-  .conf-high  { color:#166534; font-weight:700; }
-  .conf-med   { color:#92400e; font-weight:700; }
-  .conf-low   { color:#c62828; font-weight:700; }
 
   /* ── Priority badge ── */
   .badge-critical { background:#c62828; color:#fff; border-radius:4px; padding:2px 7px; font-size:.75rem; font-weight:700; }
@@ -182,16 +171,6 @@ st.markdown(
     "(Mexico, UAE, Thailand, SEA).</div>",
     unsafe_allow_html=True,
 )
-st.markdown(
-    '<div class="unverified-card">⚠️ <strong>GEO-CORRECTION (March 2026):</strong> '
-    "Geographic market figures have been corrected following independent verification against 8+ market research sources "
-    "(InsightAce Analytic, Credence Research, Coherent Market Insights, Transparency Market Research, Future Market Insights). "
-    "The original report had North America and Europe inverted. "
-    "<strong>North America is the largest region (~$35M, 40–47% share) — not the smallest.</strong> "
-    "Latin America (~$5M) and UAE/GCC (~$5M) are smaller than originally stated. "
-    "Total addressable market (~$88.5M) is unchanged — only the geographic distribution is corrected.</div>",
-    unsafe_allow_html=True,
-)
 st.markdown("")
 
 # ══════════════════════════════════════════════════════════════
@@ -241,74 +220,46 @@ with tabs[0]:
     with col_a:
         st.markdown('<div class="section-header">Market Segments — Size, Forecast & Access</div>', unsafe_allow_html=True)
         seg_df = pd.DataFrame([
-            {"Segment": "Exosome Diagnostics",        "2024 ($M)": 119.3, "2030 ($M)": 2560,  "CAGR": "47.6%", "Access Now?": "Partial — 1 approved IVD"},
-            {"Segment": "Research Tools & Isolation", "2024 ($M)": 177.4, "2030 ($M)": 794,   "CAGR": "28.7%", "Access Now?": "✅ Yes — B2B reagents/kits"},
-            {"Segment": "Regen Aesthetics",           "2024 ($M)": 81.1,  "2030 ($M)": 1700,  "CAGR": "35.9%", "Access Now?": "✅ Yes — PRIMARY"},
-            {"Segment": "Cosmetic Applications (broader)", "2024 ($M)": 1800, "2030 ($M)": 26600,"CAGR": "~20%","Access Now?": "✅ Yes — includes retail"},
-            {"Segment": "Exosome Therapy (incl. procedure fees)", "2024 ($M)": 58120,"2030 ($M)": 307040,"CAGR": "~35%","Access Now?": "Service revenue — not product"},
-            {"Segment": "Therapeutics (approved drugs)", "2024 ($M)": 0,   "2030 ($M)": 80,    "CAGR": "17–18%","Access Now?": "❌ No approval anywhere"},
+            {"Segment": "Exosome Diagnostics",        "2024 ($M)": 83.5,  "2030 ($M)": 1100, "CAGR": "47.6%", "Access Now?": "Partial"},
+            {"Segment": "Research Tools & Isolation", "2024 ($M)": 414,   "2030 ($M)": 1200, "CAGR": "11.6%", "Access Now?": "✅ Yes"},
+            {"Segment": "Regen Aesthetics",           "2024 ($M)": 81.1,  "2030 ($M)": 1700, "CAGR": "35.9%", "Access Now?": "✅ Yes — PRIMARY"},
+            {"Segment": "Therapeutics (approved)",    "2024 ($M)": 0,     "2030 ($M)": 80,   "CAGR": "17–18%","Access Now?": "❌ No approval"},
         ])
         st.dataframe(seg_df, hide_index=True, use_container_width=True)
-        st.markdown(
-            '<div class="unverified-card">💡 <strong>Why do market sizes range from $177M to $58B?</strong> '
-            "These are not contradictory — they measure fundamentally different things. "
-            "$177M (Grand View) = B2B value of kits, reagents, and vials sold. "
-            "$81M (InsightAce) = regen aesthetics exosome products specifically. "
-            "$1.8B (TMR) = broader cosmetic applications including retail. "
-            "$58B (Precedence) = total 'Exosome Therapy' sector <em>including hospital labor, procedure fees, and capital equipment</em> — not product sales. "
-            "For a BM-MSC exosome <em>manufacturer</em>, the relevant figure is the <strong>$81–177M product B2B market</strong>.</div>",
-            unsafe_allow_html=True,
-        )
-        st.markdown("")
 
-        st.markdown('<div class="section-header">Addressable Market by Region (2024) — Geo-Corrected</div>', unsafe_allow_html=True)
-        st.caption("⚠️ Corrected March 2026: North America confirmed as leading region. CEE (Poland, Romania, Czech Republic) added as emerging hub.")
+        st.markdown('<div class="section-header">Addressable Market by Region (2024)</div>', unsafe_allow_html=True)
         addr_df = pd.DataFrame({
-            "Region":    ["North America", "Europe (W)", "Rest of APAC*", "Southeast Asia", "CEE (PL/RO/CZ)", "Latin America", "UAE/GCC", "Thailand", "Australia", "Rest of World"],
-            "2024 ($M)": [35,   15,   13.5, 7,    3,    5,    5,    3,    2,    1.5],
-            "2030 ($M)": [195,  68,   88,   47,   15,   24,   28,   20,   9,    8],
-            "CAGR":      ["33%","28%","37%","37%","32%","30%","33%","37%","28%","33%"],
-            "Source":    [
-                "InsightAce leading region; Credence 45% share; FL medspa $1.2B",
-                "Credence 20%; Dataintelo 25%; market.us data",
-                "FMI: China 23.1% CAGR, Korea ExoCoBio 9.6% share",
-                "ASEAN pathway; PH FDA Jan 2026",
-                "Romania $300.9M cosmetic surgery; Poland $4.8M est.; CEE CAGR 10.1%",
-                "Credence: LATAM = 4.5% of total; ANVISA-COFEPRIS MoU Aug 2025",
-                "GloGrowthInsights MEA ~12%; UAE subset",
-                "Medical tourism; Thai FDA modernising",
-                "TGA-restricted; regenerative protocols",
-                "Emerging adoption",
-            ],
+            "Region":    ["Europe", "Latin America", "Southeast Asia", "UAE/GCC", "North America", "Thailand", "Australia", "Rest of World"],
+            "2024 ($M)": [22, 18, 14, 12, 8.5, 6, 5, 3],
+            "2030 ($M)": [105, 90, 95, 75, 43, 40, 28, 18],
+            "CAGR":      ["29%", "31%", "37%", "36%", "31%", "37%", "33%", "35%"],
         })
-        # Note: Rest of APAC includes Korea, Japan, China (not separately tracked in dashboard)
         fig_addr = px.bar(
             addr_df, x="Region", y=["2024 ($M)", "2030 ($M)"],
             barmode="group",
             color_discrete_sequence=["#2e6da4", "#7ec8e3"],
-            title="Addressable Market: 2024 vs 2030 — Corrected Geographic Distribution ($M)",
+            title="Addressable Market: 2024 vs 2030 Forecast ($M)",
             text_auto=".1f",
         )
-        fig_addr.update_layout(height=340, margin=dict(t=50, b=10), legend_title="Year",
-                                xaxis_tickangle=-35, yaxis_title="USD Million")
+        fig_addr.update_layout(height=320, margin=dict(t=40, b=10), legend_title="Year",
+                                xaxis_tickangle=-30, yaxis_title="USD Million")
         st.plotly_chart(fig_addr, use_container_width=True)
-        st.caption("*Rest of APAC includes South Korea (ExoCoBio ~9.6% global share), Japan, and China (23.1% CAGR per FMI)")
 
     with col_b:
-        st.markdown('<div class="section-header">Regional Share — Addressable Market 2024 (Corrected)</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">Regional Share — Addressable Market 2024</div>', unsafe_allow_html=True)
         pie_df = addr_df.copy()
         fig_pie = px.pie(
             pie_df, names="Region", values="2024 ($M)",
-            color_discrete_sequence=["#1e3a5f","#2e6da4","#4a90d9","#6aabdf","#7ec8e3","#a8d5e8","#b3dff0","#e05c2a","#f0a07a","#ffd8c0"],
+            color_discrete_sequence=["#1e3a5f","#2e6da4","#4a90d9","#7ec8e3","#b3dff0","#e05c2a","#f0a07a","#ffd8c0"],
             hole=0.45,
         )
         fig_pie.update_traces(textposition="outside", textinfo="percent+label")
-        fig_pie.update_layout(margin=dict(t=10, b=80), showlegend=False, height=380)
+        fig_pie.update_layout(margin=dict(t=10, b=80), showlegend=False, height=350)
         st.plotly_chart(fig_pie, use_container_width=True)
 
-        st.markdown('<div class="section-header">CAGR by Region</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">CAGR Comparison by Region</div>', unsafe_allow_html=True)
         cagr_df = addr_df.copy()
-        cagr_df["CAGR_num"] = [33, 28, 37, 37, 32, 30, 33, 37, 28, 33]
+        cagr_df["CAGR_num"] = [29, 31, 37, 36, 31, 37, 33, 35]
         cagr_df_sorted = cagr_df.sort_values("CAGR_num", ascending=True)
         fig_cagr = px.bar(
             cagr_df_sorted, x="CAGR_num", y="Region", orientation="h",
@@ -318,7 +269,7 @@ with tabs[0]:
         )
         fig_cagr.update_traces(textposition="outside")
         fig_cagr.update_layout(
-            height=320, margin=dict(t=10, b=10),
+            height=280, margin=dict(t=10, b=10),
             coloraxis_showscale=False,
             xaxis_title="CAGR (%)", yaxis_title="",
         )
@@ -328,26 +279,16 @@ with tabs[0]:
 # TAB 2 — GEOGRAPHIC ANALYSIS
 # ════════════════════════════════════════════════════════════════
 with tabs[1]:
-    st.markdown('<div class="section-header">Market Opportunity vs Regulatory Risk (All Regions) — Geo-Corrected</div>', unsafe_allow_html=True)
-    st.markdown(
-        '<div class="unverified-card">⚠️ <strong>Geographic correction applied:</strong> '
-        "Market sizes updated per 8+ independent sources. North America is now correctly shown as the largest market ($35M). "
-        "Latin America ($5M) and UAE/GCC ($5M) have been revised down from the original overstatements. "
-        "Bubble size = 2030 forecast. Strategic accessibility (OOP/regulatory) is unchanged.</div>",
-        unsafe_allow_html=True,
-    )
-    st.markdown("")
+    st.markdown('<div class="section-header">Market Opportunity vs Regulatory Risk (All Regions)</div>', unsafe_allow_html=True)
 
     geo_df = pd.DataFrame([
-        {"Region":"North America", "Stage":"Restricted",    "Segment":"Cosmetic / Research",  "Reg Risk":"High",   "CAGR":33,"OOP":False,"2024 ($M)":35,  "2030 ($M)":195, "Note":"Largest market — cosmetic channel only; FL medspa $1.2B; Nevada SB128/AB148"},
-        {"Region":"Europe (W)",    "Stage":"Established",   "Segment":"Aesthetic/Wellness",   "Reg Risk":"Medium", "CAGR":28,"OOP":True, "2024 ($M)":15,  "2030 ($M)":68,  "Note":"Credence 20% share; Germany, France, Italy lead"},
-        {"Region":"CEE",           "Stage":"Emerging",      "Segment":"Medical Tourism Hub",  "Reg Risk":"Low",    "CAGR":32,"OOP":True, "2024 ($M)":3,   "2030 ($M)":15,  "Note":"Romania $300.9M cosmetic surgery; Poland $4.8M; Prague sessions ~$320"},
-        {"Region":"Rest of APAC",  "Stage":"Emerging",      "Segment":"K-Beauty/Hospital",    "Reg Risk":"Medium", "CAGR":37,"OOP":True, "2024 ($M)":13.5,"2030 ($M)":88,  "Note":"Korea ExoCoBio 9.6% share; China 23.1% CAGR (FMI)"},
-        {"Region":"Southeast Asia","Stage":"Emerging",      "Segment":"K-Beauty/Aesthetic",   "Reg Risk":"Low",    "CAGR":37,"OOP":True, "2024 ($M)":7,   "2030 ($M)":47,  "Note":"ASEAN gateway; PH FDA Jan 2026 approved"},
-        {"Region":"Latin America", "Stage":"Growing",       "Segment":"Medical Tourism",      "Reg Risk":"Medium", "CAGR":30,"OOP":True, "2024 ($M)":5,   "2030 ($M)":24,  "Note":"Credence: LATAM = 4.5% of total; ANVISA-COFEPRIS MoU Aug 2025"},
-        {"Region":"UAE/GCC",       "Stage":"Niche/Premium", "Segment":"Longevity/Luxury",     "Reg Risk":"Low-Med","CAGR":33,"OOP":True, "2024 ($M)":5,   "2030 ($M)":28,  "Note":"Premium subset of MEA; luxury longevity channel"},
-        {"Region":"Thailand",      "Stage":"Emerging",      "Segment":"Medical Tourism",      "Reg Risk":"Low-Med","CAGR":37,"OOP":True, "2024 ($M)":3,   "2030 ($M)":20,  "Note":"Medical tourism hub; Thai FDA modernising 2025"},
-        {"Region":"Australia",     "Stage":"Established",   "Segment":"Medical Regen",        "Reg Risk":"High",   "CAGR":28,"OOP":False,"2024 ($M)":2,   "2030 ($M)":9,   "Note":"TGA-restricted; regenerative protocols only"},
+        {"Region":"Europe",         "Stage":"Established",   "Segment":"Aesthetic/Wellness",  "Reg Risk":"Medium","CAGR":29,"OOP":True, "2024 ($M)":22, "2030 ($M)":105},
+        {"Region":"Latin America",  "Stage":"Growing",       "Segment":"Medical Tourism",      "Reg Risk":"Medium","CAGR":31,"OOP":True, "2024 ($M)":18, "2030 ($M)":90},
+        {"Region":"Southeast Asia", "Stage":"Emerging",      "Segment":"K-Beauty/Aesthetic",   "Reg Risk":"Low",   "CAGR":37,"OOP":True, "2024 ($M)":14, "2030 ($M)":95},
+        {"Region":"UAE/GCC",        "Stage":"Niche/Premium", "Segment":"Longevity/Luxury",     "Reg Risk":"Low-Med","CAGR":36,"OOP":True, "2024 ($M)":12, "2030 ($M)":75},
+        {"Region":"Thailand",       "Stage":"Emerging",      "Segment":"Medical Tourism",      "Reg Risk":"Low-Med","CAGR":37,"OOP":True, "2024 ($M)":6,  "2030 ($M)":40},
+        {"Region":"Australia",      "Stage":"Established",   "Segment":"Medical Regen",        "Reg Risk":"High",  "CAGR":33,"OOP":False,"2024 ($M)":5,  "2030 ($M)":28},
+        {"Region":"North America",  "Stage":"Restricted",    "Segment":"Cosmetic / Research",  "Reg Risk":"High",  "CAGR":31,"OOP":False,"2024 ($M)":8.5,"2030 ($M)":43},
     ])
 
     risk_order = {"Low":1,"Low-Med":2,"Medium":3,"High":4}
@@ -358,19 +299,18 @@ with tabs[1]:
         size="2030 ($M)",
         color="Stage",
         text="Region",
-        hover_data={"2024 ($M)":True,"2030 ($M)":True,"Segment":True,"Reg Risk":True,"CAGR":True,"Note":True},
-        color_discrete_sequence=["#1e3a5f","#2e6da4","#4a90d9","#7ec8e3","#e05c2a","#f0a07a","#c62828"],
-        size_max=70,
-        title="Bubble size = 2030 market forecast ($M) — North America correctly shown as largest market",
+        hover_data={"2024 ($M)":True,"2030 ($M)":True,"Segment":True,"Reg Risk":True,"CAGR":True},
+        color_discrete_sequence=["#1e3a5f","#2e6da4","#4a90d9","#7ec8e3","#e05c2a","#f0a07a"],
+        size_max=65,
+        title="Bubble size = 2030 market forecast ($M)",
     )
     fig_bubble.update_traces(textposition="top center")
     fig_bubble.update_layout(
-        height=480, xaxis_title="Estimated CAGR (%)", yaxis_title="Regulatory Barrier",
+        height=460, xaxis_title="Estimated CAGR (%)", yaxis_title="Regulatory Barrier",
         yaxis=dict(categoryorder="array", categoryarray=["High","Medium","Low-Med","Low"]),
-        margin=dict(t=50, b=20),
+        margin=dict(t=40, b=20),
     )
     st.plotly_chart(fig_bubble, use_container_width=True)
-    st.caption("⚠️ Note: North America is the largest market by size but most restricted by regulation. Best accessible entry points remain SEA, LATAM, UAE, and Thailand.")
 
     # ── Country detail tables ────────────────────────────────────
     col1, col2 = st.columns(2)
@@ -390,19 +330,10 @@ with tabs[1]:
 
         st.markdown('<div class="section-header">US & Australia Detail</div>', unsafe_allow_html=True)
         us_au_df = pd.DataFrame([
-            {"Territory":"USA — Florida",  "Stage":"State-permissive","Channel":"MedSpa + elective physician use","Key Regulation":"FL Statute §456.47 — informed consent required; structured elective pathway","Entry":"Direct-to-clinic cosmetic; FL medspa market $1.2B (2024) → $2.5B (2034)"},
-            {"Territory":"USA — Nevada",   "Stage":"State-permissive","Channel":"Anti-aging / performance protocols","Key Regulation":"SB128 + AB148 — licensed physicians may perform non-FDA-approved cell therapies","Entry":"Las Vegas destination clinic model; positioned as performance/longevity enhancement"},
-            {"Territory":"USA — Other",    "Stage":"Restricted",      "Channel":"Cosmetic topical only",           "Key Regulation":"Federal FDA — 12+ warning letters; IV/therapeutic channel closed","Entry":"OEM white-label to medspas; CDMO supply to clinical sponsors only"},
-            {"Territory":"Australia",      "Stage":"High TGA",        "Channel":"TGA-registered clinics",          "Key Regulation":"PBAC ATMPs only","Entry":"Biogenix-style TGA-compliant partnership model"},
+            {"Territory":"USA",       "Stage":"Restricted", "Channel":"Cosmetic topical only",  "Key Risk":"12+ FDA warning letters", "Entry":"Aesthetic/CDMO supply only"},
+            {"Territory":"Australia", "Stage":"High TGA",   "Channel":"TGA-registered clinics", "Key Risk":"PBAC ATMPs only",         "Entry":"Biogenix partnership model"},
         ])
         st.dataframe(us_au_df, hide_index=True, use_container_width=True)
-        st.markdown(
-            '<div class="signal-card">🇺🇸 <strong>Florida opportunity:</strong> South Florida (Miami-Dade, Broward, Palm Beach) medspa market '
-            "estimated at <strong>$199.51M in 2024 → $1.09B by 2033</strong> at 20.69% CAGR. "
-            "Florida Statute §456.47 creates a structured state-monitored pathway for elective physician use — "
-            "the most actionable US sub-market for exosome product entry today.</div>",
-            unsafe_allow_html=True,
-        )
 
     with col2:
         st.markdown('<div class="section-header">Asia-Pacific, LATAM & ME Detail</div>', unsafe_allow_html=True)
@@ -417,22 +348,6 @@ with tabs[1]:
             {"Territory":"UAE/GCC",     "Region":"ME",    "Maturity":"Premium",  "Note":"Luxury longevity; DUBIMED 40yr network"},
         ])
         st.dataframe(apac_df, hide_index=True, use_container_width=True)
-
-        st.markdown('<div class="section-header">🆕 Central & Eastern Europe (CEE) — Emerging Hub</div>', unsafe_allow_html=True)
-        cee_df = pd.DataFrame([
-            {"Country":"Romania",        "Market Size (2024)":"$300.9M cosmetic surgery", "2032 Forecast":"$589.7M", "CAGR":"~8%",   "Key Driver":"High demand corrective treatments; medical tourism from W. Europe","Session Price":"~$400–800"},
-            {"Country":"Poland",         "Market Size (2024)":"$4.8M est. (aesthetic med)","2030 Forecast":"$14.5M", "CAGR":"~20%",  "Key Driver":"Regional distribution hub; LaserMe + ASCE+ protocol active","Session Price":"~$500 (2,000 PLN)"},
-            {"Country":"Czech Republic", "Market Size (2024)":"$2.1M est. (bioregen)",    "2033 Forecast":"$6.8M",  "CAGR":"~16%",  "Key Driver":"Clinical expansion in Prague; tech-forward clinic network","Session Price":"~$320 (7,500 CZK)"},
-        ])
-        st.dataframe(cee_df, hide_index=True, use_container_width=True)
-        st.markdown(
-            '<div class="signal-card">🌍 <strong>CEE Strategic Value:</strong> Exosome injectables are the fastest-growing '
-            "segment in the European bioregenerative aesthetic market through 2033 (CAGR 10.1%). "
-            "CEE session prices ($320–800) vs US ($4,900 average in Miami/Las Vegas) make CEE a high-volume, "
-            "lower-margin channel — ideal for driving distributor stocking and brand establishment before entering W. Europe at premium pricing. "
-            "Target distributors: Teoxane Polska (Poland/CEE) already active in EPICEXOSOME distribution.</div>",
-            unsafe_allow_html=True,
-        )
 
         st.markdown('<div class="section-header">End User Profiles</div>', unsafe_allow_html=True)
         eu_df = pd.DataFrame([
@@ -459,10 +374,7 @@ with tabs[2]:
         {"Distributor":"Croma-Pharma",         "Region":"Europe",   "Territory":"Austria/DACH",    "Brands":"Aesthetic Mgmt Partners",      "Approach":"Strategic regional partnerships",      "Priority":"🟢 High",  "Channel":"Aesthetic"},
         {"Distributor":"Teoxane France",       "Region":"Europe",   "Territory":"France",          "Brands":"Teoxane proprietary",          "Approach":"Direct subsidiary model",             "Priority":"🟡 Medium","Channel":"Aesthetic"},
         {"Distributor":"Taumedika S.r.l.",     "Region":"Europe",   "Territory":"Italy",           "Brands":"Karisma Exo Care",             "Approach":"Specialist aesthetic networks",        "Priority":"🟡 Medium","Channel":"Aesthetic"},
-        {"Distributor":"Teoxane Polska",       "Region":"CEE",      "Territory":"Poland/CEE",      "Brands":"EPICEXOSOME",                  "Approach":"Emerging market expansion; LaserMe+ASCE+ protocol", "Priority":"🟢 High",  "Channel":"Aesthetic"},
-        {"Distributor":"LaserMe Clinics",      "Region":"CEE",      "Territory":"Poland",          "Brands":"ASCE+ / multi-brand",          "Approach":"High-volume clinic chain; ~500 USD/session","Priority":"🟢 High", "Channel":"Aesthetic"},
-        {"Distributor":"Prague Bioregen network","Region":"CEE",    "Territory":"Czech Republic",  "Brands":"Local + EU brands",            "Approach":"Clinical expansion; ~320 USD/session",  "Priority":"🟡 Medium","Channel":"Medical/Aesthetic"},
-        {"Distributor":"Romanian aesthetic distributors","Region":"CEE","Territory":"Romania",     "Brands":"EU aesthetic brands",          "Approach":"$300.9M cosmetic surgery market; W.EU medical tourism inflow","Priority":"🟢 High","Channel":"Aesthetic"},
+        {"Distributor":"Teoxane Polska",       "Region":"Europe",   "Territory":"Poland/CEE",      "Brands":"EPICEXOSOME",                  "Approach":"Emerging market expansion",           "Priority":"🟡 Medium","Channel":"Aesthetic"},
         # LATAM
         {"Distributor":"Giostar Mexico",       "Region":"LATAM",    "Territory":"Mexico (Cancun)", "Brands":"Multiple MSC brands",          "Approach":"Medical tourism + ortho",             "Priority":"🟢 High",  "Channel":"Medical/Ortho"},
         {"Distributor":"PRMEDICA",             "Region":"LATAM",    "Territory":"Mexico (Cabos)",  "Brands":"MSC exosomes",                 "Approach":"Inflammatory modulation",             "Priority":"🟡 Medium","Channel":"Medical"},
@@ -611,22 +523,22 @@ with tabs[3]:
     st.markdown('<div class="section-header">Global Regulatory Framework (March 2026)</div>', unsafe_allow_html=True)
 
     reg_df = pd.DataFrame([
-        {"Territory":"USA",         "Body":"FDA",          "Topical/Cosmetic":"Permitted — no claims",       "Soft Indications":"Gray — physician discretion",    "IV/Therapeutic":"IND required — 12+ warning letters","Risk":"🔴 HIGH",    "Conf.":"🟢 80"},
-        {"Territory":"EU",          "Body":"EMA",          "Topical/Cosmetic":"CE-IVD compliant",            "Soft Indications":"Cosmetic grade only",             "IV/Therapeutic":"ATMP required — 0 approved",        "Risk":"🔴 HIGH",    "Conf.":"🟢 80"},
-        {"Territory":"Australia",   "Body":"TGA",          "Topical/Cosmetic":"Cosmetic — limited claims",   "Soft Indications":"TGA-registered only",             "IV/Therapeutic":"ATMP / PBAC risk-sharing",          "Risk":"🔴 HIGH",    "Conf.":"🟢 70"},
-        {"Territory":"Germany",     "Body":"BfArM",        "Topical/Cosmetic":"Cosmetic — active market",    "Soft Indications":"Medical spa channel",             "IV/Therapeutic":"ATMP pathway",                     "Risk":"🟡 MEDIUM",  "Conf.":"🟢 75"},
-        {"Territory":"France",      "Body":"ANSM",         "Topical/Cosmetic":"Cosmetic — active",           "Soft Indications":"Dermatology protocols",           "IV/Therapeutic":"ATMP pathway",                     "Risk":"🟡 MEDIUM",  "Conf.":"🟢 75"},
-        {"Territory":"Switzerland", "Body":"Swissmedic",   "Topical/Cosmetic":"High-value cosmetic",         "Soft Indications":"Longevity clinics (private)",     "IV/Therapeutic":"Clinical registration",            "Risk":"🟡 MEDIUM",  "Conf.":"🟢 70"},
-        {"Territory":"Brazil",      "Body":"ANVISA",       "Topical/Cosmetic":"RDC 949/2024 notification",  "Soft Indications":"IOR required",                    "IV/Therapeutic":"AFE license required",             "Risk":"🟡 MEDIUM",  "Conf.":"🟢 70"},
-        {"Territory":"South Korea", "Body":"MFDS",         "Topical/Cosmetic":"K-beauty cosmetic framework","Soft Indications":"Hospital partnerships",           "IV/Therapeutic":"Clinical approval route",          "Risk":"🟡 MEDIUM",  "Conf.":"🟡 60"},
-        {"Territory":"UAE",         "Body":"MOHAP/DHA",    "Topical/Cosmetic":"CE/FDA-cert device",         "Soft Indications":"Clinic-based IV protocols — active","IV/Therapeutic":"Strict cosmetic procedure standards","Risk":"🟡 MEDIUM","Conf.":"🟡 65"},
-        {"Territory":"Mexico",      "Body":"COFEPRIS",     "Topical/Cosmetic":"Cosmetic compliant",          "Soft Indications":"Physician dispensing — active",   "IV/Therapeutic":"MoU reliance with ANVISA",         "Risk":"🟢 LOW",     "Conf.":"🟢 75"},
-        {"Territory":"Thailand",    "Body":"Thai FDA",     "Topical/Cosmetic":"Cosmetic notif. + post-audit","Soft Indications":"Gray — active physician use",     "IV/Therapeutic":"Drug Act B.E. 2510 — no explicit guideline","Risk":"🟡 LOW-MED","Conf.":"🟢 80"},
-        {"Territory":"Philippines", "Body":"PH FDA",       "Topical/Cosmetic":"✅ Notif. approved Jan 2026", "Soft Indications":"ASEAN compliant",                 "IV/Therapeutic":"Emerging",                         "Risk":"🟢 LOW",     "Conf.":"🟢 80"},
-        {"Territory":"Malaysia",    "Body":"NPRA",         "Topical/Cosmetic":"ASEAN aligned",              "Soft Indications":"cGMP research active",             "IV/Therapeutic":"Early stage",                      "Risk":"🟢 LOW",     "Conf.":"🟢 75"},
-        {"Territory":"Indonesia",   "Body":"BPOM",         "Topical/Cosmetic":"ASEAN cosmetic directive",   "Soft Indications":"Physician training pathway",       "IV/Therapeutic":"BPOM engaged",                     "Risk":"🟢 LOW",     "Conf.":"🟢 70"},
-        {"Territory":"Colombia",    "Body":"INVIMA",       "Topical/Cosmetic":"2025 Regional Reform",       "Soft Indications":"LATAM integration",                "IV/Therapeutic":"Streamlined pathway",              "Risk":"🟢 LOW",     "Conf.":"🟡 60"},
-        {"Territory":"Argentina",   "Body":"ANMAT",        "Topical/Cosmetic":"2025 Deregulation",          "Soft Indications":"Fast-track entry",                 "IV/Therapeutic":"Streamlined",                      "Risk":"🟢 LOW",     "Conf.":"🟡 60"},
+        {"Territory":"USA",         "Body":"FDA",          "Topical/Cosmetic":"Permitted — no claims",       "Soft Indications":"Gray — physician discretion",    "IV/Therapeutic":"IND required — 12+ warning letters","Risk":"🔴 HIGH"},
+        {"Territory":"EU",          "Body":"EMA",          "Topical/Cosmetic":"CE-IVD compliant",            "Soft Indications":"Cosmetic grade only",             "IV/Therapeutic":"ATMP required — 0 approved",        "Risk":"🔴 HIGH"},
+        {"Territory":"Australia",   "Body":"TGA",          "Topical/Cosmetic":"Cosmetic — limited claims",   "Soft Indications":"TGA-registered only",             "IV/Therapeutic":"ATMP / PBAC risk-sharing",          "Risk":"🔴 HIGH"},
+        {"Territory":"Germany",     "Body":"BfArM",        "Topical/Cosmetic":"Cosmetic — active market",    "Soft Indications":"Medical spa channel",             "IV/Therapeutic":"ATMP pathway",                     "Risk":"🟡 MEDIUM"},
+        {"Territory":"France",      "Body":"ANSM",         "Topical/Cosmetic":"Cosmetic — active",           "Soft Indications":"Dermatology protocols",           "IV/Therapeutic":"ATMP pathway",                     "Risk":"🟡 MEDIUM"},
+        {"Territory":"Switzerland", "Body":"Swissmedic",   "Topical/Cosmetic":"High-value cosmetic",         "Soft Indications":"Longevity clinics (private)",     "IV/Therapeutic":"Clinical registration",            "Risk":"🟡 MEDIUM"},
+        {"Territory":"Brazil",      "Body":"ANVISA",       "Topical/Cosmetic":"RDC 949/2024 notification",  "Soft Indications":"IOR required",                    "IV/Therapeutic":"AFE license required",             "Risk":"🟡 MEDIUM"},
+        {"Territory":"South Korea", "Body":"MFDS",         "Topical/Cosmetic":"K-beauty cosmetic framework","Soft Indications":"Hospital partnerships",           "IV/Therapeutic":"Clinical approval route",          "Risk":"🟡 MEDIUM"},
+        {"Territory":"UAE",         "Body":"MOHAP/DHA",    "Topical/Cosmetic":"CE/FDA-cert device",         "Soft Indications":"Clinic-based IV protocols — active","IV/Therapeutic":"Strict cosmetic procedure standards","Risk":"🟡 MEDIUM"},
+        {"Territory":"Mexico",      "Body":"COFEPRIS",     "Topical/Cosmetic":"Cosmetic compliant",          "Soft Indications":"Physician dispensing — active",   "IV/Therapeutic":"MoU reliance with ANVISA",         "Risk":"🟢 LOW"},
+        {"Territory":"Thailand",    "Body":"Thai FDA",     "Topical/Cosmetic":"Cosmetic notification req'd", "Soft Indications":"Gray — active physician use",     "IV/Therapeutic":"Drug Act B.E. 2510 — no explicit guideline","Risk":"🟡 LOW-MED"},
+        {"Territory":"Philippines", "Body":"PH FDA",       "Topical/Cosmetic":"✅ Notif. approved Jan 2026", "Soft Indications":"ASEAN compliant",                 "IV/Therapeutic":"Emerging",                         "Risk":"🟢 LOW"},
+        {"Territory":"Malaysia",    "Body":"NPRA",         "Topical/Cosmetic":"ASEAN aligned",              "Soft Indications":"cGMP research active",             "IV/Therapeutic":"Early stage",                      "Risk":"🟢 LOW"},
+        {"Territory":"Indonesia",   "Body":"BPOM",         "Topical/Cosmetic":"ASEAN cosmetic directive",   "Soft Indications":"Physician training pathway",       "IV/Therapeutic":"BPOM engaged",                     "Risk":"🟢 LOW"},
+        {"Territory":"Colombia",    "Body":"INVIMA",       "Topical/Cosmetic":"2025 Regional Reform",       "Soft Indications":"LATAM integration",                "IV/Therapeutic":"Streamlined pathway",              "Risk":"🟢 LOW"},
+        {"Territory":"Argentina",   "Body":"ANMAT",        "Topical/Cosmetic":"2025 Deregulation",          "Soft Indications":"Fast-track entry",                 "IV/Therapeutic":"Streamlined",                      "Risk":"🟢 LOW"},
     ])
 
     risk_filter = st.multiselect(
@@ -638,7 +550,6 @@ with tabs[3]:
         reg_df[reg_df["Risk"].isin(risk_filter)],
         hide_index=True, use_container_width=True, height=380,
     )
-    st.caption("Conf. = Confidence score 0–100 based on validation against official sources. 🟢 70+ = High (govt/peer-reviewed); 🟡 50–69 = Medium (industry sources); 🔴 <50 = Low (unverified).")
 
     col_r1, col_r2 = st.columns(2)
 
@@ -679,137 +590,23 @@ with tabs[3]:
     )
 
 # ════════════════════════════════════════════════════════════════
-# TAB 5 — PRICING & COGS (v2.2 — Validated & Corrected)
+# TAB 5 — PRICING & COGS
 # ════════════════════════════════════════════════════════════════
 with tabs[4]:
+    subtabs = st.tabs(["💊 OOP Patient Pricing", "📦 Wholesale B2B Benchmarks", "🔬 BM-MSC COGS Breakdown"])
 
-    # ── Validation banner ────────────────────────────────────────
-    st.markdown(
-        '<div class="unverified-card">⚠️ <strong>PRICING VALIDATION NOTE (March 2026):</strong> '
-        "An independent validation report found that the original per-vial price ranges ($280–450 for EU) "
-        "were significantly overstated versus observed retail data ($37–125/vial). The original figures "
-        "reflected per-<em>treatment</em> patient pricing, not per-<em>vial</em> wholesale cost. "
-        "This tab has been restructured to clearly separate these two levels. "
-        "B2B and COGS figures remain <strong>indicative estimates only</strong> — no public data source confirmed them.</div>",
-        unsafe_allow_html=True,
-    )
-    st.markdown("")
-
-    subtabs = st.tabs([
-        "🔬 Per-10B Particle Benchmark",
-        "💊 Per-Treatment OOP (Validated)",
-        "📦 B2B Derived from 10B Data",
-        "🗺️ Market Ceiling Analysis",
-        "🧮 BM-MSC COGS Breakdown",
-    ])
-
-    # ── Sub-tab 1: PER-10B PARTICLE BENCHMARK ────────────────────
+    # ── Sub-tab 1: OOP ───────────────────────────────────────────
     with subtabs[0]:
-        st.markdown('<div class="section-header">Per-10B Particle Price — The Primary Benchmark</div>', unsafe_allow_html=True)
-        st.markdown(
-            '<div class="validated-card">✅ <strong>Why per-10B particles?</strong> '
-            "Vial sizes, particle concentrations, and formats vary widely across products — making raw vial prices "
-            "meaningless for comparison. Normalizing to 10 billion (10B) particles is the only way to compare "
-            "pricing across products, markets, and channels on an equivalent basis. "
-            "All observed prices below come from independent retail and supplier sources.</div>",
-            unsafe_allow_html=True,
-        )
-        st.markdown("")
-
-        # ── Per-10B observed data ─────────────────────────────────
-        p10b_df = pd.DataFrame([
-            {"Product":"EXOMIDE (Jolifill, Germany)",    "Source Type":"Retail",      "Vial Size":"5mL",       "Vial Price":"€115 (~$125)","10B Low":250,"10B High":250,"Confidence":"🟢 High","Source":"Jolifill.de — confirmed"},
-            {"Product":"EXOGEN (HUK Aesthetics, UK)",    "Source Type":"Retail",      "Vial Size":"1mg+6mL",   "Vial Price":"£60 2-vial kit","10B Low":37,"10B High":75,"Confidence":"🟢 High","Source":"HUK Aesthetics — confirmed"},
-            {"Product":"EXOXE Exosomes (50mg, EU/CEE)",  "Source Type":"Retail",      "Vial Size":"50mg",      "Vial Price":"~$85 (80 EUR)","10B Low":60,"10B High":90,"Confidence":"🟢 High","Source":"EU/CEE retail — confirmed"},
-            {"Product":"Selastin Exo Plus (100mg, Poland)","Source Type":"Retail",    "Vial Size":"100mg liquid","Vial Price":"~$50 (46 EUR)","10B Low":35,"10B High":55,"Confidence":"🟢 High","Source":"Poland/CEE retail — confirmed"},
-            {"Product":"EXOJUV (plant-derived)",         "Source Type":"Wholesale",   "Vial Size":"6B/vial",   "Vial Price":"$150–200","10B Low":250,"10B High":333,"Confidence":"🟡 Med","Source":"MedicaDepot wholesale"},
-            {"Product":"EXOBLOOM (Dermax)",              "Source Type":"Wholesale",   "Vial Size":"5B+/vial",  "Vial Price":"$120–180","10B Low":240,"10B High":360,"Confidence":"🟡 Med","Source":"DermaxMed B2B"},
-            {"Product":"ReBellaXO (UC-MSC, R3)",         "Source Type":"Wholesale",   "Vial Size":"15B/cc",    "Vial Price":"$300–450","10B Low":200,"10B High":300,"Confidence":"🟡 Med","Source":"R3 Stem Cell 2024"},
-            {"Product":"Generic BM-MSC (Alibaba B2B)",   "Source Type":"B2B Bulk",    "Vial Size":"1mg≈10–15B","Vial Price":"$180–280/mg","10B Low":150,"10B High":280,"Confidence":"🟡 Med","Source":"Alibaba supplier data 2024–25"},
-            {"Product":"BENEV (ExoCoBio US)",            "Source Type":"Professional","Vial Size":"20–30B est.","Vial Price":"$400–600","10B Low":160,"10B High":250,"Confidence":"🟡 Med","Source":"US professional channel est."},
-        ])
-        p10b_df["10B Mid"] = ((p10b_df["10B Low"] + p10b_df["10B High"]) / 2).astype(int)
-
-        # ── Horizontal range bar chart — per-10B ─────────────────
-        p10b_sorted = p10b_df.sort_values("10B Mid", ascending=True)
-        fig_10b = go.Figure()
-        conf_colors = {"🟢 High":"#3db07a","🟡 Med":"#f0a030"}
-        for _, row in p10b_sorted.iterrows():
-            spread = max(row["10B High"] - row["10B Low"], 1)
-            fig_10b.add_trace(go.Bar(
-                x=[spread], y=[row["Product"].split("(")[0].strip()],
-                base=[row["10B Low"]],
-                orientation="h",
-                marker_color=conf_colors.get(row["Confidence"],"#2e6da4"),
-                text=f'${row["10B Low"]}–${row["10B High"]}',
-                textposition="inside",
-                hovertemplate=(
-                    f"<b>{row['Product']}</b><br>"
-                    f"Per 10B: ${row['10B Low']}–${row['10B High']}<br>"
-                    f"Vial: {row['Vial Price']} ({row['Vial Size']})<br>"
-                    f"Confidence: {row['Confidence']}<br>"
-                    f"Source: {row['Source']}<extra></extra>"
-                ),
-            ))
-
-        # Add market zone annotations
-        fig_10b.add_vrect(x0=150, x1=280, fillcolor="#fffbeb", opacity=0.4,
-                          annotation_text="BM-MSC bulk zone", annotation_position="top left")
-        fig_10b.add_vrect(x0=200, x1=360, fillcolor="#dbeafe", opacity=0.3,
-                          annotation_text="Aesthetic wholesale zone", annotation_position="top right")
-
-        fig_10b.update_layout(
-            height=380, barmode="overlay", showlegend=False,
-            xaxis_title="Price per 10 Billion Particles (USD)",
-            yaxis_title="", margin=dict(t=40, b=10),
-            title="Observed Market Prices per 10B Particles — the only valid cross-product comparison",
-        )
-        st.plotly_chart(fig_10b, use_container_width=True)
-        st.caption("🟢 Green = independently confirmed by retail sources | 🟠 Amber = estimated from supplier/wholesale data")
-        st.markdown("")
-
-        # ── Full data table ───────────────────────────────────────
-        st.markdown('<div class="section-header">Full Per-10B Particle Data Table</div>', unsafe_allow_html=True)
-        display_cols = ["Product","Source Type","Vial Size","Vial Price","10B Low","10B High","10B Mid","Confidence","Source"]
-        st.dataframe(
-            p10b_df[display_cols].assign(**{
-                "10B Low": p10b_df["10B Low"].apply(lambda x: f"${x:,}"),
-                "10B High": p10b_df["10B High"].apply(lambda x: f"${x:,}"),
-                "10B Mid": p10b_df["10B Mid"].apply(lambda x: f"${x:,}"),
-            }),
-            hide_index=True, use_container_width=True,
-        )
-
-        # ── Key takeaways ─────────────────────────────────────────
-        st.markdown("")
-        st.markdown('<div class="section-header">Key Takeaways from Per-10B Benchmark</div>', unsafe_allow_html=True)
-        col_k1, col_k2 = st.columns(2)
-        with col_k1:
-            st.markdown('<div class="validated-card">📊 <strong>Observed market range:</strong> $37–360/10B particles across all product types. The confirmed retail range (EXOMIDE, EXOGEN) spans $37–250. The commercial aesthetic wholesale cluster sits at <strong>$150–333/10B</strong>.</div>', unsafe_allow_html=True)
-            st.markdown('<div class="validated-card">🧬 <strong>BM-MSC positioning:</strong> Generic BM-MSC bulk (Alibaba) prices at $150–280/10B. A branded, GMP-certified BM-MSC product with full CoA should command <strong>$200–350/10B</strong> — justified by clinical literature superiority over plant-derived alternatives ($250–360/10B).</div>', unsafe_allow_html=True)
-        with col_k2:
-            st.markdown('<div class="unverified-card">⚠️ <strong>Research grade ≠ clinical:</strong> ZenBio research-grade BM-MSC EVs cost $4,000–8,000/10B — 10–20x commercial aesthetic pricing. These are not clinical-grade and not relevant to commercial channel positioning.</div>', unsafe_allow_html=True)
-            st.markdown('<div class="signal-card">💡 <strong>Pricing recommendation:</strong> Use $200–350/10B as your target B2B range. This is consistent with observed aesthetics wholesale data, positions above generic bulk BM-MSC, and below research-grade pricing. It is <em>per-10B-particle normalized</em> — convert to per-vial price by multiplying by your vial particle count.</div>', unsafe_allow_html=True)
-
-    # ── Sub-tab 2: PER-TREATMENT OOP ─────────────────────────────
-    with subtabs[1]:
-        st.markdown('<div class="section-header">Per-Treatment Patient OOP Pricing by Indication</div>', unsafe_allow_html=True)
-        st.markdown(
-            '<div class="validated-card">✅ <strong>Confidence: HIGH</strong> — Per-treatment prices confirmed by '
-            "independent clinic sources: Bookimed (Mexico $3,000–5,000/treatment; Thailand $2,000–4,000), "
-            "R3 Stem Cell Mexico (150B exosomes for $3,950), BioInformant USA ($3,500–6,500). "
-            "These include multiple vials + procedure + consultation fees.</div>",
-            unsafe_allow_html=True,
-        )
-        st.markdown("")
+        st.markdown('<div class="section-header">OOP Pricing by Indication — Final Patient (2026)</div>', unsafe_allow_html=True)
+        st.caption("Dose normalized to 10B particles. Includes clinic markup and procedure fee.")
 
         oop_df = pd.DataFrame([
-            {"Indication":"Facial Skin Rejuvenation",    "Dose/Session":"5–10B",  "Sessions":"3",   "Mat. Cost Clinic":"$50–150",  "OOP Low":400,  "OOP High":900,  "Markets":"EU, SEA, UAE, TH",     "Conf":"🟢 High"},
-            {"Indication":"Hair Restoration",            "Dose/Session":"10–20B", "Sessions":"3–6", "Mat. Cost Clinic":"$100–250", "OOP Low":900,  "OOP High":2300, "Markets":"UAE, US, EU, TH",       "Conf":"🟢 High"},
-            {"Indication":"Wound Healing / Scar",        "Dose/Session":"10–30B", "Sessions":"1–3", "Mat. Cost Clinic":"$150–400", "OOP Low":500,  "OOP High":2000, "Markets":"MX, TH, SEA, AU",       "Conf":"🟡 Med"},
-            {"Indication":"Joint Pain / Osteoarthritis", "Dose/Session":"30–50B", "Sessions":"1–2", "Mat. Cost Clinic":"$350–700", "OOP Low":1500, "OOP High":3500, "Markets":"MX, UAE, TH, SEA",      "Conf":"🟢 High"},
-            {"Indication":"Systemic IV Longevity",       "Dose/Session":"50–100B","Sessions":"2–4", "Mat. Cost Clinic":"$700–1,500","OOP Low":3750, "OOP High":5500,"Markets":"UAE, AU, TH (premium)", "Conf":"🟢 High"},
-            {"Indication":"Post-Procedure Recovery",     "Dose/Session":"5B",     "Sessions":"1",   "Mat. Cost Clinic":"$40–100",  "OOP Low":150,  "OOP High":400,  "Markets":"EU, SEA, US, TH",       "Conf":"🟡 Med"},
+            {"Indication":"Facial Skin Rejuvenation",    "Dose/Session":"5–10B",  "Sessions":"3",   "Mat. Cost to Clinic":"$50–150",  "OOP Low":400,  "OOP High":900,  "Markets":"EU, SEA, UAE, TH"},
+            {"Indication":"Hair Restoration",            "Dose/Session":"10–20B", "Sessions":"3–6", "Mat. Cost to Clinic":"$100–250", "OOP Low":900,  "OOP High":2300, "Markets":"UAE, US, EU, TH"},
+            {"Indication":"Wound Healing / Scar",        "Dose/Session":"10–30B", "Sessions":"1–3", "Mat. Cost to Clinic":"$150–400", "OOP Low":500,  "OOP High":2000, "Markets":"MX, TH, SEA, AU"},
+            {"Indication":"Joint Pain / Osteoarthritis", "Dose/Session":"30–50B", "Sessions":"1–2", "Mat. Cost to Clinic":"$350–700", "OOP Low":1500, "OOP High":3500, "Markets":"MX, UAE, TH, SEA"},
+            {"Indication":"Systemic IV Longevity",       "Dose/Session":"50–100B","Sessions":"2–4", "Mat. Cost to Clinic":"$700–1500","OOP Low":3750, "OOP High":5500, "Markets":"UAE, AU, TH (premium)"},
+            {"Indication":"Post-Procedure Recovery",     "Dose/Session":"5B",     "Sessions":"1",   "Mat. Cost to Clinic":"$40–100",  "OOP Low":150,  "OOP High":400,  "Markets":"EU, SEA, US, TH"},
         ])
         oop_df["OOP Mid"] = ((oop_df["OOP Low"] + oop_df["OOP High"]) / 2).astype(int)
 
@@ -822,229 +619,93 @@ with tabs[4]:
                 marker_color=colors[i % len(colors)],
                 text=f'${row["OOP Low"]:,}–${row["OOP High"]:,}',
                 textposition="inside",
-                hovertemplate=f"<b>{row['Indication']}</b><br>${row['OOP Low']:,}–${row['OOP High']:,}<br>Markets: {row['Markets']}<br>Confidence: {row['Conf']}<extra></extra>",
+                hovertemplate=f"<b>{row['Indication']}</b><br>Range: ${row['OOP Low']:,}–${row['OOP High']:,}<br>Markets: {row['Markets']}<extra></extra>",
             ))
         fig_oop.update_layout(
             showlegend=False, height=400, barmode="stack",
             yaxis_title="OOP Price to Patient (USD)",
+            xaxis_title="",
             xaxis_tickangle=-20,
-            title="Patient OOP Price Range by Indication (full treatment course)",
+            title="Patient OOP Price Range by Indication",
         )
         st.plotly_chart(fig_oop, use_container_width=True)
         st.dataframe(
-            oop_df[["Indication","Dose/Session","Sessions","Mat. Cost Clinic","OOP Low","OOP High","Markets","Conf"]]
+            oop_df[["Indication","Dose/Session","Sessions","Mat. Cost to Clinic","OOP Low","OOP High","Markets"]]
             .assign(**{"OOP Low": oop_df["OOP Low"].apply(lambda x: f"${x:,}"),
                        "OOP High": oop_df["OOP High"].apply(lambda x: f"${x:,}")}),
             hide_index=True, use_container_width=True,
         )
-        st.caption("Sources: Bookimed clinic data (Mexico, Thailand); R3 Stem Cell Mexico pricing; BioInformant US market research; EDEN Aesthetics Dubai protocol data.")
-        st.markdown("")
 
-        # ── US vs CEE OOP comparison ──────────────────────────────
-        st.markdown('<div class="section-header">🆕 OOP Price Comparison — US (FL/NV) vs CEE (Poland/Prague)</div>', unsafe_allow_html=True)
-        st.markdown(
-            '<div class="validated-card">✅ CEE prices confirmed from clinic sources: Poland LaserMe+ASCE+ ~2,000 PLN (~$500/session); '
-            "Prague skin therapy ~7,500 CZK (~$320/session). US averages: Miami/Las Vegas single session ~$4,900; comprehensive plan up to $15,000.</div>",
-            unsafe_allow_html=True,
-        )
-        cee_oop = pd.DataFrame([
-            {"Indication":"Facial Skin Rejuvenation","US (FL/NV) Low":400, "US (FL/NV) High":900, "CEE (PL/CZ) Low":150,"CEE (PL/CZ) High":300},
-            {"Indication":"Hair Restoration",        "US (FL/NV) Low":900, "US (FL/NV) High":2300,"CEE (PL/CZ) Low":400,"CEE (PL/CZ) High":650},
-            {"Indication":"Joint Pain / Ortho",      "US (FL/NV) Low":1500,"US (FL/NV) High":3500,"CEE (PL/CZ) Low":600,"CEE (PL/CZ) High":1200},
-            {"Indication":"Longevity IV Drip",       "US (FL/NV) Low":3750,"US (FL/NV) High":5500,"CEE (PL/CZ) Low":1200,"CEE (PL/CZ) High":2500},
+    # ── Sub-tab 2: Wholesale B2B ─────────────────────────────────
+    with subtabs[1]:
+        st.markdown('<div class="section-header">Observed Wholesale B2B Prices (per 10B particles, USD)</div>', unsafe_allow_html=True)
+        st.caption("Particle-normalized for cross-product comparison.")
+
+        b2b_obs_df = pd.DataFrame([
+            {"Product":"EXOJUV (plant-derived)",     "Particles":"6B/vial",    "Format":"Lyophilized","Wholesale":"$150–200/vial", "Per 10B":"$250–333", "Notes":"MedicaDepot wholesale"},
+            {"Product":"EXOBLOOM (Dermax)",          "Particles":"5B+/vial",   "Format":"Lyophilized","Wholesale":"$120–180/vial", "Per 10B":"$240–360", "Notes":"DermaxMed B2B"},
+            {"Product":"ReBellaXO (UC-MSC)",         "Particles":"15B/cc",     "Format":"Liquid 1cc", "Wholesale":"$300–450/vial", "Per 10B":"$200–300", "Notes":"R3 Stem Cell / Regen Suppliers 2024"},
+            {"Product":"EXOXE (Jolifill, Germany)",  "Particles":"10–20B est.","Format":"Lyophilized","Wholesale":"$300–500/vial", "Per 10B":"$200–350", "Notes":"Jolifill professional pricing"},
+            {"Product":"Generic BM-MSC (Alibaba B2B)","Particles":"1mg≈10–15B","Format":"Bulk/frozen","Wholesale":"$180–280/mg",  "Per 10B":"$150–280", "Notes":"B2B supplier comparison 2024–25"},
+            {"Product":"BENEV (ExoCoBio US)",        "Particles":"20–30B est.","Format":"Lyophilized","Wholesale":"$400–600/vial", "Per 10B":"$160–250", "Notes":"US professional channel estimate"},
+            {"Product":"Research BM-MSC EVs (ZenBio)","Particles":">1B/vial",  "Format":"Frozen",     "Wholesale":"$400–800/vial", "Per 10B":"$4,000–8,000","Notes":"⚠️ Research grade — NOT clinical"},
         ])
-        cee_oop["US Mid"]  = (cee_oop["US (FL/NV) Low"]  + cee_oop["US (FL/NV) High"])  / 2
-        cee_oop["CEE Mid"] = (cee_oop["CEE (PL/CZ) Low"] + cee_oop["CEE (PL/CZ) High"]) / 2
+        st.dataframe(b2b_obs_df, hide_index=True, use_container_width=True)
 
-        fig_cee = go.Figure()
-        for indication, us_mid, cee_mid in zip(cee_oop["Indication"], cee_oop["US Mid"], cee_oop["CEE Mid"]):
-            fig_cee.add_trace(go.Bar(name=f"US — {indication}", x=["US (FL/NV)"], y=[us_mid],
-                marker_color="#1e3a5f", showlegend=False,
-                text=f"${int(us_mid):,}", textposition="outside"))
-            fig_cee.add_trace(go.Bar(name=f"CEE — {indication}", x=["CEE (PL/CZ)"], y=[cee_mid],
-                marker_color="#7ec8e3", showlegend=False,
-                text=f"${int(cee_mid):,}", textposition="outside"))
+        st.markdown('<div class="section-header">Recommended BM-MSC Pricing Tiers</div>', unsafe_allow_html=True)
+        tier_df = pd.DataFrame([
+            {"Tier":"Premium Ortho/Medical", "Channel":"Physician clinics, ortho", "Format":"Lyo 10–30B","B2B Price/10B":"$350–500","Margin":"60–70%","Rationale":"BM-MSC deep clinical lit; premium over UC-MSC"},
+            {"Tier":"Aesthetic/Wellness",    "Channel":"Med spas, dermatologists","Format":"Lyo 5–15B", "B2B Price/10B":"$200–320","Margin":"55–65%","Rationale":"Competitive with UC-MSC; source purity positioning"},
+            {"Tier":"Distributor/Wholesale", "Channel":"Regional distributors (min 50-vial)","Format":"Bulk lyo","B2B Price/10B":"$150–220","Margin":"45–55%","Rationale":"Enables distributor 30–50% markup"},
+            {"Tier":"CDMO / Bulk",           "Channel":"Biotech/pharma for trials","Format":"GMP bulk lyo/frozen","B2B Price/10B":"$120–180","Margin":"35–50%","Rationale":"Long-term volume contracts"},
+        ])
+        st.dataframe(tier_df, hide_index=True, use_container_width=True)
 
-        # Cleaner grouped bar
-        fig_cee2 = px.bar(
-            cee_oop.melt(id_vars="Indication", value_vars=["US Mid","CEE Mid"],
-                         var_name="Market", value_name="OOP ($)"),
-            x="Indication", y="OOP ($)", color="Market", barmode="group",
-            color_discrete_map={"US Mid":"#1e3a5f","CEE Mid":"#7ec8e3"},
-            text_auto=",.0f",
-            title="OOP Patient Price: US (Florida/Nevada) vs CEE (Poland/Czech Republic)",
-        )
-        fig_cee2.update_traces(textposition="outside")
-        fig_cee2.update_layout(height=360, margin=dict(t=50,b=10), xaxis_tickangle=-15,
-                               yaxis_title="OOP Price (USD)", legend_title="Market")
-        st.plotly_chart(fig_cee2, use_container_width=True)
-        st.caption("CEE pricing represents ~30–50% discount vs US. High-volume CEE channel compensates for lower per-session margin with throughput from W. European medical tourists.")
-
-    # ── Sub-tab 3: B2B DERIVED FROM 10B DATA ─────────────────────
-    with subtabs[2]:
-        st.markdown('<div class="section-header">B2B Channel Pricing — Derived from Per-10B Benchmark</div>', unsafe_allow_html=True)
-        st.markdown(
-            '<div class="validated-card">✅ <strong>Approach:</strong> Rather than using unverified margin estimates, '
-            "this table derives B2B price targets directly from the observed per-10B particle benchmark data. "
-            "A distributor will accept a price if it allows them to apply a 30–50% markup and remain competitive "
-            "against the observed market range of <strong>$150–360/10B</strong>. "
-            "Convert to per-vial pricing by multiplying by your product's particle count per vial.</div>",
-            unsafe_allow_html=True,
-        )
-        st.markdown("")
-
-        # ── Per-10B to per-vial calculator ────────────────────────
-        st.markdown('<div class="section-header">Per-Vial Price Calculator — Enter Your Particle Count</div>', unsafe_allow_html=True)
-        col_calc1, col_calc2 = st.columns([1, 2])
-        with col_calc1:
-            particles_per_vial = st.number_input(
-                "Particles per vial (Billions)",
-                min_value=1, max_value=200, value=10, step=1,
-                help="Enter how many billion particles your vial contains per NTA measurement"
-            )
-            price_per_10b = st.slider(
-                "Your target price per 10B particles (USD)",
-                min_value=50, max_value=500, value=220, step=10,
-            )
-            calc_vial_price = (price_per_10b / 10) * particles_per_vial
-            st.markdown(
-                f'<div class="validated-card">💰 <strong>Your per-vial price:</strong><br>'
-                f'<span style="font-size:1.6rem;font-weight:700;color:#1e3a5f;">${calc_vial_price:,.0f}</span><br>'
-                f'<span style="font-size:.85rem;">({particles_per_vial}B particles × ${price_per_10b}/10B)</span></div>',
-                unsafe_allow_html=True,
-            )
-
-        with col_calc2:
-            # ── B2B tier table using per-10B as anchor ────────────
-            tier_df = pd.DataFrame([
-                {"Channel Tier":"Premium Ortho/Medical","Vial Format":"Lyo 10–30B","Target per 10B":"$220–350","Derived from":"Upper range BM-MSC bulk + clinical lit premium","Max to Distributor":"$165–265/10B","Distributor Markup":"~30%","Conf":"🟡 Derived"},
-                {"Channel Tier":"Aesthetic/Wellness",   "Vial Format":"Lyo 5–15B", "Target per 10B":"$180–280","Derived from":"Mid-range aesthetic wholesale observed ($200–333/10B)","Max to Distributor":"$130–210/10B","Distributor Markup":"~30%","Conf":"🟡 Derived"},
-                {"Channel Tier":"Distributor/Wholesale","Vial Format":"Bulk lyo",   "Target per 10B":"$150–220","Derived from":"Lower observed aesthetic range; Alibaba B2B anchor ($150–280/10B)","Max to Distributor":"$110–165/10B","Distributor Markup":"~30%","Conf":"🟡 Derived"},
-                {"Channel Tier":"CDMO / Bulk",          "Vial Format":"GMP lyo/frozen","Target per 10B":"$120–160","Derived from":"Below Alibaba B2B floor with GMP premium","Max to Distributor":"$90–120/10B","Distributor Markup":"~25%","Conf":"🟡 Derived"},
-            ])
-            st.dataframe(tier_df, hide_index=True, use_container_width=True)
-            st.caption("'Max to Distributor' = price you can charge distributor and still allow them ~30% markup to reach observed market prices.")
-
-        # ── Per-10B competitive positioning chart ─────────────────
-        st.markdown('<div class="section-header">BM-MSC Positioning vs Observed Market per 10B Particles</div>', unsafe_allow_html=True)
-
-        pos_df = pd.DataFrame({
-            "Product/Tier": [
-                "EXOGEN (UK retail, confirmed)",
-                "Generic BM-MSC bulk (Alibaba)",
-                "BENEV / ExoCoBio (US)",
-                "ReBellaXO UC-MSC (R3)",
-                "⭐ BM-MSC Aesthetic/Wellness target",
-                "EXOMIDE (EU retail, confirmed)",
-                "⭐ BM-MSC Premium Ortho target",
-                "EXOJUV plant-derived",
-                "EXOBLOOM plant-derived",
-            ],
-            "Low":  [37,  150, 160, 200, 180, 250, 220, 250, 240],
-            "High": [75,  280, 250, 300, 280, 250, 350, 333, 360],
-            "Type": ["Confirmed","Observed","Observed","Observed","BM-MSC Target","Confirmed","BM-MSC Target","Observed","Observed"],
+        # ── Waterfall chart ──────────────────────────────────────
+        wf_df = pd.DataFrame({
+            "Tier":   ["Premium Ortho/Medical","Aesthetic/Wellness","Distributor/Wholesale","CDMO / Bulk"],
+            "Low":    [350, 200, 150, 120],
+            "High":   [500, 320, 220, 180],
         })
-        pos_df["Mid"] = (pos_df["Low"] + pos_df["High"]) / 2
-        pos_df = pos_df.sort_values("Mid", ascending=True)
+        wf_df["Mid"] = (wf_df["Low"] + wf_df["High"]) / 2
 
-        type_colors = {
-            "Confirmed":   "#3db07a",
-            "Observed":    "#2e6da4",
-            "BM-MSC Target":"#e05c2a",
-        }
-        fig_pos = go.Figure()
-        for _, row in pos_df.iterrows():
-            fig_pos.add_trace(go.Bar(
-                x=[row["High"] - row["Low"]],
-                y=[row["Product/Tier"]],
-                base=[row["Low"]],
-                orientation="h",
-                marker_color=type_colors.get(row["Type"],"#7ec8e3"),
-                marker_line=dict(width=2 if "⭐" in row["Product/Tier"] else 0, color="#c62828"),
-                text=f'${int(row["Low"])}–${int(row["High"])}',
+        fig_tier = go.Figure()
+        for i, row in wf_df.iterrows():
+            fig_tier.add_trace(go.Bar(
+                name=row["Tier"], x=[row["Tier"]],
+                y=[row["High"] - row["Low"]], base=[row["Low"]],
+                marker_color=["#1e3a5f","#2e6da4","#7ec8e3","#b3dff0"][i],
+                text=f'${row["Low"]}–${row["High"]}',
                 textposition="inside",
-                hovertemplate=f"<b>{row['Product/Tier']}</b><br>${row['Low']}–${row['High']} per 10B<extra></extra>",
             ))
-        fig_pos.update_layout(
-            height=440, barmode="overlay", showlegend=False,
-            xaxis_title="Price per 10B Particles (USD)",
-            yaxis_title="", margin=dict(t=20, b=10),
-            title="BM-MSC target pricing (⭐ orange) vs observed market (green = confirmed, blue = estimated)",
-        )
-        st.plotly_chart(fig_pos, use_container_width=True)
-        st.caption("⭐ Orange bars = recommended BM-MSC target ranges derived from observed market data. These sit above generic bulk (Alibaba) and align with branded aesthetic products — justified by GMP certification and clinical literature.")
-
-    # ── Sub-tab 4: MARKET CEILING ANALYSIS ───────────────────────
-    with subtabs[3]:
-        st.markdown('<div class="section-header">Distributor Attractiveness Matrix — Market Ceiling Analysis</div>', unsafe_allow_html=True)
-        st.markdown(
-            '<div class="unverified-card">⚠️ End-user price ranges in this table are <strong>indicative estimates</strong> '
-            "based on per-treatment OOP data divided by typical session counts — not confirmed per-vial retail prices. "
-            "B2B ceilings and COGS targets are internal estimates. Use for strategic planning only.</div>",
-            unsafe_allow_html=True,
-        )
-        st.markdown("")
-
-        attr_df = pd.DataFrame([
-            {"Market":"Germany/EU",     "Est. End-User/Vial":"$100–200 (est.)", "Max B2B":"$50–100 (est.)", "COGS Target":"<$30–60",  "Key Pitch":"BM-MSC clinical lit; CD73/CD90 CoA; NTA data","Conf":"🟡 Estimate"},
-            {"Market":"UAE/GCC",        "Est. End-User/Vial":"$180–350 (est.)", "Max B2B":"$90–175 (est.)", "COGS Target":"<$55–100", "Key Pitch":"Longevity angle; high-dose IV protocols",       "Conf":"🟡 Estimate"},
-            {"Market":"Mexico/LATAM",   "Est. End-User/Vial":"$100–200 (est.)", "Max B2B":"$50–100 (est.)", "COGS Target":"<$30–60",  "Key Pitch":"Lyophilized; ANVISA-COFEPRIS MoU compliance",   "Conf":"🟡 Estimate"},
-            {"Market":"Thailand",       "Est. End-User/Vial":"$80–180 (est.)",  "Max B2B":"$40–90 (est.)",  "COGS Target":"<$25–55",  "Key Pitch":"Thai FDA cosmetic notification; ASEAN docs",    "Conf":"🟡 Estimate"},
-            {"Market":"Philippines/SEA","Est. End-User/Vial":"$60–120 (est.)",  "Max B2B":"$30–60 (est.)",  "COGS Target":"<$20–40",  "Key Pitch":"PH FDA notification gateway; ASEAN directive",  "Conf":"🟡 Estimate"},
-            {"Market":"USA (aesthetic)","Est. End-User/Vial":"$150–300 (est.)", "Max B2B":"$75–150 (est.)", "COGS Target":"<$45–90",  "Key Pitch":"CoA CD63/CD81; no therapeutic claims; GMP",     "Conf":"🟡 Estimate"},
-            {"Market":"Australia",      "Est. End-User/Vial":"$180–350 (est.)", "Max B2B":"$90–175 (est.)", "COGS Target":"<$55–100", "Key Pitch":"TGA compliance documentation",                  "Conf":"🟡 Estimate"},
-        ])
-        st.dataframe(attr_df, hide_index=True, use_container_width=True)
-
-        # ── B2B mid-range chart ───────────────────────────────────
-        st.markdown('<div class="section-header">Estimated B2B Price Midpoint by Market (per 10B particles)</div>', unsafe_allow_html=True)
-        b2b_df = pd.DataFrame({
-            "Market": ["Germany/EU","UAE/GCC","USA","Australia","Mexico/LATAM","Thailand","Philippines/SEA"],
-            "Low":    [50,  90, 75, 90, 50, 40, 30],
-            "High":   [100, 175,150,175,100, 90, 60],
-        })
-        b2b_df["Mid"] = (b2b_df["Low"] + b2b_df["High"]) / 2
-        b2b_df = b2b_df.sort_values("Mid", ascending=True)
-
-        fig_b2b = go.Figure()
-        fig_b2b.add_trace(go.Bar(
-            x=b2b_df["Mid"], y=b2b_df["Market"], orientation="h",
-            marker_color="#2e6da4", name="Midpoint B2B (est.)",
-            error_x=dict(type="data", symmetric=False,
-                array=b2b_df["High"] - b2b_df["Mid"],
-                arrayminus=b2b_df["Mid"] - b2b_df["Low"],
-                color="#1e3a5f", thickness=2),
-            text=[f"~${int(v):,}" for v in b2b_df["Mid"]],
-            textposition="outside",
+        fig_tier.add_trace(go.Scatter(
+            x=wf_df["Tier"], y=wf_df["Mid"],
+            mode="lines+markers+text",
+            line=dict(color="#e05c2a", dash="dot", width=2),
+            marker=dict(size=8, color="#e05c2a"),
+            name="Midpoint",
+            text=[f"${int(v)}" for v in wf_df["Mid"]],
+            textposition="top center",
         ))
-        fig_b2b.update_layout(
-            height=300, margin=dict(t=20, b=10),
-            xaxis_title="Estimated B2B Price per 10B-particle vial (USD)",
-            yaxis_title="", showlegend=False,
-            title="⚠️ Indicative estimates only — revised downward from v2.1 based on retail validation",
+        fig_tier.update_layout(
+            showlegend=False, height=340, barmode="stack",
+            yaxis_title="B2B Price per 10B particles (USD)",
+            title="Recommended B2B Price Ranges by Channel Tier",
         )
-        st.plotly_chart(fig_b2b, use_container_width=True)
-        st.caption("Note: These estimates have been revised downward from the original report to better align with observed retail vial prices of $37–125. Original figures of $140–300 reflected per-treatment pricing misclassified as per-vial pricing.")
+        st.plotly_chart(fig_tier, use_container_width=True)
 
-    # ── Sub-tab 5: COGS BREAKDOWN ─────────────────────────────────
-    with subtabs[4]:
+    # ── Sub-tab 3: COGS ──────────────────────────────────────────
+    with subtabs[2]:
         st.markdown('<div class="section-header">BM-MSC Exosome COGS — Component Breakdown (per 10B-particle dose)</div>', unsafe_allow_html=True)
-        st.markdown(
-            '<div class="validated-card">✅ <strong>Confidence: MEDIUM-HIGH</strong> — COGS figures are consistent '
-            "with Astute Analytica Exosome Therapy Market 2035 ($2,500 midpoint for 2026), "
-            "RoosterBio Exosome Production Bioreactor Kits (2025), and Corning/RoosterBio expert roundtable (Feb 2025).</div>",
-            unsafe_allow_html=True,
-        )
-        st.markdown("")
 
         cogs_df = pd.DataFrame([
-            {"Component":"BM-MSC donor procurement",    "2023 Low":800,  "2023 High":1200, "2026 Low":500,  "2026 High":800,  "2030 Low":200, "2030 High":350},
-            {"Component":"Cell expansion media (GMP)",  "2023 Low":600,  "2023 High":900,  "2026 Low":400,  "2026 High":600,  "2030 Low":150, "2030 High":250},
-            {"Component":"Bioreactor operation",        "2023 Low":400,  "2023 High":700,  "2026 Low":250,  "2026 High":400,  "2030 Low":80,  "2030 High":150},
-            {"Component":"Isolation & purification",    "2023 Low":600,  "2023 High":1000, "2026 Low":350,  "2026 High":600,  "2030 Low":100, "2030 High":200},
-            {"Component":"QC & characterization",       "2023 Low":400,  "2023 High":600,  "2026 Low":250,  "2026 High":400,  "2030 Low":80,  "2030 High":150},
-            {"Component":"Lyophilization (optional)",   "2023 Low":200,  "2023 High":400,  "2026 Low":150,  "2026 High":250,  "2030 Low":50,  "2030 High":100},
-            {"Component":"Batch release / regulatory",  "2023 Low":300,  "2023 High":500,  "2026 Low":200,  "2026 High":350,  "2030 Low":80,  "2030 High":150},
+            {"Component":"BM-MSC donor procurement",   "2023 Low":800,  "2023 High":1200, "2026 Low":500,  "2026 High":800,  "2030 Low":200, "2030 High":350},
+            {"Component":"Cell expansion media (GMP)", "2023 Low":600,  "2023 High":900,  "2026 Low":400,  "2026 High":600,  "2030 Low":150, "2030 High":250},
+            {"Component":"Bioreactor operation",       "2023 Low":400,  "2023 High":700,  "2026 Low":250,  "2026 High":400,  "2030 Low":80,  "2030 High":150},
+            {"Component":"Isolation & purification",   "2023 Low":600,  "2023 High":1000, "2026 Low":350,  "2026 High":600,  "2030 Low":100, "2030 High":200},
+            {"Component":"QC & characterization",      "2023 Low":400,  "2023 High":600,  "2026 Low":250,  "2026 High":400,  "2030 Low":80,  "2030 High":150},
+            {"Component":"Lyophilization (optional)",  "2023 Low":200,  "2023 High":400,  "2026 Low":150,  "2026 High":250,  "2030 Low":50,  "2030 High":100},
+            {"Component":"Batch release / regulatory", "2023 Low":300,  "2023 High":500,  "2026 Low":200,  "2026 High":350,  "2030 Low":80,  "2030 High":150},
         ])
 
         year_sel = st.radio("Select year view", ["2023 (Baseline)", "2026 (Current)", "2030 (Target)"], horizontal=True)
@@ -1088,13 +749,13 @@ with tabs[4]:
             st.plotly_chart(fig_cogs_pie, use_container_width=True)
 
         st.markdown(
-            f'<div class="validated-card">📊 <strong>Total COGS range — {year_sel}:</strong> '
+            f'<div class="signal-card">📊 <strong>Total COGS range — {year_sel}:</strong> '
             f'<strong>${total_lo:,} – ${total_hi:,}</strong> per 10B-particle clinical dose. '
-            f'BM-MSC is ~15–25% higher than UC-MSC equivalents due to donor procurement complexity. '
-            f'<span class="conf-high">Confidence: Medium-High — consistent with Astute Analytica & RoosterBio 2025.</span></div>',
+            f'BM-MSC is ~15–25% higher than UC-MSC equivalents due to donor procurement complexity.</div>',
             unsafe_allow_html=True,
         )
 
+        # ── COGS trajectory ──────────────────────────────────────
         st.markdown('<div class="section-header">COGS Trajectory — 2023 to 2030</div>', unsafe_allow_html=True)
         traj_df = pd.DataFrame({
             "Year":  [2023, 2024, 2026, 2028, 2030],
@@ -1105,17 +766,24 @@ with tabs[4]:
         traj_df["Mid"] = (traj_df["Low"] + traj_df["High"]) / 2
 
         fig_traj = go.Figure()
-        fig_traj.add_trace(go.Scatter(x=traj_df["Year"], y=traj_df["High"],
-            fill=None, mode="lines", line_color="#b3dff0", name="COGS High"))
-        fig_traj.add_trace(go.Scatter(x=traj_df["Year"], y=traj_df["Low"],
+        fig_traj.add_trace(go.Scatter(
+            x=traj_df["Year"], y=traj_df["High"],
+            fill=None, mode="lines", line_color="#b3dff0", name="COGS High",
+        ))
+        fig_traj.add_trace(go.Scatter(
+            x=traj_df["Year"], y=traj_df["Low"],
             fill="tonexty", mode="lines", line_color="#7ec8e3",
-            fillcolor="rgba(126,200,227,0.25)", name="COGS Range"))
-        fig_traj.add_trace(go.Scatter(x=traj_df["Year"], y=traj_df["Mid"],
+            fillcolor="rgba(126,200,227,0.25)", name="COGS Range",
+        ))
+        fig_traj.add_trace(go.Scatter(
+            x=traj_df["Year"], y=traj_df["Mid"],
             mode="lines+markers+text",
             line=dict(color="#1e3a5f", width=3),
             marker=dict(size=10, color="#2e6da4"),
             text=[f"${int(v):,}" for v in traj_df["Mid"]],
-            textposition="top center", name="COGS Midpoint"))
+            textposition="top center",
+            name="COGS Midpoint",
+        ))
         fig_traj.update_layout(
             height=320, margin=dict(t=20, b=10),
             xaxis_title="Year", yaxis_title="COGS per 10B-particle dose (USD)",
@@ -1144,26 +812,24 @@ with tabs[5]:
 
     # ── Static baseline (fallback if live data unavailable) ──────
     STATIC_SIGNALS = pd.DataFrame([
-        {"date":"Jan 2026",    "type":"Regulatory",  "event":"Philippine FDA Cosmetic Notification — UnicoCell",           "impact":"ASEAN gateway validated; blueprint for TH, MY, ID",            "sentiment":"🟢 Positive", "territory":"Philippines", "source":"UnicoCell Biomed press release, Jan 2026; CIRS Group — cirs-group.com/en/cosmetics/philippines-amends-asean-cosmetic-directive"},
-        {"date":"May 2025",    "type":"Enforcement", "event":"FDA warning letter — Florida IV exosome clinic",             "impact":"US IV channel high risk; pivot to topical/cosmetic",            "sentiment":"🔴 Risk",     "territory":"USA",          "source":"HealthE1 Medical — healthe1.com; Atlantis Bioscience regulatory roadmap Oct 2025"},
-        {"date":"Late 2025",   "type":"Regulatory",  "event":"ANVISA-COFEPRIS MoU fully operational",                     "impact":"Single approval pathway for Brazil and Mexico",                 "sentiment":"🟢 Positive", "territory":"LATAM",        "source":"DIA Global Forum, Nov 2025 — globalforum.diaglobal.org/issue/november-2025/anvisa-cofepris-strategy-and-vision"},
-        {"date":"Feb 2025",    "type":"Investment",  "event":"ExoLab Italia raises EU5M Series A (plant-derived)",        "impact":"Plant-derived trend in EU; BM-MSC must emphasize superiority", "sentiment":"🟡 Neutral",  "territory":"EU",           "source":"ExoLab Italia press release, Feb 2025 (industry news)"},
-        {"date":"Jan 2025",    "type":"Regulatory",  "event":"Thai FDA drafting new health product import/export policy", "impact":"Favourable regulatory window to enter Thailand now",            "sentiment":"🟢 Positive", "territory":"Thailand",     "source":"NutraIngredients, Jan 2025; ClinRegs Thailand Aug 2025 — clinregs.niaid.nih.gov"},
-        {"date":"Mar 2024",    "type":"Partnership", "event":"Croma-Pharma x Aesthetic Management Partners (EU)",         "impact":"DACH region actively seeking new regenerative brands",          "sentiment":"🟢 Positive", "territory":"EU",           "source":"Croma-Pharma press release, Mar 2024 (industry news)"},
-        {"date":"Ongoing 2025","type":"Enforcement", "event":"FDA: 12+ warning letters total on exosome products",        "impact":"US market = cosmetic channel only for next 3-5 years",          "sentiment":"🔴 Risk",     "territory":"USA",          "source":"Atlantis Bioscience Oct 2025 — FDA warning letter database; FDA Public Safety Notification on Exosome Products"},
-        {"date":"Jul 2023",    "type":"M&A",         "event":"ExoCoBio acquires majority stake in US BENEV",              "impact":"Market consolidating; window to establish brand now",           "sentiment":"🟢 Positive", "territory":"USA",          "source":"ExoCoBio / BENEV press release, Jul 2023 (industry news)"},
-        {"date":"2021",        "type":"Regulatory",  "event":"Thai FDA launches HSA Singapore Reliance Route",            "impact":"Singapore approval fast-tracks SEA/Thailand entry",             "sentiment":"🟢 Positive", "territory":"Thailand/SEA", "source":"HSA Singapore — hsa.gov.sg/cosmetic-products/asean-cosmetic-directive; Asia Actual Thailand guide"},
-        {"date":"Ongoing",     "type":"Structural",  "event":"Lyophilisation segment $50-60M growing to $100M+ by 2030", "impact":"Cold-chain barrier eliminated globally",                        "sentiment":"🟢 Positive", "territory":"Global",       "source":"QY Research — Exosome Lyophilization Global Market Forecast 2026–2032"},
-        {"date":"Mar 2026",    "type":"Correction",  "event":"Geographic market data corrected — North America confirmed as leading region",  "impact":"NA ~$35M (40-47% share); LATAM and UAE/GCC revised down to ~$5M each", "sentiment":"🟡 Neutral", "territory":"Global", "source":"InsightAce Analytic; Credence Research; Coherent Market Insights; Transparency Market Research; 5+ sources"},
-        {"date":"2024–2025",   "type":"Geographic",  "event":"CEE (Poland, Romania, Czech Republic) emerges as medical tourism hub for exosome aesthetics", "impact":"Romania $300.9M cosmetic surgery; Poland LaserMe+ASCE+ ~$500/session; Prague ~$320/session", "sentiment":"🟢 Positive", "territory":"CEE", "source":"Strategic reconciliation report 2026; Romanian cosmetic surgery market data; Polish aesthetic medicine estimates"},
-        {"date":"Active",      "type":"Regulatory",  "event":"Florida Statute §456.47 — structured elective pathway for non-FDA-approved exosome use", "impact":"FL medspa market $1.2B (2024) → $2.5B (2034); South FL $199.51M → $1.09B by 2033 at 20.69% CAGR", "sentiment":"🟢 Positive", "territory":"USA — Florida", "source":"Strategic reconciliation report 2026; Florida medical spa market data"},
-        {"date":"Active",      "type":"Regulatory",  "event":"Nevada SB128 + AB148 — licensed physicians may perform non-FDA-approved cell therapies", "impact":"Las Vegas established as destination hub for exosome anti-aging / performance protocols", "sentiment":"🟢 Positive", "territory":"USA — Nevada", "source":"Strategic reconciliation report 2026; Nevada state legislation"},
+        {"date":"Jan 2026",    "type":"Regulatory",  "event":"Philippine FDA Cosmetic Notification — UnicoCell",           "impact":"ASEAN gateway validated; blueprint for TH, MY, ID",            "sentiment":"🟢 Positive", "territory":"Philippines"},
+        {"date":"May 2025",    "type":"Enforcement", "event":"FDA warning letter — Florida IV exosome clinic",             "impact":"US IV channel high risk; pivot to topical/cosmetic",            "sentiment":"🔴 Risk",     "territory":"USA"},
+        {"date":"Late 2025",   "type":"Regulatory",  "event":"ANVISA-COFEPRIS MoU fully operational",                     "impact":"Single approval pathway for Brazil and Mexico",                 "sentiment":"🟢 Positive", "territory":"LATAM"},
+        {"date":"Feb 2025",    "type":"Investment",  "event":"ExoLab Italia raises EU5M Series A (plant-derived)",        "impact":"Plant-derived trend in EU; BM-MSC must emphasize superiority", "sentiment":"🟡 Neutral",  "territory":"EU"},
+        {"date":"Jan 2025",    "type":"Regulatory",  "event":"Thai FDA drafting new health product import/export policy", "impact":"Favourable regulatory window to enter Thailand now",            "sentiment":"🟢 Positive", "territory":"Thailand"},
+        {"date":"Mar 2024",    "type":"Partnership", "event":"Croma-Pharma x Aesthetic Management Partners (EU)",         "impact":"DACH region actively seeking new regenerative brands",          "sentiment":"🟢 Positive", "territory":"EU"},
+        {"date":"Ongoing 2025","type":"Enforcement", "event":"FDA: 12+ warning letters total on exosome products",        "impact":"US market = cosmetic channel only for next 3-5 years",          "sentiment":"🔴 Risk",     "territory":"USA"},
+        {"date":"Jul 2023",    "type":"M&A",         "event":"ExoCoBio acquires majority stake in US BENEV",              "impact":"Market consolidating; window to establish brand now",           "sentiment":"🟢 Positive", "territory":"USA"},
+        {"date":"2021",        "type":"Regulatory",  "event":"Thai FDA launches HSA Singapore Reliance Route",            "impact":"Singapore approval fast-tracks SEA/Thailand entry",             "sentiment":"🟢 Positive", "territory":"Thailand/SEA"},
+        {"date":"Ongoing",     "type":"Structural",  "event":"Lyophilisation segment $50-60M growing to $100M+ by 2030", "impact":"Cold-chain barrier eliminated globally",                        "sentiment":"🟢 Positive", "territory":"Global"},
     ])
 
     # ── Merge live + static ───────────────────────────────────────
     if live_signals is not None and not live_signals.empty:
+        # Normalise column names from CSV
         ls = live_signals.copy()
         ls.columns = [c.lower().strip() for c in ls.columns]
+        # Combine live on top, static below, deduplicate on event text
         combined = pd.concat([ls, STATIC_SIGNALS], ignore_index=True)
         combined = combined.drop_duplicates(subset=["event"], keep="first")
         signals  = combined
@@ -1176,7 +842,6 @@ with tabs[5]:
     signals_display = signals.rename(columns={
         "date":"Date","type":"Type","event":"Event",
         "impact":"Impact","sentiment":"Sentiment","territory":"Territory",
-        "source":"Source",
     })
 
     col_sm = st.columns(4)
@@ -1191,12 +856,11 @@ with tabs[5]:
         default=sorted(signals_display["Type"].dropna().unique().tolist()),
     )
 
-    display_cols = [c for c in ["Date","Type","Event","Impact","Sentiment","Territory","Source"] if c in signals_display.columns]
+    display_cols = [c for c in ["Date","Type","Event","Impact","Sentiment","Territory"] if c in signals_display.columns]
     st.dataframe(
         signals_display[signals_display["Type"].isin(type_filter)][display_cols],
-        hide_index=True, use_container_width=True, height=320,
+        hide_index=True, use_container_width=True, height=300,
     )
-    st.caption("Source column shows citation for manually curated baseline signals. Auto-fetched signals include source URL from Google News RSS.")
 
     col_t1, col_t2 = st.columns(2)
     with col_t1:
@@ -1259,10 +923,6 @@ with tabs[6]:
          "Both actively seeking new regenerative brands. DUBIMED: 40-year exclusive relationships; Croma-Pharma: signed new distribution deal Mar 2024."),
         ("MEDIUM",   "signal-card",   "US strategy: cosmetic topical + CDMO only",
          "OEM/white-label for medspas and post-laser protocols. Consider GMP supply to clinical-stage US biotech for Phase I/II trials."),
-        ("MEDIUM",   "signal-card",   "US strategy: Florida + Nevada state-permissive model",
-         "Florida §456.47 provides structured informed-consent pathway for elective physician use. Nevada SB128/AB148 similarly permits licensed physician use. Direct-to-clinic in FL/NV medspas captures the $1.2B Florida medspa market while remaining federally compliant — no therapeutic claims."),
-        ("MEDIUM",   "signal-card",   "CEE (Poland, Romania, Czech Republic) as high-volume entry channel",
-         "Target Teoxane Polska (already EPICEXOSOME distributor) and Romanian aesthetic distributors. CEE session prices ($320–800) vs US ($4,900) drive volume. Romania's $300.9M cosmetic surgery market attracts W. European medical tourists. LaserMe+ASCE+ Poland protocol active at ~$500/session."),
         ("MEDIUM",   "signal-card",   "Thailand: appoint local licensed importer",
          "All imports require locally registered Thai entity holding import license. Foreign manufacturers must appoint local representative."),
     ]
@@ -1303,9 +963,9 @@ with tabs[6]:
 st.markdown("---")
 st.markdown(
     f"""<div style="text-align:center;color:#888;font-size:.78rem;padding:4px 0 12px;">
-    🧬 Global Naive MSC Exosome Market Dashboard &nbsp;·&nbsp; Enhanced, Validated, Geo-Corrected & Strategic Edition {REPORT_DATE} &nbsp;·&nbsp; {DATA_VERSION}
-    &nbsp;·&nbsp; Sources: InsightAce Analytic · Credence Research · CMI · TMR · FMI · DelveInsight · Astute Analytica · RoosterBio · Atlantis Bioscience · Jolifill.de · HUK Aesthetics · Bookimed · DIA Global Forum · FDA.gov · TGA.gov.au · HSA Singapore · PH FDA · Florida Statute §456.47 · Nevada SB128/AB148
-    <br>⚠️ Geographic figures corrected March 2026. Market valuations range from $177M (B2B products) to $58B (total therapy sector incl. procedure fees) — these are not contradictory. Per-vial pricing corrected per independent validation. Regulatory guidance is not legal advice.
+    🧬 Global Naive MSC Exosome Market Dashboard &nbsp;·&nbsp; Enhanced Edition {REPORT_DATE} &nbsp;·&nbsp; {DATA_VERSION}
+    &nbsp;·&nbsp; Sources: DelveInsight · Precedence Research · InsightAce Analytic · Grand View Research · Astute Analytica · RoosterBio · Atlantis Bioscience
+    <br>⚠️ Market figures are summary-level intelligence only. Regulatory guidance is not legal advice. Consult qualified regulatory counsel before commercial launch.
     </div>""",
     unsafe_allow_html=True,
 )
