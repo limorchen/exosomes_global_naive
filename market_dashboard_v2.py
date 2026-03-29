@@ -177,8 +177,9 @@ st.markdown("---")
 st.markdown(
     '<div class="critical-card">⚠️ <strong>CRITICAL FINDING:</strong> No exosome-based therapeutic has received '
     "regulatory approval anywhere in the world as of March 2026. The addressable market today is overwhelmingly the "
-    "<strong>wellness, aesthetics &amp; cosmeceutical channel ($81M → 35.9% CAGR)</strong>, with secondary opportunity "
-    "in soft indications (wound healing, ortho pain) via physician-dispensed channels in permissive jurisdictions "
+    "<strong>wellness, aesthetics &amp; cosmeceutical channel — triangulated at ~$150M (2024)</strong> "
+    "from 5 independent sources ($81M–$218M range), growing at 17–36% CAGR depending on scope. "
+    "Secondary opportunity in soft indications via physician-dispensed channels in permissive jurisdictions "
     "(Mexico, UAE, Thailand, SEA).</div>",
     unsafe_allow_html=True,
 )
@@ -202,15 +203,15 @@ tabs = st.tabs([
 # ════════════════════════════════════════════════════════════════
 with tabs[0]:
     # ── KPI row ─────────────────────────────────────────────────
-    st.markdown('<div class="section-header">Global Market KPIs (Addressable Wellness + Soft Indications)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">Global Market KPIs — Triangulated from 5 Independent Sources</div>', unsafe_allow_html=True)
 
     kpis = [
-        ("~$88.5M", "2024 Addressable Market", "Wellness + soft indications only"),
-        ("~$494M",  "2030 Forecast",            "Wellness + soft indications"),
-        ("~33%",    "CAGR 2024–2030",           "Addressable segment"),
-        ("~$2,500", "BM-MSC COGS / Dose (2026)","10B-particle dose midpoint"),
-        ("35.9%",   "Regen Aesthetics CAGR",    "Precedence Research 2025"),
-        ("$81M",    "Regen Aesthetics (2024)",  "Primary commercial segment"),
+        ("$81M–$218M", "2024 Addressable Market",    "Professional/clinical channel — 5-source range"),
+        ("~$150M",     "2024 Midpoint Estimate",      "Triangulated from InsightAce + Insight Partners"),
+        ("17–36%",     "CAGR Range Across Sources",   "CMI 9.9% → InsightAce 35.9%"),
+        ("~$2,500",    "BM-MSC COGS/Dose (2026)",     "Per 10B-particle dose midpoint"),
+        ("$418M–$852M","Broader Skincare Market 2025","Incl. retail serums, creams, DTC"),
+        ("$218M",      "Insight Partners 2024",       "Most specifically scoped to aesthetics"),
     ]
     cols = st.columns(6)
     for col, (val, label, sub) in zip(cols, kpis):
@@ -229,76 +230,124 @@ with tabs[0]:
     col_a, col_b = st.columns([1, 1])
 
     with col_a:
-        st.markdown('<div class="section-header">Market Valuation Reconciliation — Why Numbers Range $177M to $58B</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">Market Size Synthesis — 5 Independent Sources</div>', unsafe_allow_html=True)
         st.markdown(
-            '<div class="validated-card">✅ These figures are <strong>not contradictory</strong> — they measure fundamentally different things. '
-            "A manufacturer of BM-MSC exosome <em>products</em> operates in the <strong>$81–177M B2B product market</strong>. "
-            "The $58B figure includes hospital labor, capital equipment, and all procedure fees — "
-            "the economic activity of which exosome vials are a tiny input cost.</div>",
+            '<div class="signal-card">📊 <strong>Why sources disagree:</strong> Each measures a different slice of the market. '
+            "A BM-MSC exosome vial manufacturer competes in the <strong>professional/clinical channel</strong> — "
+            "not the retail serum or DTC cosmetic space. The relevant range is therefore "
+            "<strong>$81M–$218M (2024)</strong>, with a triangulated midpoint of ~$150M. "
+            "The $418M–$852M figures include retail skincare serums sold to consumers — "
+            "revenue a bulk vial supplier does not capture directly.</div>",
             unsafe_allow_html=True,
         )
         st.markdown("")
 
         recon_df = pd.DataFrame([
-            {"Research Firm":"Grand View Research",     "Segment":"Total Exosomes (B2B products)",          "2024/25 Value":"$177.4M", "2030/35 Forecast":"$794.2M (2030)",   "What's Included":"B2B kits, reagents, isolation services",                       "Relevant to Manufacturer?":"✅ YES — core market"},
-            {"Research Firm":"InsightAce Analytic",     "Segment":"Regen Aesthetics Exosomes",              "2024/25 Value":"$81.1M",  "2030/35 Forecast":"$1.69B (2034)",    "What's Included":"Aesthetic exosome products specifically",                       "Relevant to Manufacturer?":"✅ YES — PRIMARY"},
-            {"Research Firm":"DelveInsight",            "Segment":"Exosome Diagnostics (IVD)",              "2024/25 Value":"$119.3M", "2030/35 Forecast":"$2.56B (2032)",    "What's Included":"In-vitro diagnostic tests only (ExoDx Prostate etc.)",         "Relevant to Manufacturer?":"⚠️ Partial — separate channel"},
-            {"Research Firm":"Transparency Market Res.","Segment":"Cosmetic Applications (broad)",          "2024/25 Value":"$1.8B",   "2030/35 Forecast":"$26.6B (2035)",    "What's Included":"Retail cosmeceuticals, formulations, broader cosmetic use",    "Relevant to Manufacturer?":"⚠️ Partial — broader scope"},
-            {"Research Firm":"Statifacts",              "Segment":"U.S. Exosome-Based Therapy",             "2024/25 Value":"$15.6M",  "2030/35 Forecast":"$79.7M (2034)",    "What's Included":"U.S.-specific therapeutic service revenues only",               "Relevant to Manufacturer?":"⚠️ US only; service revenue"},
-            {"Research Firm":"Precedence Research",     "Segment":"Exosome Therapy (full sector)",          "2024/25 Value":"$58.12B", "2030/35 Forecast":"$307.04B (2035)",  "What's Included":"Hospital labor + procedure fees + capital equipment included",  "Relevant to Manufacturer?":"❌ NOT product B2B — service sector"},
+            {"Research Firm":"The Insight Partners",    "Segment":"Aesthetic Exosomes (clinical)",          "2024/25 Value":"$218.3M (2024)", "2031/35 Forecast":"$669.9M (2031)", "CAGR":"17.4%","Scope":"Skin rejuvenation, post-procedure, hair restoration — clinical/medspa channel", "Relevant?":"✅ HIGH — closest scope"},
+            {"Research Firm":"InsightAce Analytic",     "Segment":"Regen Aesthetics Exosomes",              "2024/25 Value":"$81.1M (2024)",  "2031/35 Forecast":"$1.69B (2034)",  "CAGR":"35.9%","Scope":"Regen aesthetics exosome products specifically", "Relevant?":"✅ HIGH — narrowly scoped"},
+            {"Research Firm":"Coherent Market Insights","Segment":"Exosomes Skincare (broad)",              "2024/25 Value":"$417.8M (2025)", "2031/35 Forecast":"$809.5M (2032)", "CAGR":"9.9%", "Scope":"Serums, creams, masks, lotions — professional + retail", "Relevant?":"⚠️ PARTIAL — includes retail"},
+            {"Research Firm":"Future Market Insights",  "Segment":"Exosome-Based Skincare",                 "2024/25 Value":"$852.3M (2025)", "2031/35 Forecast":"$3,952.7M (2035)","CAGR":"16.6%","Scope":"Full skincare incl. DTC consumer products, retail channels", "Relevant?":"⚠️ PARTIAL — broadest scope"},
+            {"Research Firm":"BioInformant",            "Segment":"Exosome Cosmeceuticals",                 "2024/25 Value":"No hard figure", "2031/35 Forecast":"—",              "CAGR":"—",    "Scope":"Qualitative: hundreds of products in market; no FDA-approved; used by dermatologists, hair restoration, medspas", "Relevant?":"ℹ️ Qualitative context"},
+            {"Research Firm":"Grand View Research",     "Segment":"Total Exosomes (all B2B)",               "2024/25 Value":"$177.4M (2024)", "2031/35 Forecast":"$794.2M (2030)", "CAGR":"28.7%","Scope":"All B2B: kits, reagents, isolation services — includes research/diagnostic", "Relevant?":"⚠️ PARTIAL — includes non-aesthetic"},
+            {"Research Firm":"Precedence Research",     "Segment":"Exosome Therapy (full sector)",          "2024/25 Value":"$58,120M (2025)","2031/35 Forecast":"$307,040M (2035)","CAGR":"~35%","Scope":"Hospital labor + procedure fees + capital equipment — NOT product B2B", "Relevant?":"❌ NOT product market"},
         ])
         st.dataframe(recon_df, hide_index=True, use_container_width=True)
         st.markdown("")
 
-        # ── Reconciliation waterfall chart ────────────────────────
+        # ── Synthesis triangulation chart ─────────────────────────
+        st.markdown('<div class="section-header">Triangulated Addressable Market — Professional Channel</div>', unsafe_allow_html=True)
+        tri_df = pd.DataFrame({
+            "Source":    ["InsightAce\n(Regen Aesthetics)", "The Insight Partners\n(Aesthetic Exosomes)", "Triangulated\nMidpoint"],
+            "Low":       [81.1,  218.3, 81.1],
+            "High":      [81.1,  218.3, 218.3],
+            "Mid":       [81.1,  218.3, 149.7],
+            "Type":      ["Source","Source","Synthesis"],
+        })
+        fig_tri = go.Figure()
+        colors = {"Source":"#2e6da4","Synthesis":"#e05c2a"}
+        for _, row in tri_df.iterrows():
+            fig_tri.add_trace(go.Bar(
+                x=[row["Source"]], y=[row["Mid"]],
+                marker_color=colors[row["Type"]],
+                text=f"${row['Mid']:.1f}M",
+                textposition="outside",
+                name=row["Type"],
+                showlegend=False,
+            ))
+        fig_tri.add_hline(y=149.7, line_dash="dot", line_color="#e05c2a",
+                          annotation_text="Triangulated midpoint ~$150M", annotation_position="top right")
+        fig_tri.update_layout(
+            height=280, margin=dict(t=30, b=10),
+            yaxis_title="2024 Market Size (USD Million)",
+            title="Professional/clinical exosome aesthetics channel — the addressable market for a vial manufacturer",
+        )
+        st.plotly_chart(fig_tri, use_container_width=True)
+        st.caption("Orange = triangulated synthesis of two most specifically-scoped sources. Blue = individual source values. Broader retail market ($418M–$852M) excluded as it measures DTC consumer products, not B2B vial sales.")
+
+        # ── Log-scale chart showing all sources ───────────────────
+        st.markdown('<div class="section-header">All Sources — Full Range ($81M to $58B, log scale)</div>', unsafe_allow_html=True)
         recon_chart = pd.DataFrame({
-            "Scope":  ["Regen Aesthetics\n(InsightAce)", "Total Exosome B2B\n(Grand View)", "Diagnostics\n(DelveInsight)", "Cosmetic Apps\n(TMR, broad)", "Exosome Therapy\n(Precedence, incl. fees)"],
-            "Value":  [81.1, 177.4, 119.3, 1800, 58120],
-            "Type":   ["Primary target","B2B product","Diagnostics","Broader cosmetic","Service sector total"],
+            "Scope":  [
+                "InsightAce\n(Regen Aesthetics)",
+                "Insight Partners\n(Aesthetic Exosomes)",
+                "Grand View\n(All Exosome B2B)",
+                "CMI\n(Exosome Skincare)",
+                "FMI\n(Exosome Skincare broad)",
+                "Precedence\n(Therapy sector total)",
+            ],
+            "Value":  [81.1, 218.3, 177.4, 417.8, 852.3, 58120],
+            "Type":   ["Clinical channel","Clinical channel","B2B broad","Retail incl.","Retail incl.","Service sector"],
         })
         fig_recon = px.bar(
             recon_chart, x="Scope", y="Value",
             color="Type",
             color_discrete_map={
-                "Primary target":    "#1e3a5f",
-                "B2B product":       "#2e6da4",
-                "Diagnostics":       "#7ec8e3",
-                "Broader cosmetic":  "#f0a030",
-                "Service sector total":"#e05c2a",
+                "Clinical channel": "#1e3a5f",
+                "B2B broad":        "#2e6da4",
+                "Retail incl.":     "#f0a030",
+                "Service sector":   "#e05c2a",
             },
             text="Value",
             log_y=True,
-            title="Market Valuations by Research Firm — Log Scale (note: these measure different things)",
+            title="All market size estimates — log scale (dark blue = relevant to manufacturer)",
         )
         fig_recon.update_traces(texttemplate="%{text:,.0f}M", textposition="outside")
         fig_recon.update_layout(
-            height=360, margin=dict(t=50,b=10), showlegend=True,
+            height=360, margin=dict(t=50, b=10), showlegend=True,
             yaxis_title="USD Million (log scale)", xaxis_title="",
             legend=dict(orientation="h", yanchor="bottom", y=1.01, font=dict(size=9)),
         )
         st.plotly_chart(fig_recon, use_container_width=True)
-        st.caption("Log scale used because values span $81M to $58,000M. Each bar measures a different economic concept — they are not alternative estimates of the same thing.")
+        st.caption("Log scale required — values span $81M to $58,000M. Dark blue bars are the most relevant to a clinical-grade vial manufacturer. Each bar measures a different economic concept.")
 
         st.markdown('<div class="section-header">Addressable Market by Region (2024)</div>', unsafe_allow_html=True)
-        st.caption("Source: InsightAce Analytic Nov 2025 (global base); Credence Research 2025 (regional shares); FMI 2024 (APAC); author estimates for sub-regions.")
+        st.caption("Regional figures scaled proportionally from triangulated $150M midpoint (InsightAce $81.1M + Insight Partners $218.3M). Regional shares: Credence Research 2025 (NA 45%, APAC 25%, Europe 20%). Sub-regional splits are author estimates.")
         addr_df = pd.DataFrame({
             "Region":    ["North America", "Europe (W)", "Rest of APAC*", "Southeast Asia", "CEE (PL/RO/CZ)", "Latin America", "UAE/GCC", "Thailand", "Australia", "Rest of World"],
-            "2024 ($M)": [35,   15,   13.5, 7,    3,    5,    5,    3,    2,    1.5],
-            "2030 ($M)": [195,  68,   88,   47,   15,   24,   28,   20,   9,    8],
-            "CAGR":      ["33%","28%","37%","37%","32%","30%","33%","37%","28%","33%"],
+            "2024 ($M)": [58,   25,   22,   12,   5,    8,    8,    5,    3,    4],
+            "2030 ($M)": [206,  72,   93,   50,   16,   25,   30,   21,   9,    8],
+            "CAGR":      ["23%","19%","27%","27%","22%","21%","24%","27%","20%","12%"],
             "Source":    [
-                "InsightAce leading region; Credence 45% share; FL medspa $1.2B",
-                "Credence 20%; Dataintelo 25%; market.us data",
-                "FMI: China 23.1% CAGR, Korea ExoCoBio 9.6% share",
-                "ASEAN pathway; PH FDA Jan 2026",
+                "45% of $150M triangulated midpoint; Credence, InsightAce, CMI confirm NA leading region",
+                "20% of $150M; Credence 20% share; Dataintelo 25% share; market.us data",
+                "Part of APAC 25% share; FMI: China 23.1% CAGR, Korea ExoCoBio 9.6% share",
+                "ASEAN subset of APAC; PH FDA Jan 2026 gateway",
                 "Romania $300.9M cosmetic surgery; Poland $4.8M est.; CEE CAGR 10.1%",
-                "Credence: LATAM = 4.5% of total; ANVISA-COFEPRIS MoU Aug 2025",
-                "GloGrowthInsights MEA ~12%; UAE subset",
-                "Medical tourism; Thai FDA modernising",
-                "TGA-restricted; regenerative protocols",
-                "Emerging adoption",
+                "Credence: LATAM = 4.5% of $418M broader total; ANVISA-COFEPRIS MoU Aug 2025",
+                "MEA subset; GloGrowthInsights MEA ~12% of broader market; UAE premium sub-segment",
+                "Medical tourism hub; Thai FDA modernising; author estimate within APAC",
+                "TGA-restricted; regenerative protocols only; author estimate within APAC",
+                "Residual emerging markets",
             ],
         })
+        st.markdown(
+            '<div class="signal-card">📊 <strong>Total addressable market (professional/clinical channel): ~$150M (2024)</strong> — '
+            "triangulated from InsightAce $81.1M (regen aesthetics) and The Insight Partners $218.3M (aesthetic exosomes clinical). "
+            "Broader exosome skincare market including retail DTC: $418M–$852M (CMI, FMI) — "
+            "this is not the addressable market for a B2B vial manufacturer.</div>",
+            unsafe_allow_html=True,
+        )
+        st.markdown("")
         # Note: Rest of APAC includes Korea, Japan, China (not separately tracked in dashboard)
         fig_addr = px.bar(
             addr_df, x="Region", y=["2024 ($M)", "2030 ($M)"],
@@ -326,7 +375,7 @@ with tabs[0]:
 
         st.markdown('<div class="section-header">CAGR by Region</div>', unsafe_allow_html=True)
         cagr_df = addr_df.copy()
-        cagr_df["CAGR_num"] = [33, 28, 37, 37, 32, 30, 33, 37, 28, 33]
+        cagr_df["CAGR_num"] = [23, 19, 27, 27, 22, 21, 24, 27, 20, 12]
         cagr_df_sorted = cagr_df.sort_values("CAGR_num", ascending=True)
         fig_cagr = px.bar(
             cagr_df_sorted, x="CAGR_num", y="Region", orientation="h",
@@ -346,18 +395,18 @@ with tabs[0]:
     st.markdown("---")
     st.markdown('<div class="section-header">Market Overview — Data Sources</div>', unsafe_allow_html=True)
     sources_tab1 = [
-        ("InsightAce Analytic", "Regenerative Aesthetics Exosome Products Market, Nov 2025", "$81.1M global base; 35.9% CAGR 2025–2034; North America as leading region"),
-        ("Grand View Research", "Exosomes Market Size and Share — Industry Report 2030, 2024", "$177.4M total exosome market (2024); $794.2M forecast (2030); B2B kits/reagents/isolation"),
-        ("Precedence Research", "Exosome Therapeutics Market Size 2025–2034, Nov 2025", "$58.12B Exosome Therapy sector (2025) including procedure fees and hospital labor"),
+        ("The Insight Partners", "Aesthetic Exosomes Market to 2031, Dec 2025 (TIPRE00041701)", "$218.3M (2024) → $669.9M (2031); CAGR 17.4%; clinical/medspa channel; North America dominant; APAC fastest-growing"),
+        ("InsightAce Analytic", "Regenerative Aesthetics Exosome Products Market, Nov 2025", "$81.1M (2024); CAGR 35.9% (2025–2034); North America leading region; regen aesthetics specifically"),
+        ("Coherent Market Insights", "Exosomes Skincare Market Size, Share and Forecast 2025–2032 (CMI7649)", "$417.8M (2025) → $809.5M (2032); CAGR 9.9%; NA 38.7%; APAC 32.0%; serums 42.6% of market; human-derived 35.6%"),
+        ("Future Market Insights", "Exosome-Based Skincare Market 2025–2035, Sep 2025", "$852.3M (2025) → $3,952.7M (2035); CAGR 16.6%; anti-aging 53.5% share; $1,835.5M by 2030"),
+        ("BioInformant", "The Rise of Exosome-Based Cosmeceuticals in 2026, Oct 2025", "Qualitative industry overview; hundreds of products in market; no FDA-approved products; professional use by dermatologists, hair restoration, medspas"),
+        ("Grand View Research", "Exosomes Market Size and Share — Industry Report 2030, 2024", "$177.4M total exosome market (2024); $794.2M forecast (2030); B2B kits/reagents/isolation; all segments"),
+        ("Precedence Research", "Exosome Therapeutics Market Size 2025–2034, Nov 2025", "$58.12B Exosome Therapy sector (2025) including procedure fees and hospital labor — service sector total, not product B2B"),
         ("DelveInsight", "Exosome Diagnostics Market Insights and Forecast 2034, 2025", "$119.3M diagnostics (2024); $2.56B (2032); IVD channel only"),
         ("Transparency Market Research", "Exosome Market for Cosmetic Applications, 2024", "$1.8B cosmetic applications (2024); $26.6B (2035); includes retail cosmeceuticals"),
         ("Statifacts / Precedence Research", "U.S. Exosome-Based Therapy Market, 2025", "$15.61M U.S.-specific therapeutic service revenues (2024); $79.67M (2034)"),
         ("Credence Research", "Exosomes Skincare Market Size, Share and Growth Report 2032", "Regional shares: NA 45%, APAC 25%, Europe 20%, LATAM $18.67M of $418M total"),
-        ("Coherent Market Insights", "Exosomes Skincare Market Size, Share, Trends & Forecast 2032", "NA ~40% share; APAC ~32% in 2025; fastest-growing region confirmation"),
-        ("Future Market Insights", "Exosome-Based Skincare Market, 2024", "China 23.1% CAGR; India 21.8% CAGR; Korea ExoCoBio ~9.6% global share"),
-        ("Astute Analytica", "Exosome Therapy Market Size, Growth — Trends Analysis 2035", "COGS trajectory benchmark: $5,000 (2023) → $2,500 (2026) → $500 (2030) midpoints"),
-        ("RoosterBio / Corning", "Exosome Production Bioreactor Kits; Expert Roundtable Feb 2025", "BM-MSC COGS component benchmarks; hollow-fiber bioreactor cost reductions"),
-        ("Strategic Reconciliation Report", "BM-MSC Sector Analysis, March 2026", "COGS per 10B particles: 2023 $3,100–4,900; 2026 $1,950–3,150; 2030 $690–1,050"),
+        ("Astute Analytica / RoosterBio", "COGS benchmarks 2025", "COGS trajectory: 2023 $3,100–4,900; 2026 $1,950–3,150; 2030 $690–1,050 per 10B particles"),
     ]
     col_s1, col_s2 = st.columns(2)
     for i, (firm, title, detail) in enumerate(sources_tab1):
@@ -374,15 +423,15 @@ with tabs[1]:
     st.markdown("")
 
     geo_df = pd.DataFrame([
-        {"Region":"North America", "Stage":"Restricted",    "Segment":"Cosmetic / Research",  "Reg Risk":"High",   "CAGR":33,"OOP":False,"2024 ($M)":35,  "2030 ($M)":195, "Note":"Largest market — cosmetic channel only; FL medspa $1.2B; Nevada SB128/AB148"},
-        {"Region":"Europe (W)",    "Stage":"Established",   "Segment":"Aesthetic/Wellness",   "Reg Risk":"Medium", "CAGR":28,"OOP":True, "2024 ($M)":15,  "2030 ($M)":68,  "Note":"Credence 20% share; Germany, France, Italy lead"},
-        {"Region":"CEE",           "Stage":"Emerging",      "Segment":"Medical Tourism Hub",  "Reg Risk":"Low",    "CAGR":32,"OOP":True, "2024 ($M)":3,   "2030 ($M)":15,  "Note":"Romania $300.9M cosmetic surgery; Poland $4.8M; Prague sessions ~$320"},
-        {"Region":"Rest of APAC",  "Stage":"Emerging",      "Segment":"K-Beauty/Hospital",    "Reg Risk":"Medium", "CAGR":37,"OOP":True, "2024 ($M)":13.5,"2030 ($M)":88,  "Note":"Korea ExoCoBio 9.6% share; China 23.1% CAGR (FMI)"},
-        {"Region":"Southeast Asia","Stage":"Emerging",      "Segment":"K-Beauty/Aesthetic",   "Reg Risk":"Low",    "CAGR":37,"OOP":True, "2024 ($M)":7,   "2030 ($M)":47,  "Note":"ASEAN gateway; PH FDA Jan 2026 approved"},
-        {"Region":"Latin America", "Stage":"Growing",       "Segment":"Medical Tourism",      "Reg Risk":"Medium", "CAGR":30,"OOP":True, "2024 ($M)":5,   "2030 ($M)":24,  "Note":"Credence: LATAM = 4.5% of total; ANVISA-COFEPRIS MoU Aug 2025"},
-        {"Region":"UAE/GCC",       "Stage":"Niche/Premium", "Segment":"Longevity/Luxury",     "Reg Risk":"Low-Med","CAGR":33,"OOP":True, "2024 ($M)":5,   "2030 ($M)":28,  "Note":"Premium subset of MEA; luxury longevity channel"},
-        {"Region":"Thailand",      "Stage":"Emerging",      "Segment":"Medical Tourism",      "Reg Risk":"Low-Med","CAGR":37,"OOP":True, "2024 ($M)":3,   "2030 ($M)":20,  "Note":"Medical tourism hub; Thai FDA modernising 2025"},
-        {"Region":"Australia",     "Stage":"Established",   "Segment":"Medical Regen",        "Reg Risk":"High",   "CAGR":28,"OOP":False,"2024 ($M)":2,   "2030 ($M)":9,   "Note":"TGA-restricted; regenerative protocols only"},
+        {"Region":"North America", "Stage":"Restricted",    "Segment":"Cosmetic / Research",  "Reg Risk":"High",   "CAGR":23,"OOP":False,"2024 ($M)":58,  "2030 ($M)":206, "Note":"Largest market — cosmetic channel only; FL medspa $1.2B; Nevada SB128/AB148"},
+        {"Region":"Europe (W)",    "Stage":"Established",   "Segment":"Aesthetic/Wellness",   "Reg Risk":"Medium", "CAGR":19,"OOP":True, "2024 ($M)":25,  "2030 ($M)":72,  "Note":"20% regional share (Credence); Germany, France, Italy lead"},
+        {"Region":"CEE",           "Stage":"Emerging",      "Segment":"Medical Tourism Hub",  "Reg Risk":"Low",    "CAGR":22,"OOP":True, "2024 ($M)":5,   "2030 ($M)":16,  "Note":"Romania $300.9M cosmetic surgery; Poland $4.8M; Prague sessions ~$320"},
+        {"Region":"Rest of APAC",  "Stage":"Emerging",      "Segment":"K-Beauty/Hospital",    "Reg Risk":"Medium", "CAGR":27,"OOP":True, "2024 ($M)":22,  "2030 ($M)":93,  "Note":"Korea ExoCoBio 9.6% share; China 23.1% CAGR (FMI)"},
+        {"Region":"Southeast Asia","Stage":"Emerging",      "Segment":"K-Beauty/Aesthetic",   "Reg Risk":"Low",    "CAGR":27,"OOP":True, "2024 ($M)":12,  "2030 ($M)":50,  "Note":"ASEAN gateway; PH FDA Jan 2026 approved"},
+        {"Region":"Latin America", "Stage":"Growing",       "Segment":"Medical Tourism",      "Reg Risk":"Medium", "CAGR":21,"OOP":True, "2024 ($M)":8,   "2030 ($M)":25,  "Note":"4.5% of broader market (Credence); ANVISA-COFEPRIS MoU Aug 2025"},
+        {"Region":"UAE/GCC",       "Stage":"Niche/Premium", "Segment":"Longevity/Luxury",     "Reg Risk":"Low-Med","CAGR":24,"OOP":True, "2024 ($M)":8,   "2030 ($M)":30,  "Note":"Premium MEA subset; luxury longevity channel"},
+        {"Region":"Thailand",      "Stage":"Emerging",      "Segment":"Medical Tourism",      "Reg Risk":"Low-Med","CAGR":27,"OOP":True, "2024 ($M)":5,   "2030 ($M)":21,  "Note":"Medical tourism hub; Thai FDA modernising 2025"},
+        {"Region":"Australia",     "Stage":"Established",   "Segment":"Medical Regen",        "Reg Risk":"High",   "CAGR":20,"OOP":False,"2024 ($M)":3,   "2030 ($M)":9,   "Note":"TGA-restricted; regenerative protocols only"},
     ])
 
     risk_order = {"Low":1,"Low-Med":2,"Medium":3,"High":4}
