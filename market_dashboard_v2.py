@@ -277,9 +277,9 @@ with tabs[0]:
         fig_tri.add_hline(y=149.7, line_dash="dot", line_color="#e05c2a",
                           annotation_text="Triangulated midpoint ~$150M", annotation_position="top right")
         fig_tri.update_layout(
-            height=280, margin=dict(t=30, b=10),
+            height=300, margin=dict(t=20, b=10),
             yaxis_title="2024 Market Size (USD Million)",
-            title="Professional/clinical exosome aesthetics channel — the addressable market for a vial manufacturer",
+            title=None,
         )
         st.plotly_chart(fig_tri, use_container_width=True)
         st.caption("Orange = triangulated synthesis of two most specifically-scoped sources. Blue = individual source values. Broader retail market ($418M–$852M) excluded as it measures DTC consumer products, not B2B vial sales.")
@@ -313,9 +313,10 @@ with tabs[0]:
         )
         fig_recon.update_traces(texttemplate="%{text:,.0f}M", textposition="outside")
         fig_recon.update_layout(
-            height=360, margin=dict(t=50, b=10), showlegend=True,
+            height=420, margin=dict(t=20, b=120), showlegend=True,
             yaxis_title="USD Million (log scale)", xaxis_title="",
-            legend=dict(orientation="h", yanchor="bottom", y=1.01, font=dict(size=9)),
+            title=None,
+            legend=dict(orientation="h", yanchor="top", y=-0.28, xanchor="center", x=0.5, font=dict(size=9)),
         )
         st.plotly_chart(fig_recon, use_container_width=True)
         st.caption("Log scale required — values span $81M to $58,000M. Dark blue bars are the most relevant to a clinical-grade vial manufacturer. Each bar measures a different economic concept.")
@@ -356,8 +357,9 @@ with tabs[0]:
             title="Addressable Market: 2024 vs 2030 Forecast by Region ($M)",
             text_auto=".1f",
         )
-        fig_addr.update_layout(height=340, margin=dict(t=50, b=10), legend_title="Year",
-                                xaxis_tickangle=-35, yaxis_title="USD Million")
+        fig_addr.update_layout(height=340, margin=dict(t=20, b=10), legend_title="",
+                                xaxis_tickangle=-35, yaxis_title="USD Million",
+                                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
         st.plotly_chart(fig_addr, use_container_width=True)
         st.caption("*Rest of APAC includes South Korea (ExoCoBio ~9.6% global share), Japan, and China (23.1% CAGR per FMI)")
 
@@ -369,8 +371,24 @@ with tabs[0]:
             color_discrete_sequence=["#1e3a5f","#2e6da4","#4a90d9","#6aabdf","#7ec8e3","#a8d5e8","#b3dff0","#e05c2a","#f0a07a","#ffd8c0"],
             hole=0.45,
         )
-        fig_pie.update_traces(textposition="outside", textinfo="percent+label")
-        fig_pie.update_layout(margin=dict(t=10, b=80), showlegend=False, height=380)
+        fig_pie.update_traces(
+            textposition="inside",
+            textinfo="percent",
+            insidetextorientation="radial",
+            pull=[0.03]*10,
+        )
+        fig_pie.update_layout(
+            margin=dict(t=10, l=10, r=160, b=10),
+            showlegend=True,
+            height=480,
+            legend=dict(
+                orientation="v",
+                yanchor="top", y=1.0,
+                xanchor="left", x=1.01,
+                font=dict(size=10),
+                tracegroupgap=2,
+            ),
+        )
         st.plotly_chart(fig_pie, use_container_width=True)
 
         st.markdown('<div class="section-header">CAGR by Region</div>', unsafe_allow_html=True)
@@ -472,11 +490,12 @@ with tabs[1]:
         ])
         st.dataframe(eur_df, hide_index=True, use_container_width=True)
 
-        st.markdown('<div class="section-header">🇺🇸 US State-Permissive Markets — Florida & Nevada Detail</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">🇺🇸 US State-Permissive Markets — Florida, Nevada & Utah</div>', unsafe_allow_html=True)
         us_state_df = pd.DataFrame([
-            {"State":"Florida",                   "Market":"Medspa (statewide 2024)","Size":"$1.2B","2034 Forecast":"$2.5B","CAGR":"7.8%",   "Key Legislation":"FL Statute §456.47 — informed consent; structured elective pathway"},
-            {"State":"Florida — South FL cluster","Market":"Miami-Dade/Broward/Palm Beach medspa","Size":"$199.5M","2033 Forecast":"$1.09B","CAGR":"20.69%","Key Legislation":"Same §456.47; highest concentration of exosome-ready medspas"},
-            {"State":"Nevada",                    "Market":"Anti-aging / performance protocols","Size":"Emerging hub","2034 Forecast":"High growth","CAGR":"est. 15%+","Key Legislation":"SB128 + AB148 — licensed physicians may perform non-FDA-approved cell therapies"},
+            {"State":"Florida",                   "Market":"Medspa (statewide 2024)","Size":"$1.2B",  "2034 Forecast":"$2.5B",  "CAGR":"7.8%",   "Key Legislation":"FL Statute §456.47 — informed consent; structured elective pathway for ALL exosome products"},
+            {"State":"Florida — South FL cluster","Market":"Miami-Dade/Broward/Palm Beach","Size":"$199.5M","2033 Forecast":"$1.09B","CAGR":"20.69%","Key Legislation":"Same §456.47; highest concentration of exosome-ready medspas in US"},
+            {"State":"Nevada",                    "Market":"Anti-aging / performance hub","Size":"Emerging","2034 Forecast":"High growth","CAGR":"est. 15%+","Key Legislation":"SB128 + AB148 — licensed physicians may perform non-FDA-approved cell-derived therapies"},
+            {"State":"Utah",                      "Market":"Regenerative / wellness hub","Size":"Active","2034 Forecast":"Growing","CAGR":"est. 12%+","Key Legislation":"SB 199 (eff. May 1, 2024) — non-FDA-approved PLACENTAL/PERINATAL cell therapies with informed consent. ⚠️ BM-MSC not explicitly covered"},
         ])
         st.dataframe(us_state_df, hide_index=True, use_container_width=True)
 
@@ -484,23 +503,36 @@ with tabs[1]:
         with col_fl1:
             st.markdown(
                 '<div class="success-card">🌴 <strong>Florida §456.47 — Why it matters:</strong><br>'
-                "This statute requires physicians to obtain informed consent advising patients that exosome products are not FDA-approved — "
+                "Requires physicians to obtain informed consent advising patients that exosome products are not FDA-approved — "
                 "but critically, it <em>creates</em> a structured, state-monitored pathway for elective clinical use. "
-                "It does not prohibit use; it regulates it. "
-                "South Florida's 20.69% CAGR medspa market is the most actionable US sub-market for a new supplier today. "
-                "Entry strategy: position as post-procedure recovery topical to capture the $1.2B Florida medspa channel while maintaining federal compliance.</div>",
+                "It does not prohibit use; it regulates it. Covers exosome products explicitly — broadest US state pathway for a BM-MSC supplier. "
+                "South Florida's 20.69% CAGR medspa market is the most actionable US sub-market. "
+                "Entry strategy: post-procedure recovery topical; no therapeutic claims.</div>",
                 unsafe_allow_html=True,
             )
         with col_fl2:
             st.markdown(
                 '<div class="success-card">🎰 <strong>Nevada SB128 + AB148 — Why it matters:</strong><br>'
-                "Nevada (along with Florida and Utah) has passed state regulations allowing licensed physicians to perform "
-                "certain cell-derived therapies not approved by the FDA. "
+                "Allows licensed physicians to perform non-FDA-approved cell-derived therapies. "
                 "Las Vegas has established itself as a destination hub for exosome anti-aging and performance protocols. "
                 "Average single session: <strong>$4,900 in Miami/Las Vegas</strong>; comprehensive plans up to <strong>$15,000</strong>. "
                 "Entry strategy: direct-to-clinic premium positioning; performance and longevity angle; no therapeutic claims on labeling.</div>",
                 unsafe_allow_html=True,
             )
+
+        st.markdown(
+            '<div class="warning-card">🏔️ <strong>Utah SB 199 (eff. May 1, 2024) — Partial opportunity for BM-MSC:</strong><br>'
+            "Utah's law explicitly covers <strong>placental and perinatal</strong> cell therapies — not bone marrow-derived MSC exosomes. "
+            "This is a critical distinction: BM-MSC exosomes are <em>not</em> explicitly protected under SB 199. "
+            "The law creates an informed-consent pathway and requires provider disclosure that therapies are not FDA-approved. "
+            "However, Utah has a thriving active clinic ecosystem (Utah Stem Cells, R3 Stem Cell SLC, Movement Clinic, The Stem Cell Club — St. George/Park City) "
+            "with strong wellness culture and medical tourism from Park City luxury visitors. "
+            "<strong>Strategy for BM-MSC:</strong> Utah cosmetic topical channel (same as all US states) is viable. "
+            "IV/injection of BM-MSC exosomes does NOT benefit from SB 199 protection — higher federal enforcement risk vs Florida. "
+            "Consider Utah as a <em>cosmetic topical + post-procedure</em> entry point, not an elective injection hub. "
+            "Source: Utah SB 199 signed March 2024; Celmedica state guide; ipscell.com legal analysis Apr 2024.</div>",
+            unsafe_allow_html=True,
+        )
 
     with col2:
         st.markdown('<div class="section-header">Asia-Pacific, LATAM & ME Detail</div>', unsafe_allow_html=True)
@@ -560,6 +592,9 @@ with tabs[1]:
         ("Strategic Reconciliation Report", "BM-MSC Sector Analysis, March 2026", "CEE market data: Romania $300.9M cosmetic surgery → $589.7M (2032); Poland $4.8M → $14.5M (2030); Czech Republic $2.1M → $6.8M (2033); CEE CAGR 10.1%"),
         ("Florida Statute §456.47", "State of Florida Legislature", "Structured informed consent pathway for elective physician use of non-FDA-approved exosome products"),
         ("Nevada SB128 + AB148", "State of Nevada Legislature", "Licensed physicians may perform non-FDA-approved cell-derived therapies"),
+        ("Utah SB 199", "Utah State Legislature — signed March 2024, eff. May 1 2024", "Non-FDA-approved placental/perinatal cell therapies permitted with informed consent. Does NOT explicitly cover BM-MSC exosomes"),
+        ("Celmedica", "Stem Cell & Regenerative Medicine in Utah: What's Legal, 2024", "Active clinic ecosystem: Utah Stem Cells, R3 Stem Cell SLC, Movement Clinic, The Stem Cell Club (St. George/Park City)"),
+        ("ipscell.com / Prof. Paul Knoepfler", "Utah set to legalize non-FDA-approved placental cell therapies, March 2024", "SB 199 creates FDA conflict; covers placental/perinatal only; exosome and BM-MSC sourcing not explicitly addressed"),
         ("Florida Medical Spa Market Data", "Industry analysis 2024", "Statewide $1.2B (2024) → $2.5B (2034) at 7.8% CAGR; South FL $199.5M → $1.09B (2033) at 20.69% CAGR"),
         ("NutraIngredients / ClinRegs", "Jan 2025; Aug 2025", "Thai FDA modernisation; new health product import/export policies"),
         ("HSA Singapore", "ASEAN Cosmetic Directive guidance", "Thai FDA HSA Reliance Route (2021); ASEAN harmonization framework"),
@@ -902,10 +937,10 @@ with tabs[4]:
                           annotation_text="Aesthetic wholesale zone", annotation_position="top right")
 
         fig_10b.update_layout(
-            height=380, barmode="overlay", showlegend=False,
+            height=400, barmode="overlay", showlegend=False,
             xaxis_title="Price per 10 Billion Particles (USD)",
-            yaxis_title="", margin=dict(t=40, b=10),
-            title="Observed Market Prices per 10B Particles — the only valid cross-product comparison",
+            yaxis_title="", margin=dict(t=50, b=10),
+            title=None,
         )
         st.plotly_chart(fig_10b, use_container_width=True)
         st.caption("🟢 Green = independently confirmed by retail sources | 🟠 Amber = estimated from supplier/wholesale data")
@@ -1018,8 +1053,10 @@ with tabs[4]:
             title="OOP Patient Price: US (Florida/Nevada) vs CEE (Poland/Czech Republic)",
         )
         fig_cee2.update_traces(textposition="outside")
-        fig_cee2.update_layout(height=360, margin=dict(t=50,b=10), xaxis_tickangle=-15,
-                               yaxis_title="OOP Price (USD)", legend_title="Market")
+        fig_cee2.update_layout(height=380, margin=dict(t=20, b=70), xaxis_tickangle=-15,
+                               yaxis_title="OOP Price (USD)", legend_title="",
+                               title=None,
+                               legend=dict(orientation="h", yanchor="top", y=-0.18, xanchor="center", x=0.5))
         st.plotly_chart(fig_cee2, use_container_width=True)
         st.caption("CEE pricing represents ~30–50% discount vs US. High-volume CEE channel compensates for lower per-session margin with throughput from W. European medical tourists.")
 
@@ -1201,9 +1238,10 @@ with tabs[4]:
             )
             fig_cogs_bar.update_traces(textposition="outside")
             fig_cogs_bar.update_layout(
-                height=380, margin=dict(t=40, b=10),
+                height=380, margin=dict(t=20, b=10),
                 coloraxis_showscale=False,
                 xaxis_title="USD per dose", yaxis_title="",
+                title=None,
             )
             fig_cogs_bar.add_vline(
                 x=total_lo, line_dash="dot", line_color="#e05c2a",
@@ -1252,10 +1290,10 @@ with tabs[4]:
             text=[f"${int(v):,}" for v in traj_df["Mid"]],
             textposition="top center", name="COGS Midpoint"))
         fig_traj.update_layout(
-            height=320, margin=dict(t=20, b=10),
+            height=340, margin=dict(t=20, b=60),
             xaxis_title="Year", yaxis_title="COGS per 10B-particle dose (USD)",
-            title="BM-MSC Exosome COGS Trajectory (with range band)",
-            legend=dict(orientation="h", yanchor="bottom", y=1.01),
+            title=None,
+            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
         )
         st.plotly_chart(fig_traj, use_container_width=True)
 
@@ -1321,6 +1359,7 @@ with tabs[5]:
         {"date":"2024–2025",   "type":"Geographic",  "event":"CEE (Poland, Romania, Czech Republic) emerges as medical tourism hub for exosome aesthetics", "impact":"Romania $300.9M cosmetic surgery; Poland LaserMe+ASCE+ ~$500/session; Prague ~$320/session", "sentiment":"🟢 Positive", "territory":"CEE", "source":"Strategic reconciliation report 2026; Romanian cosmetic surgery market data; Polish aesthetic medicine estimates"},
         {"date":"Active",      "type":"Regulatory",  "event":"Florida Statute §456.47 — structured elective pathway for non-FDA-approved exosome use", "impact":"FL medspa market $1.2B (2024) → $2.5B (2034); South FL $199.51M → $1.09B by 2033 at 20.69% CAGR", "sentiment":"🟢 Positive", "territory":"USA — Florida", "source":"Strategic reconciliation report 2026; Florida medical spa market data"},
         {"date":"Active",      "type":"Regulatory",  "event":"Nevada SB128 + AB148 — licensed physicians may perform non-FDA-approved cell therapies", "impact":"Las Vegas established as destination hub for exosome anti-aging / performance protocols", "sentiment":"🟢 Positive", "territory":"USA — Nevada", "source":"Strategic reconciliation report 2026; Nevada state legislation"},
+        {"date":"May 2024",    "type":"Regulatory",  "event":"Utah SB 199 — non-FDA-approved placental/perinatal cell therapies permitted with informed consent", "impact":"Booming clinic ecosystem in SLC/Sandy/Park City; active exosome use observed at R3 Stem Cell, Utah Stem Cells, Movement Clinic. ⚠️ BM-MSC not explicitly covered — higher risk than FL", "sentiment":"🟡 Neutral",  "territory":"USA — Utah", "source":"Utah SB 199 signed by Gov. Cox March 2024, eff. May 1 2024; Celmedica state guide; ipscell.com legal analysis"},
     ])
 
     # ── Merge live + static ───────────────────────────────────────
@@ -1423,7 +1462,8 @@ with tabs[6]:
         ("MEDIUM",   "signal-card",   "US strategy: cosmetic topical + CDMO only",
          "OEM/white-label for medspas and post-laser protocols. Consider GMP supply to clinical-stage US biotech for Phase I/II trials."),
         ("MEDIUM",   "signal-card",   "US strategy: Florida + Nevada state-permissive model",
-         "Florida §456.47 provides structured informed-consent pathway for elective physician use. Nevada SB128/AB148 similarly permits licensed physician use. Direct-to-clinic in FL/NV medspas captures the $1.2B Florida medspa market while remaining federally compliant — no therapeutic claims."),
+         "Florida §456.47 provides structured informed-consent pathway for elective physician use — explicitly covers exosome products. Nevada SB128/AB148 similarly permits licensed physician use. Direct-to-clinic in FL/NV medspas captures the $1.2B Florida medspa market while remaining federally compliant — no therapeutic claims. "
+         "Utah SB 199 (eff. May 2024) also permits non-FDA-approved cell therapies but specifically covers placental/perinatal sources — BM-MSC exosomes are NOT explicitly covered. Utah's active wellness clinic ecosystem (SLC, Sandy, Park City) is accessible via the cosmetic topical channel only for BM-MSC."),
         ("MEDIUM",   "signal-card",   "CEE (Poland, Romania, Czech Republic) as high-volume entry channel",
          "Target Teoxane Polska (already EPICEXOSOME distributor) and Romanian aesthetic distributors. CEE session prices ($320–800) vs US ($4,900) drive volume. Romania's $300.9M cosmetic surgery market attracts W. European medical tourists. LaserMe+ASCE+ Poland protocol active at ~$500/session."),
         ("MEDIUM",   "signal-card",   "Thailand: appoint local licensed importer",
