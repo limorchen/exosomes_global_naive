@@ -24,7 +24,7 @@ st.set_page_config(
 # CONFIG
 # ══════════════════════════════════════════════════════════════
 REPORT_DATE  = "March 2026"
-DATA_VERSION = "v2.4-strategic"
+DATA_VERSION = "v2.4-strategic-r2"
 
 # ── Change these to match your GitHub repo ───────────────────
 GITHUB_USER = "limorchen"
@@ -309,14 +309,12 @@ with tabs[0]:
             },
             text="Value",
             log_y=True,
-            title="All market size estimates — log scale (dark blue = relevant to manufacturer)",
         )
         fig_recon.update_traces(texttemplate="%{text:,.0f}M", textposition="outside")
         fig_recon.update_layout(
-            height=420, margin=dict(t=20, b=120), showlegend=True,
+            height=420, margin=dict(t=10, b=130), showlegend=True,
             yaxis_title="USD Million (log scale)", xaxis_title="",
-            title=None,
-            legend=dict(orientation="h", yanchor="top", y=-0.28, xanchor="center", x=0.5, font=dict(size=9)),
+            legend=dict(orientation="h", yanchor="top", y=-0.30, xanchor="center", x=0.5, font=dict(size=9)),
         )
         st.plotly_chart(fig_recon, use_container_width=True)
         st.caption("Log scale required — values span $81M to $58,000M. Dark blue bars are the most relevant to a clinical-grade vial manufacturer. Each bar measures a different economic concept.")
@@ -378,15 +376,15 @@ with tabs[0]:
             pull=[0.03]*10,
         )
         fig_pie.update_layout(
-            margin=dict(t=10, l=10, r=160, b=10),
+            margin=dict(t=10, l=10, r=180, b=10),
             showlegend=True,
-            height=480,
+            height=520,
             legend=dict(
                 orientation="v",
                 yanchor="top", y=1.0,
                 xanchor="left", x=1.01,
                 font=dict(size=10),
-                tracegroupgap=2,
+                tracegroupgap=1,
             ),
         )
         st.plotly_chart(fig_pie, use_container_width=True)
