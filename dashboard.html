@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧬 Global MSC Exosome Market Dashboard</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f7f9fc;color:#1a1a2e}
+.hdr{background:linear-gradient(135deg,#1e3a5f 0%,#2e6da4 100%);color:#fff;padding:18px 24px}
+.hdr-row{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px}
+.hdr h1{font-size:1.55rem;font-weight:700;letter-spacing:-.5px}
+.hdr-sub{font-size:.78rem;opacity:.85;margin-top:4px}
+.status-side{text-align:right}
+.badge{display:inline-block;padding:4px 10px;border-radius:6px;font-size:.76rem;font-weight:600;margin:2px}
+.badge-date{background:rgba(255,255,255,.18)}
+.badge-live{background:#3db07a}
+.badge-partial{background:#f0a030}
+.refresh-btn{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:.76rem;margin-left:6px;transition:background .2s}
+.refresh-btn:hover{background:rgba(255,255,255,.28)}
+.countdown{font-size:.7rem;opacity:.65;margin-top:4px}
+.crit-banner{background:#ffeaea;border-left:5px solid #c62828;padding:11px 20px;font-size:.85rem;line-height:1.55}
+.tab-bar{background:#fff;border-bottom:2px solid #dce8f4;padding:0 20px;display:flex;gap:2px;overflow-x:auto;white-space:nowrap}
+.tab-btn{padding:11px 15px;font-size:.82rem;font-weight:500;border:none;background:none;cursor:pointer;color:#666;border-bottom:3px solid transparent;white-space:nowrap;transition:all .2s}
+.tab-btn:hover{color:#2e6da4;background:#f0f5ff}
+.tab-btn.active{color:#1e3a5f;border-bottom-color:#2e6da4;font-weight:700}
+.content{padding:18px 20px;max-width:1560px;margin:0 auto}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:18px}
+@media(max-width:1100px){.kpi-row{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:640px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:linear-gradient(135deg,#1e3a5f 0%,#2e6da4 100%);border-radius:12px;padding:16px 12px;color:#fff;text-align:center;box-shadow:0 2px 8px rgba(30,58,95,.22)}
+.kpi-v{font-size:1.7rem;font-weight:700;color:#7ec8e3}
+.kpi-l{font-size:.75rem;opacity:.9;margin-top:5px;letter-spacing:.3px}
+.kpi-s{font-size:.66rem;opacity:.6;margin-top:3px}
+.sh{background:linear-gradient(90deg,#1e3a5f,#2e6da4);color:#fff;padding:6px 15px;border-radius:6px;font-size:.9rem;font-weight:700;margin:14px 0 8px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g31{display:grid;grid-template-columns:1fr 3fr;gap:14px}
+@media(max-width:880px){.g2,.g31{grid-template-columns:1fr}}
+.c-sig{border-left:4px solid #2e6da4;background:#eef5ff;padding:9px 14px;border-radius:4px;margin:5px 0;line-height:1.5;font-size:.82rem}
+.c-warn{border-left:4px solid #e05c2a;background:#fff3ee;padding:9px 14px;border-radius:4px;margin:5px 0;line-height:1.5;font-size:.82rem}
+.c-ok{border-left:4px solid #3db07a;background:#edfaf3;padding:9px 14px;border-radius:4px;margin:5px 0;line-height:1.5;font-size:.82rem}
+.c-crit{border-left:4px solid #c62828;background:#ffeaea;padding:9px 14px;border-radius:4px;margin:5px 0;line-height:1.5;font-size:.82rem}
+.info-box{background:#e8f4f8;border-left:4px solid #2e6da4;padding:12px 16px;border-radius:4px;margin:10px 0;font-size:.83rem;line-height:1.55}
+.tw{overflow-x:auto;max-height:360px;overflow-y:auto;margin:6px 0}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th{background:#1e3a5f;color:#fff;padding:8px 10px;text-align:left;font-weight:600;position:sticky;top:0}
+td{padding:7px 10px;border-bottom:1px solid #e0e8f0}
+tr:nth-child(even){background:#f5f8ff}
+tr:hover{background:#e8f0ff}
+.filt-row{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0;align-items:center}
+.filt-row label{font-size:.79rem;color:#555;font-weight:500}
+.filt-row select{padding:5px 9px;border:1px solid #c0d0e0;border-radius:6px;font-size:.79rem;background:#fff}
+.pills{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.pill{background:#fff;border:1px solid #dce8f4;border-radius:8px;padding:10px 16px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.05);min-width:110px}
+.pill-v{font-size:1.45rem;font-weight:700;color:#1e3a5f}
+.pill-l{font-size:.7rem;color:#999;margin-top:2px}
+.p-crit{background:#c62828;color:#fff;border-radius:4px;padding:2px 7px;font-size:.7rem;font-weight:700;display:inline-block}
+.p-high{background:#e05c2a;color:#fff;border-radius:4px;padding:2px 7px;font-size:.7rem;font-weight:700;display:inline-block}
+.p-med{background:#f0a030;color:#fff;border-radius:4px;padding:2px 7px;font-size:.7rem;font-weight:700;display:inline-block}
+.rg{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.rg label{display:flex;align-items:center;gap:4px;font-size:.8rem;cursor:pointer;padding:5px 11px;border:1px solid #c0d0e0;border-radius:20px;background:#fff;transition:all .15s}
+.rg label.checked{background:#1e3a5f;color:#fff;border-color:#1e3a5f}
+.chart-box{background:#fff;border-radius:8px;padding:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);margin:6px 0}
+.mc{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.mc label{display:flex;align-items:center;gap:4px;font-size:.79rem;cursor:pointer;user-select:none}
+.mc input[type=checkbox]{accent-color:#2e6da4}
+.loading-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(247,249,252,.7);z-index:999;align-items:center;justify-content:center;font-size:.9rem;color:#444}
+.loading-overlay.visible{display:flex}
+.spinner{width:28px;height:28px;border:3px solid #dce8f4;border-top-color:#2e6da4;border-radius:50%;animation:spin .7s linear infinite;margin-right:10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+footer{text-align:center;padding:14px 20px;font-size:.7rem;color:#aaa;border-top:1px solid #e0e8f0;margin-top:16px}
+.live-lbl{font-size:.7rem;padding:2px 7px;border-radius:10px;font-weight:600;display:inline-block;margin-left:6px}
+.live-lbl.live{background:#3db07a;color:#fff}
+.live-lbl.static{background:#f0a030;color:#fff}
+hr{border:none;border-top:1px solid #dce8f4;margin:14px 0}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div>Refreshing data…</div>
+
+<div class="hdr">
+  <div class="hdr-row">
+    <div>
+      <h1>🧬 Global Naive MSC Exosome Market</h1>
+      <div class="hdr-sub">Strategic intelligence: addressable market · COGS · pricing · regulation · entry points &nbsp;|&nbsp; Bone Marrow MSC Source &nbsp;|&nbsp; March 2026 &nbsp;|&nbsp; v2.1-live</div>
+    </div>
+    <div class="status-side">
+      <div><span class="badge badge-date">🗓 Last updated: March 2026</span></div>
+      <div id="liveStatus" style="margin-top:6px"></div>
+      <div class="countdown" id="countdownLbl"></div>
+      <div style="margin-top:6px">
+        <button class="refresh-btn" onclick="manualRefresh()">🔄 Refresh data</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="crit-banner">
+  ⚠️ <strong>CRITICAL FINDING:</strong> No exosome-based therapeutic has received regulatory approval anywhere in the world as of March 2026. The addressable market today is overwhelmingly the
+  <strong>wellness, aesthetics &amp; cosmeceutical channel ($81M → 35.9% CAGR)</strong>, with secondary opportunity in soft indications (wound healing, ortho pain) via physician-dispensed channels in permissive jurisdictions (Mexico, UAE, Thailand, SEA).
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab(0,this)">📊 Market Overview</button>
+  <button class="tab-btn" onclick="showTab(1,this)">🗺️ Geographic Analysis</button>
+  <button class="tab-btn" onclick="showTab(2,this)">🏢 Distributors &amp; Entry Points</button>
+  <button class="tab-btn" onclick="showTab(3,this)">⚖️ Regulation</button>
+  <button class="tab-btn" onclick="showTab(4,this)">💰 Pricing &amp; COGS</button>
+  <button class="tab-btn" onclick="showTab(5,this)">📡 Signals &amp; Trends</button>
+  <button class="tab-btn" onclick="showTab(6,this)">✅ Strategy Checklist</button>
+</div>
+
+<div class="tab-panel active" id="tab0">
+<div class="content">
+  <div class="sh">Global Market KPIs (Addressable Wellness + Soft Indications)</div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-v">~$88.5M</div><div class="kpi-l">2024 Addressable Market</div><div class="kpi-s">Wellness + soft indications only</div></div>
+    <div class="kpi"><div class="kpi-v">~$494M</div><div class="kpi-l">2030 Forecast</div><div class="kpi-s">Wellness + soft indications</div></div>
+    <div class="kpi"><div class="kpi-v">~33%</div><div class="kpi-l">CAGR 2024–2030</div><div class="kpi-s">Addressable segment</div></div>
+    <div class="kpi"><div class="kpi-v">~$2,500</div><div class="kpi-l">BM-MSC COGS / Dose (2026)</div><div class="kpi-s">10B-particle dose midpoint</div></div>
+    <div class="kpi"><div class="kpi-v">35.9%</div><div class="kpi-l">Regen Aesthetics CAGR</div><div class="kpi-s">Precedence Research 2025</div></div>
+    <div class="kpi"><div class="kpi-v">$81M</div><div class="kpi-l">Regen Aesthetics (2024)</div><div class="kpi-s">Primary commercial segment</div></div>
+  </div>
+  <div class="g2">
+    <div>
+      <div class="sh">Market Segments — Size, Forecast &amp; Access</div>
+      <div class="tw">
+        <table>
+          <tr><th>Segment</th><th>2024 ($M)</th><th>2030 ($M)</th><th>CAGR</th><th>Access Now?</th></tr>
+          <tr><td>Exosome Diagnostics</td><td>83.5</td><td>1,100</td><td>47.6%</td><td>Partial</td></tr>
+          <tr><td>Research Tools &amp; Isolation</td><td>414</td><td>1,200</td><td>11.6%</td><td>✅ Yes</td></tr>
+          <tr><td>Regen Aesthetics</td><td>81.1</td><td>1,700</td><td>35.9%</td><td>✅ Yes — PRIMARY</td></tr>
+          <tr><td>Therapeutics (approved)</td><td>0</td><td>80</td><td>17–18%</td><td>❌ No approval</td></tr>
+        </table>
+      </div>
+      <div class="sh" style="margin-top:14px">Addressable Market by Region (2024 vs 2030)</div>
+      <div class="chart-box"><div id="chartAddrBar" style="height:300px"></div></div>
+    </div>
+    <div>
+      <div class="sh">Regional Share — Addressable Market 2024</div>
+      <div class="chart-box"><div id="chartRegPie" style="height:300px"></div></div>
+      <div class="sh">CAGR Comparison by Region</div>
+      <div class="chart-box"><div id="chartCagr" style="height:260px"></div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="tab-panel" id="tab1">
+<div class="content">
+  <div class="sh">Market Opportunity vs Regulatory Risk (All Regions)</div>
+  <div class="chart-box"><div id="chartBubble" style="height:440px"></div></div>
+  <div class="g2" style="margin-top:10px">
+    <div>
+      <div class="sh">Europe — Country Detail</div>
+      <div class="tw">
+        <table>
+          <tr><th>Country</th><th>Maturity</th><th>Key Segment</th><th>Barrier</th><th>Distributor</th></tr>
+          <tr><td>Germany</td><td>High</td><td>Clinical Aesthetic</td><td>Medium</td><td>Jolifill / Croma-Pharma</td></tr>
+          <tr><td>France</td><td>High</td><td>Medical Spa</td><td>Medium</td><td>Teoxane France</td></tr>
+          <tr><td>Switzerland</td><td>Medium</td><td>Longevity Clinics</td><td>High</td><td>Swissmedic partners</td></tr>
+          <tr><td>Austria</td><td>Medium</td><td>Aesthetic Devices</td><td>Medium</td><td>Croma-Pharma DACH</td></tr>
+          <tr><td>Italy</td><td>Medium</td><td>Specialist Networks</td><td>Medium</td><td>Taumedika S.r.l.</td></tr>
+          <tr><td>Poland/CEE</td><td>Low</td><td>Emerging Aesthetics</td><td>Low</td><td>Teoxane Polska</td></tr>
+          <tr><td>South Korea</td><td>High</td><td>K-beauty / Hospital</td><td>Medium</td><td>ExoCoBio, ASCE+</td></tr>
+        </table>
+      </div>
+      <div class="sh" style="margin-top:10px">US &amp; Australia Detail</div>
+      <div class="tw">
+        <table>
+          <tr><th>Territory</th><th>Stage</th><th>Channel</th><th>Key Risk</th><th>Entry</th></tr>
+          <tr><td>USA</td><td>Restricted</td><td>Cosmetic topical only</td><td>12+ FDA warning letters</td><td>Aesthetic/CDMO supply only</td></tr>
+          <tr><td>Australia</td><td>High TGA</td><td>TGA-registered clinics</td><td>PBAC ATMPs only</td><td>Biogenix partnership model</td></tr>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="sh">Asia-Pacific, LATAM &amp; ME Detail</div>
+      <div class="tw">
+        <table>
+          <tr><th>Territory</th><th>Region</th><th>Maturity</th><th>Note</th></tr>
+          <tr><td>Philippines</td><td>SEA</td><td>Emerging</td><td>ASEAN gateway — PH FDA notif. Jan 2026</td></tr>
+          <tr><td>Malaysia</td><td>SEA</td><td>Medium</td><td>16.2% research CAGR; cGMP active</td></tr>
+          <tr><td>Thailand</td><td>SEA</td><td>Emerging</td><td>Medical tourism hub; Thai FDA modernising 2025</td></tr>
+          <tr><td>Indonesia</td><td>SEA</td><td>Early</td><td>Clinic training pathway; BPOM engaged</td></tr>
+          <tr><td>Singapore</td><td>SEA</td><td>Medium</td><td>HSA approval = ASEAN reliance gateway</td></tr>
+          <tr><td>Brazil</td><td>LATAM</td><td>High</td><td>2nd-largest aesthetic market globally</td></tr>
+          <tr><td>Mexico</td><td>LATAM</td><td>High</td><td>Medical tourism; COFEPRIS-ANVISA MoU</td></tr>
+          <tr><td>UAE/GCC</td><td>ME</td><td>Premium</td><td>Luxury longevity; DUBIMED 40yr network</td></tr>
+        </table>
+      </div>
+      <div class="sh" style="margin-top:10px">End User Profiles</div>
+      <div class="tw">
+        <table>
+          <tr><th>Region</th><th>Primary User</th><th>Application</th></tr>
+          <tr><td>Europe</td><td>Dermatologists / Med Spas</td><td>Post-procedure recovery</td></tr>
+          <tr><td>Latin America</td><td>Medical Tourism Clinics</td><td>Aesthetic + ortho</td></tr>
+          <tr><td>SEA</td><td>Aesthetic / K-beauty Clinics</td><td>Skin rejuvenation</td></tr>
+          <tr><td>UAE/GCC</td><td>Luxury Longevity Clinics</td><td>Systemic IV longevity</td></tr>
+          <tr><td>Thailand</td><td>Med Spas / Private Hospitals</td><td>Anti-aging + IV drip</td></tr>
+          <tr><td>USA</td><td>Medical Spas / Dermatology</td><td>Cosmetic topical / hair</td></tr>
+          <tr><td>Australia</td><td>TGA-registered Clinics</td><td>Medical regenerative</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="tab-panel" id="tab2">
+<div class="content">
+  <div class="sh">Global Distributor Intelligence <span class="live-lbl" id="distLiveLbl">⏳ loading</span></div>
+  <div class="filt-row">
+    <label>Region</label>
+    <select id="filtDistRegion" onchange="renderDistributors()"><option>All</option></select>
+    <label>Channel</label>
+    <select id="filtDistChannel" onchange="renderDistributors()"><option>All</option></select>
+    <label>Priority</label>
+    <select id="filtDistPriority" onchange="renderDistributors()">
+      <option>All</option><option>🟢 High</option><option>🟡 Medium</option>
+    </select>
+  </div>
+  <div class="tw" id="distTable"></div>
+  <div class="g2" style="margin-top:12px">
+    <div>
+      <div class="sh">Distributor Count by Region</div>
+      <div class="chart-box"><div id="chartDistCount" style="height:300px"></div></div>
+    </div>
+    <div>
+      <div class="sh">High-Priority Distributor Approach Guide</div>
+      <div class="c-sig"><strong>🇦🇪 UAE — DUBIMED</strong><br>Emphasise clinical credibility + longevity angle. Offer a 'longevity module' fitting their existing aesthetic infrastructure. 40-yr reputation means they value established brands. Target: 20B-particle vials priced $175–300/vial B2B.</div>
+      <div class="c-sig"><strong>🇪🇺 Europe — Croma-Pharma / Jolifill</strong><br>Focus on premium aesthetic segment. Lead with BM-MSC clinical literature vs. plant-derived competitors. Croma-Pharma actively seeking new regenerative brands. Target B2B: $140–225/vial (10B particles).</div>
+      <div class="c-sig"><strong>🌎 LATAM — Giostar / R3 Stem Cell</strong><br>Leverage medical tourism + ANVISA-COFEPRIS MoU. Lyophilised format solves cold-chain. Emphasise CD73/CD90 markers, CoA, and GMP certification.</div>
+      <div class="c-ok"><strong>🇹🇭 Thailand — Thai Aesthetic Clinics / Innotech</strong><br>NEW: Use Philippine FDA cosmetic notification as ASEAN compliance proof. Appoint local licensed importer. Free Sale Certificate required. Thai FDA HSA reliance route (since 2021) can fast-track with Singapore registration. Target B2B: $90–150/vial.</div>
+      <div class="c-warn"><strong>🇺🇸 USA — Elevai / Regen Suppliers</strong><br>CAUTION: US IV channel is high-risk (12+ FDA warning letters). Cosmetic topical / aesthetic channel ONLY. No therapeutic claims. GMP documentation essential. B2B target: $150–275/vial (20B).</div>
+      <div class="c-sig"><strong>🌏 SEA — Vanguard Aesthetics (Philippines)</strong><br>Use Philippines as ASEAN gateway. Jan 2026 PH FDA cosmetic notification validates ASEAN entry blueprint. B2B target: $75–125/vial (10B particles).</div>
+    </div>
+  </div>
+  <div class="sh">Distributor Attractiveness Matrix — Pricing Ceiling Analysis</div>
+  <div class="tw">
+    <table>
+      <tr><th>Market</th><th>End-User Price (vial)</th><th>Max B2B Distributor</th><th>Max Mfr COGS (scale)</th><th>Key Pitch</th></tr>
+      <tr><td>Germany/EU</td><td>$280–450</td><td>$140–225</td><td>&lt;$80–100</td><td>BM-MSC clinical lit; CD73/CD90 markers; CoA with NTA data</td></tr>
+      <tr><td>UAE/GCC</td><td>$350–600</td><td>$175–300</td><td>&lt;$100–140</td><td>'Longevity module' angle; high-dose IV protocols</td></tr>
+      <tr><td>Mexico/LATAM</td><td>$200–350</td><td>$100–175</td><td>&lt;$60–90</td><td>Lyophilized format; ANVISA-COFEPRIS MoU compliance</td></tr>
+      <tr><td>Thailand</td><td>$180–300</td><td>$90–150</td><td>&lt;$55–80</td><td>Thai FDA cosmetic notification support; ASEAN docs</td></tr>
+      <tr><td>Philippines/SEA</td><td>$150–250</td><td>$75–125</td><td>&lt;$50–70</td><td>PH FDA notification gateway; ASEAN cosmetic directive</td></tr>
+      <tr><td>USA (aesthetic)</td><td>$300–550</td><td>$150–275</td><td>&lt;$90–130</td><td>CoA with CD63/CD81; no therapeutic claims; GMP docs</td></tr>
+      <tr><td>Australia</td><td>$350–600</td><td>$175–300</td><td>&lt;$100–140</td><td>TGA compliance documentation; Biogenix-style model</td></tr>
+    </table>
+  </div>
+  <div class="sh">B2B Price Range by Market (per 10B particles)</div>
+  <div class="chart-box"><div id="chartB2B" style="height:300px"></div></div>
+</div>
+</div>
+
+<div class="tab-panel" id="tab3">
+<div class="content">
+  <div class="sh">Global Regulatory Framework (March 2026) <span class="live-lbl" id="regLiveLbl">⏳ loading</span></div>
+  <div class="filt-row">
+    <label>Filter by Risk:</label>
+    <div class="mc" id="regRiskChecks"></div>
+  </div>
+  <div class="tw" id="regTable"></div>
+  <div class="g2" style="margin-top:12px">
+    <div>
+      <div class="sh">Regulatory Risk Distribution</div>
+      <div class="chart-box"><div id="chartRegRisk" style="height:280px"></div></div>
+    </div>
+    <div>
+      <div class="sh">Key Regulatory Milestones</div>
+      <div class="c-sig"><strong>✅ Jan 2026</strong> — Philippines FDA cosmetic notification (UnicoCell) — ASEAN entry blueprint validated</div>
+      <div class="c-sig"><strong>✅ Late 2025</strong> — ANVISA-COFEPRIS MoU operational — Brazil↔Mexico mutual recognition active</div>
+      <div class="c-sig"><strong>✅ 2021</strong> — Thai FDA launches HSA Singapore Reliance Route — Singapore approval fast-tracks SEA entry</div>
+      <div class="c-sig"><strong>✅ Mar 2024</strong> — Croma-Pharma × Aesthetic Mgmt Partners — confirms EU distribution appetite</div>
+      <div class="c-warn"><strong>⚠️ May 2025</strong> — FDA warning letter to Florida IV exosome clinic — US IV channel high risk</div>
+      <div class="c-warn"><strong>⚠️ Ongoing</strong> — FDA 12+ warning letters total — US market = cosmetic channel only 2025–2028+</div>
+      <div class="c-warn"><strong>⚠️ Ongoing</strong> — EU: &lt;2 dozen ATMPs authorized, zero exosome-based — zero approved globally</div>
+      <div class="c-sig"><strong>ℹ️ Jan 2025</strong> — Thai FDA drafting new health product import/export policy — favourable window now</div>
+    </div>
+  </div>
+  <div class="info-box">
+    🤝 <strong>ANVISA–COFEPRIS Strategic Alliance:</strong> Brazil and Mexico signed an MoU establishing mutual recognition for medicines, medical devices, and GMP. Securing approval in one territory <strong>cuts LATAM regulatory timeline by 40–60%</strong>.
+  </div>
+</div>
+</div>
+
+<div class="tab-panel" id="tab4">
+<div class="content">
+  <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
+    <button class="tab-btn active" id="st0" onclick="showSubTab(0)" style="border:1px solid #dce8f4;border-radius:6px">💊 OOP Patient Pricing</button>
+    <button class="tab-btn" id="st1" onclick="showSubTab(1)" style="border:1px solid #dce8f4;border-radius:6px">📦 Wholesale B2B</button>
+    <button class="tab-btn" id="st2" onclick="showSubTab(2)" style="border:1px solid #dce8f4;border-radius:6px">🔬 BM-MSC COGS</button>
+  </div>
+  <div id="stPanel0">
+    <div class="sh">OOP Pricing by Indication — Final Patient (2026)</div>
+    <div style="font-size:.78rem;color:#666;margin-bottom:8px">Dose normalized to 10B particles. Includes clinic markup and procedure fee.</div>
+    <div class="chart-box"><div id="chartOOP" style="height:380px"></div></div>
+    <div class="tw">
+      <table>
+        <tr><th>Indication</th><th>Dose/Session</th><th>Sessions</th><th>Mat. Cost to Clinic</th><th>OOP Low</th><th>OOP High</th><th>Markets</th></tr>
+        <tr><td>Facial Skin Rejuvenation</td><td>5–10B</td><td>3</td><td>$50–150</td><td>$400</td><td>$900</td><td>EU, SEA, UAE, TH</td></tr>
+        <tr><td>Hair Restoration</td><td>10–20B</td><td>3–6</td><td>$100–250</td><td>$900</td><td>$2,300</td><td>UAE, US, EU, TH</td></tr>
+        <tr><td>Wound Healing / Scar</td><td>10–30B</td><td>1–3</td><td>$150–400</td><td>$500</td><td>$2,000</td><td>MX, TH, SEA, AU</td></tr>
+        <tr><td>Joint Pain / Osteoarthritis</td><td>30–50B</td><td>1–2</td><td>$350–700</td><td>$1,500</td><td>$3,500</td><td>MX, UAE, TH, SEA</td></tr>
+        <tr><td>Systemic IV Longevity</td><td>50–100B</td><td>2–4</td><td>$700–1,500</td><td>$3,750</td><td>$5,500</td><td>UAE, AU, TH (premium)</td></tr>
+        <tr><td>Post-Procedure Recovery</td><td>5B</td><td>1</td><td>$40–100</td><td>$150</td><td>$400</td><td>EU, SEA, US, TH</td></tr>
+      </table>
+    </div>
+  </div>
+  <div id="stPanel1" style="display:none">
+    <div class="sh">Observed Wholesale B2B Prices (per 10B particles, USD) <span class="live-lbl" id="priceLiveLbl">⏳ loading</span></div>
+    <div style="font-size:.78rem;color:#666;margin-bottom:8px">Particle-normalized for cross-product comparison.</div>
+    <div class="tw">
+      <table>
+        <tr><th>Product</th><th>Particles</th><th>Format</th><th>Wholesale</th><th>Per 10B</th><th>Notes</th></tr>
+        <tr><td>EXOJUV (plant-derived)</td><td>6B/vial</td><td>Lyophilized</td><td>$150–200/vial</td><td>$250–333</td><td>MedicaDepot wholesale</td></tr>
+        <tr><td>EXOBLOOM (Dermax)</td><td>5B+/vial</td><td>Lyophilized</td><td>$120–180/vial</td><td>$240–360</td><td>DermaxMed B2B</td></tr>
+        <tr><td>ReBellaXO (UC-MSC)</td><td>15B/cc</td><td>Liquid 1cc</td><td>$300–450/vial</td><td>$200–300</td><td>R3 Stem Cell / Regen Suppliers 2024</td></tr>
+        <tr><td>EXOXE (Jolifill, Germany)</td><td>10–20B est.</td><td>Lyophilized</td><td>$300–500/vial</td><td>$200–350</td><td>Jolifill professional pricing</td></tr>
+        <tr><td>Generic BM-MSC (Alibaba B2B)</td><td>1mg≈10–15B</td><td>Bulk/frozen</td><td>$180–280/mg</td><td>$150–280</td><td>B2B supplier comparison 2024–25</td></tr>
+        <tr><td>BENEV (ExoCoBio US)</td><td>20–30B est.</td><td>Lyophilized</td><td>$400–600/vial</td><td>$160–250</td><td>US professional channel estimate</td></tr>
+        <tr><td>Research BM-MSC EVs (ZenBio)</td><td>&gt;1B/vial</td><td>Frozen</td><td>$400–800/vial</td><td>$4,000–8,000</td><td>⚠️ Research grade — NOT clinical</td></tr>
+      </table>
+    </div>
+    <div class="sh" style="margin-top:14px">Recommended BM-MSC Pricing Tiers</div>
+    <div class="tw">
+      <table>
+        <tr><th>Tier</th><th>Channel</th><th>Format</th><th>B2B Price/10B</th><th>Margin</th><th>Rationale</th></tr>
+        <tr><td>Premium Ortho/Medical</td><td>Physician clinics, ortho</td><td>Lyo 10–30B</td><td>$350–500</td><td>60–70%</td><td>BM-MSC deep clinical lit; premium over UC-MSC</td></tr>
+        <tr><td>Aesthetic/Wellness</td><td>Med spas, dermatologists</td><td>Lyo 5–15B</td><td>$200–320</td><td>55–65%</td><td>Competitive with UC-MSC; source purity positioning</td></tr>
+        <tr><td>Distributor/Wholesale</td><td>Regional distributors (min 50-vial)</td><td>Bulk lyo</td><td>$150–220</td><td>45–55%</td><td>Enables distributor 30–50% markup</td></tr>
+        <tr><td>CDMO / Bulk</td><td>Biotech/pharma for trials</td><td>GMP bulk lyo/frozen</td><td>$120–180</td><td>35–50%</td><td>Long-term volume contracts</td></tr>
+      </table>
+    </div>
+    <div class="sh" style="margin-top:14px">B2B Price Ranges by Channel Tier</div>
+    <div class="chart-box"><div id="chartTier" style="height:320px"></div></div>
+  </div>
+  <div id="stPanel2" style="display:none">
+    <div class="sh">BM-MSC Exosome COGS — Component Breakdown (per 10B-particle dose)</div>
+    <div class="rg" id="cogsYearRadio">
+      <label class="checked" data-year="2026"><input type="radio" name="cogsYear" value="2026" checked> 2026 (Current)</label>
+      <label data-year="2023"><input type="radio" name="cogsYear" value="2023"> 2023 (Baseline)</label>
+      <label data-year="2030"><input type="radio" name="cogsYear" value="2030"> 2030 (Target)</label>
+    </div>
+    <div class="g2">
+      <div class="chart-box"><div id="chartCogsBar" style="height:360px"></div></div>
+      <div class="chart-box"><div id="chartCogsPie" style="height:360px"></div></div>
+    </div>
+    <div class="c-sig" id="cogsSummary"></div>
+    <div class="sh" style="margin-top:14px">COGS Trajectory — 2023 to 2030</div>
+    <div class="chart-box"><div id="chartCogsTraj" style="height:300px"></div></div>
+    <div class="sh" style="margin-top:14px">BM-MSC vs Other MSC Sources — Cost Comparison</div>
+    <div class="tw">
+      <table>
+        <tr><th>Parameter</th><th>BM-MSC</th><th>UC-MSC (WJ)</th><th>Adipose MSC</th></tr>
+        <tr><td>Raw material cost ($/mg purified)</td><td>$180–280</td><td>$130–200</td><td>$100–180</td></tr>
+        <tr><td>Donor material cost</td><td>Higher — invasive harvest</td><td>Lower — birth waste</td><td>Moderate — liposuction</td></tr>
+        <tr><td>Expansion difficulty</td><td>Moderate–High</td><td>Lower</td><td>Moderate</td></tr>
+        <tr><td>Yield per bioreactor run</td><td>Lower relative yield</td><td>Highest yield</td><td>Moderate</td></tr>
+        <tr><td>Exosome potency (ortho/neuro)</td><td>Highest evidence base</td><td>High — most commercial</td><td>Moderate</td></tr>
+        <tr><td>Regulatory differentiation</td><td>Strong clinical lit.</td><td>Most commercially available</td><td>Lower clinical lit.</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="tab-panel" id="tab5">
+<div class="content">
+  <div class="sh">Key Market Signals (2023–2026) <span class="live-lbl" id="sigLiveLbl">⏳ loading</span></div>
+  <div class="pills" id="sigMetrics"></div>
+  <div class="filt-row">
+    <label>Filter by Type:</label>
+    <div class="mc" id="sigTypeChecks"></div>
+  </div>
+  <div class="tw" id="sigTable"></div>
+  <div class="g2" style="margin-top:12px">
+    <div>
+      <div class="sh">Signal Distribution by Type</div>
+      <div class="chart-box"><div id="chartSigType" style="height:280px"></div></div>
+    </div>
+    <div>
+      <div class="sh">Emerging Trends (2025–2030)</div>
+      <div class="c-sig"><strong>❄️ Lyophilisation</strong> — Eliminates cold-chain barrier for LATAM/SEA/ME. $50–60M segment growing to hundreds of millions by early 2030s.</div>
+      <div class="c-sig"><strong>🔬 Particle-Count Standardisation</strong> — Distributors now demand NTA-verified particle counts with CoA. Non-negotiable for serious buyers.</div>
+      <div class="c-sig"><strong>🧬 BM-MSC vs UC-MSC Differentiation</strong> — Buyers maturing — seeking source differentiation. BM-MSC carries deepest orthopedic/neuroprotective evidence base.</div>
+      <div class="c-sig"><strong>🤖 AI Exosome Profiling</strong> — ML-integrated characterization accelerating biomarker discovery. Cargo profiles (miRNA, protein markers) command premium.</div>
+      <div class="c-sig"><strong>🌏 Thailand &amp; SEA Medical Tourism</strong> — Post-COVID recovery accelerating. High-value patients from US, EU, Middle East returning to Thailand/Singapore.</div>
+      <div class="c-sig"><strong>💊 COGS Collapse</strong> — $2,500/dose (2026) → $500/dose (2030) — enter now before commoditization compresses margins.</div>
+      <div class="c-warn"><strong>🌿 Plant-Derived Exosomes</strong> — EU investor interest rising as lower-risk cosmetic entry point — BM-MSC must actively counter with clinical evidence.</div>
+      <div class="c-sig"><strong>💉 Sexual Wellness Niche</strong> — Vaginal rejuvenation + erectile function — high-demand in Dubai, Australia, and Thailand.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="tab-panel" id="tab6">
+<div class="content">
+  <div class="sh">Strategic Entry Checklist for BM-MSC Exosome Manufacturer</div>
+  <div id="checklist"></div>
+  <div class="sh" style="margin-top:16px">Priority Summary</div>
+  <div class="chart-box"><div id="chartPriority" style="height:220px"></div></div>
+</div>
+</div>
+
+<footer>
+  🧬 Global Naive MSC Exosome Market Dashboard &nbsp;·&nbsp; Enhanced Edition March 2026 &nbsp;·&nbsp; v2.1-live &nbsp;·&nbsp;
+  Sources: DelveInsight · Precedence Research · InsightAce Analytic · Grand View Research · Astute Analytica · RoosterBio · Atlantis Bioscience<br>
+  ⚠️ Market figures are summary-level intelligence only. Regulatory guidance is not legal advice. Consult qualified regulatory counsel before commercial launch.
+</footer>
+
+<script>
+const GITHUB_RAW = 'https://raw.githubusercontent.com/limorchen/exosomes_global_naive/main/data';
+const REFRESH_MS = 5 * 60 * 1000;
+
+const S = {
+  signals: [], distributors: [], regulatory: [], pricing: [], meta: {},
+  lastRefreshed: null, isLive: false, activeTab: 0, activeSubTab: 0,
+  cogsYear: '2026',
+  distFilters: { region: 'All', channel: 'All', priority: 'All' },
+  sigTypes: new Set(),
+  regRisks: new Set(['HIGH','MEDIUM','LOW-MED','LOW']),
+};
+let countdownSec = REFRESH_MS / 1000;
+let countdownTimer = null;
+
+async function loadCSV(filename) {
+  try {
+    const r = await fetch(`${GITHUB_RAW}/${filename}?t=${Date.now()}`);
+    if (!r.ok) return null;
+    const txt = await r.text();
+    return Papa.parse(txt, { header: true, skipEmptyLines: true }).data;
+  } catch { return null; }
+}
+
+async function loadAllData() {
+  document.getElementById('loadingOverlay').classList.add('visible');
+  const [sig, dist, reg, price, meta] = await Promise.all([
+    loadCSV('signals.csv'), loadCSV('distributors.csv'),
+    loadCSV('regulatory.csv'), loadCSV('pricing.csv'), loadCSV('meta.csv'),
+  ]);
+  if (sig)   S.signals      = sig;
+  if (dist)  S.distributors = dist;
+  if (reg)   S.regulatory   = reg;
+  if (price) S.pricing      = price;
+  if (meta)  { S.meta = {}; meta.forEach(r => { S.meta[r.key] = r.value; }); }
+  S.lastRefreshed = new Date();
+  S.isLive = !!(sig && dist && reg && price);
+  document.getElementById('loadingOverlay').classList.remove('visible');
+  updateHeaderStatus();
+  renderAll();
+}
+
+function updateHeaderStatus() {
+  const lastRun = S.meta.last_run || (S.lastRefreshed ? S.lastRefreshed.toUTCString() : 'Unknown');
+  const sigCount = S.signals.length;
+  const cls = S.isLive ? 'badge-live' : 'badge-partial';
+  const lbl = S.isLive ? '🟢 Live data' : '🟡 Partial data';
+  document.getElementById('liveStatus').innerHTML =
+    `<span class="badge ${cls}">${lbl} · ${sigCount} signals · auto-updated: ${lastRun}</span>`;
+}
+
+function renderAll() {
+  renderMarketOverview();
+  renderDistributors();
+  renderRegulation();
+  renderSignals();
+  renderStrategy();
+  renderPricing();
+  if (S.activeTab === 4) renderCogs();
+}
+
+function renderMarketOverview() {
+  const regions  = ['Europe','Latin America','Southeast Asia','UAE/GCC','North America','Thailand','Australia','Rest of World'];
+  const m2024    = [22, 18, 14, 12, 8.5, 6, 5, 3];
+  const m2030    = [105, 90, 95, 75, 43, 40, 28, 18];
+  const cagr_num = [29, 31, 37, 36, 31, 37, 33, 35];
+  const cagr_lbl = ['29%','31%','37%','36%','31%','37%','33%','35%'];
+
+  Plotly.react('chartAddrBar', [
+    { x: regions, y: m2024, name: '2024 ($M)', type: 'bar', marker: { color: '#2e6da4' }, text: m2024.map(v => v.toFixed(1)), textposition: 'outside' },
+    { x: regions, y: m2030, name: '2030 ($M)', type: 'bar', marker: { color: '#7ec8e3' }, text: m2030.map(v => v.toFixed(0)), textposition: 'outside' },
+  ], {
+    barmode: 'group', height: 300, margin: { t: 10, b: 80, l: 40, r: 10 },
+    yaxis: { title: 'USD Million' }, xaxis: { tickangle: -30 },
+    legend: { orientation: 'h', y: -0.35 }, paper_bgcolor: '#fff', plot_bgcolor: '#fff',
+  }, { responsive: true, displayModeBar: false });
+
+  const pieColors = ['#1e3a5f','#2e6da4','#4a90d9','#7ec8e3','#b3dff0','#e05c2a','#f0a07a','#ffd8c0'];
+  Plotly.react('chartRegPie', [{
+    labels: regions, values: m2024, type: 'pie', hole: 0.45,
+    marker: { colors: pieColors }, textposition: 'outside', textinfo: 'percent+label',
+    hovertemplate: '<b>%{label}</b><br>$%{value}M<extra></extra>',
+  }], {
+    height: 300, margin: { t: 10, b: 80, l: 10, r: 10 }, showlegend: false,
+    paper_bgcolor: '#fff',
+  }, { responsive: true, displayModeBar: false });
+
+  const idx = cagr_num.map((_,i)=>i).sort((a,b)=>cagr_num[a]-cagr_num[b]);
+  Plotly.react('chartCagr', [{
+    x: idx.map(i=>cagr_num[i]), y: idx.map(i=>regions[i]),
+    type: 'bar', orientation: 'h',
+    marker: { color: idx.map(i=>cagr_num[i]), colorscale: [[0,'#b3dff0'],[1,'#1e3a5f']], showscale: false },
+    text: idx.map(i=>cagr_lbl[i]), textposition: 'outside',
+  }], {
+    height: 260, margin: { t: 10, b: 30, l: 120, r: 60 },
+    xaxis: { title: 'CAGR (%)' }, paper_bgcolor: '#fff', plot_bgcolor: '#fff',
+    showlegend: false,
+  }, { responsive: true, displayModeBar: false });
+}
+
+function renderGeographic() {
+  const geo = [
+    { r: 'Europe',         stage: 'Established',   cagr: 29, risk: 'Medium',   m30: 105 },
+    { r: 'Latin America',  stage: 'Growing',        cagr: 31, risk: 'Medium',   m30: 90  },
+    { r: 'Southeast Asia', stage: 'Emerging',       cagr: 37, risk: 'Low',      m30: 95  },
+    { r: 'UAE/GCC',        stage: 'Niche/Premium',  cagr: 36, risk: 'Low-Med',  m30: 75  },
+    { r: 'Thailand',       stage: 'Emerging',       cagr: 37, risk: 'Low-Med',  m30: 40  },
+    { r: 'Australia',      stage: 'Established',    cagr: 33, risk: 'High',     m30: 28  },
+    { r: 'North America',  stage: 'Restricted',     cagr: 31, risk: 'High',     m30: 43  },
+  ];
+  const stages = [...new Set(geo.map(g => g.stage))];
+  const stageColors = { 'Established': '#1e3a5f', 'Growing': '#2e6da4', 'Emerging': '#7ec8e3', 'Niche/Premium': '#e05c2a', 'Restricted': '#c62828' };
+  const traces = stages.map(s => {
+    const pts = geo.filter(g => g.stage === s);
+    return {
+      x: pts.map(p => p.cagr), y: pts.map(p => p.risk),
+      text: pts.map(p => p.r),
+      mode: 'markers+text', name: s, type: 'scatter',
+      textposition: 'top center',
+      marker: { size: pts.map(p => Math.sqrt(p.m30) * 4.5), color: stageColors[s] || '#888', opacity: 0.8 },
+      hovertemplate: '<b>%{text}</b><br>CAGR: %{x}%<br>Risk: %{y}<extra></extra>',
+    };
+  });
+  Plotly.react('chartBubble', traces, {
+    height: 440, margin: { t: 30, b: 30, l: 80, r: 20 },
+    xaxis: { title: 'Estimated CAGR (%)', range: [26, 40] },
+    yaxis: { title: 'Regulatory Barrier', categoryorder: 'array', categoryarray: ['High','Medium','Low-Med','Low'], type: 'category' },
+    title: 'Bubble size = 2030 market forecast ($M)', paper_bgcolor: '#fff', plot_bgcolor: '#f7f9fc',
+    legend: { orientation: 'h', y: -0.08 },
+  }, { responsive: true, displayModeBar: false });
+}
+
+function populateDistFilters() {
+  const regions  = ['All', ...new Set(S.distributors.map(d => d.region || d.Region).filter(Boolean))].sort((a,b) => a==='All'?-1:b==='All'?1:a.localeCompare(b));
+  const channels = ['All', ...new Set(S.distributors.map(d => d.channel || d.Channel).filter(Boolean))].sort((a,b) => a==='All'?-1:b==='All'?1:a.localeCompare(b));
+  const rSel = document.getElementById('filtDistRegion');
+  const cSel = document.getElementById('filtDistChannel');
+  const cur_r = rSel.value; const cur_c = cSel.value;
+  rSel.innerHTML = regions.map(r => `<option${r===cur_r?' selected':''}>${r}</option>`).join('');
+  cSel.innerHTML = channels.map(c => `<option${c===cur_c?' selected':''}>${c}</option>`).join('');
+}
+
+function renderDistributors() {
+  if (!S.distributors.length) return;
+  populateDistFilters();
+  const region   = document.getElementById('filtDistRegion').value   || 'All';
+  const channel  = document.getElementById('filtDistChannel').value  || 'All';
+  const priority = document.getElementById('filtDistPriority').value || 'All';
+  const get = (row, k) => row[k] || row[k.toLowerCase()] || row[k.charAt(0).toUpperCase()+k.slice(1)] || '';
+  let rows = S.distributors.filter(d => {
+    const r = get(d,'region'), c = get(d,'channel'), p = get(d,'priority');
+    return (region==='All' || r===region) && (channel==='All' || c===channel) && (priority==='All' || p===priority);
+  });
+  const lbl = document.getElementById('distLiveLbl');
+  if (lbl) { lbl.textContent = S.isLive ? '🟢 Live' : '🟡 Static'; lbl.className = `live-lbl ${S.isLive?'live':'static'}`; }
+  document.getElementById('distTable').innerHTML = `<table>
+    <tr><th>Distributor</th><th>Region</th><th>Territory</th><th>Brands</th><th>Approach</th><th>Priority</th><th>Channel</th></tr>
+    ${rows.map(d => `<tr>
+      <td><strong>${get(d,'distributor')}</strong></td>
+      <td>${get(d,'region')}</td><td>${get(d,'territory')}</td>
+      <td style="font-size:.75rem">${get(d,'brands')}</td>
+      <td style="font-size:.75rem">${get(d,'approach')}</td>
+      <td>${get(d,'priority')}</td><td>${get(d,'channel')}</td>
+    </tr>`).join('')}
+  </table>`;
+  const regionCounts = {};
+  S.distributors.forEach(d => { const r = get(d,'region'); regionCounts[r] = (regionCounts[r]||0)+1; });
+  const rKeys = Object.keys(regionCounts).sort((a,b) => regionCounts[a]-regionCounts[b]);
+  Plotly.react('chartDistCount', [{
+    x: rKeys.map(k=>regionCounts[k]), y: rKeys, type: 'bar', orientation: 'h',
+    marker: { color: rKeys.map(k=>regionCounts[k]), colorscale: [[0,'#b3dff0'],[1,'#1e3a5f']], showscale: false },
+    text: rKeys.map(k=>regionCounts[k]), textposition: 'outside',
+  }], {
+    height: 300, margin: { t: 10, b: 30, l: 120, r: 40 },
+    xaxis: { title: 'Number of Key Distributors' }, paper_bgcolor: '#fff', plot_bgcolor: '#fff',
+    showlegend: false,
+  }, { responsive: true, displayModeBar: false });
+  const b2bData = {
+    markets: ['Germany/EU','UAE/GCC','USA','Australia','Mexico/LATAM','Thailand','Philippines/SEA'],
+    low:     [140, 175, 150, 175, 100, 90, 75],
+    high:    [225, 300, 275, 300, 175, 150, 125],
+  };
+  const mids = b2bData.low.map((l,i) => (l+b2bData.high[i])/2);
+  const idx2 = mids.map((_,i)=>i).sort((a,b)=>mids[a]-mids[b]);
+  Plotly.react('chartB2B', [{
+    x: idx2.map(i=>mids[i]), y: idx2.map(i=>b2bData.markets[i]),
+    type: 'bar', orientation: 'h', marker: { color: '#2e6da4' },
+    text: idx2.map(i=>`$${mids[i]|0}`), textposition: 'outside',
+    error_x: { type: 'data', symmetric: false,
+      array: idx2.map(i=>b2bData.high[i]-mids[i]), arrayminus: idx2.map(i=>mids[i]-b2bData.low[i]),
+      color: '#1e3a5f', thickness: 2 },
+  }], {
+    height: 300, margin: { t: 10, b: 40, l: 130, r: 60 },
+    xaxis: { title: 'B2B Price per 10B-particle vial (USD)' },
+    paper_bgcolor: '#fff', plot_bgcolor: '#fff', showlegend: false,
+  }, { responsive: true, displayModeBar: false });
+}
+
+function renderRegulation() {
+  if (!S.regulatory.length) return;
+  const lbl = document.getElementById('regLiveLbl');
+  if (lbl) { lbl.textContent = S.isLive ? '🟢 Live' : '🟡 Static'; lbl.className = `live-lbl ${S.isLive?'live':'static'}`; }
+  const allRisks = [...new Set(S.regulatory.map(r => (r.risk||r.Risk||'').toUpperCase()))].filter(Boolean);
+  if (S.regRisks.size === 0) allRisks.forEach(r => S.regRisks.add(r));
+  const ckBox = document.getElementById('regRiskChecks');
+  if (ckBox && ckBox.children.length === 0) {
+    ['HIGH','MEDIUM','LOW-MED','LOW'].forEach(r => {
+      const lbl = document.createElement('label');
+      lbl.innerHTML = `<input type="checkbox" value="${r}" checked onchange="onRegRiskChange()"> ${r}`;
+      ckBox.appendChild(lbl);
+    });
+  }
+  const get = (row, k) => row[k] || row[k.toLowerCase()] || '';
+  const rows = S.regulatory.filter(r => S.regRisks.has((get(r,'risk')||'').toUpperCase()));
+  document.getElementById('regTable').innerHTML = `<table>
+    <tr><th>Territory</th><th>Body</th><th>Topical/Cosmetic</th><th>Soft Indications</th><th>IV/Therapeutic</th><th>Risk</th><th>Last Updated</th></tr>
+    ${rows.map(r => {
+      const risk = (get(r,'risk')||'').toUpperCase();
+      const riskColor = { HIGH: '#c62828', MEDIUM: '#f0a030', 'LOW-MED': '#90c040', LOW: '#4caf50' }[risk] || '#888';
+      return `<tr>
+        <td><strong>${get(r,'territory')}</strong></td>
+        <td>${get(r,'body')}</td>
+        <td style="font-size:.75rem">${get(r,'topical_cosmetic')}</td>
+        <td style="font-size:.75rem">${get(r,'soft_indications')}</td>
+        <td style="font-size:.75rem">${get(r,'iv_therapeutic')}</td>
+        <td><span style="background:${riskColor};color:#fff;padding:2px 7px;border-radius:4px;font-size:.72rem;font-weight:700">${risk}</span></td>
+        <td style="font-size:.75rem">${get(r,'last_updated')}</td>
+      </tr>`;
+    }).join('')}
+  </table>`;
+  const riskCounts = {};
+  S.regulatory.forEach(r => { const k = (get(r,'risk')||'UNKNOWN').toUpperCase(); riskCounts[k] = (riskCounts[k]||0)+1; });
+  const rKeys = Object.keys(riskCounts);
+  const rColors = { HIGH: '#e05c2a', MEDIUM: '#f0c040', 'LOW-MED': '#90c040', LOW: '#4caf50', UNKNOWN: '#ccc' };
+  Plotly.react('chartRegRisk', [{
+    labels: rKeys, values: rKeys.map(k=>riskCounts[k]), type: 'pie', hole: 0.4,
+    marker: { colors: rKeys.map(k=>rColors[k]||'#aaa') },
+    textinfo: 'percent+label', textposition: 'outside',
+  }], {
+    height: 280, margin: { t: 10, b: 60, l: 10, r: 10 }, showlegend: false,
+    paper_bgcolor: '#fff',
+  }, { responsive: true, displayModeBar: false });
+}
+
+function onRegRiskChange() {
+  S.regRisks.clear();
+  document.querySelectorAll('#regRiskChecks input:checked').forEach(cb => S.regRisks.add(cb.value));
+  renderRegulation();
+}
+
+function renderPricing() {
+  const lbl = document.getElementById('priceLiveLbl');
+  if (lbl) { lbl.textContent = S.isLive ? '🟢 Live' : '🟡 Static'; lbl.className = `live-lbl ${S.isLive?'live':'static'}`; }
+  const oopData = [
+    { ind: 'Facial Rejuvenation', lo: 400,  hi: 900,  mkts: 'EU, SEA, UAE, TH' },
+    { ind: 'Hair Restoration',    lo: 900,  hi: 2300, mkts: 'UAE, US, EU, TH' },
+    { ind: 'Wound Healing/Scar',  lo: 500,  hi: 2000, mkts: 'MX, TH, SEA, AU' },
+    { ind: 'Joint Pain/OA',       lo: 1500, hi: 3500, mkts: 'MX, UAE, TH, SEA' },
+    { ind: 'Systemic IV Longevity',lo:3750, hi: 5500, mkts: 'UAE, AU, TH premium' },
+    { ind: 'Post-Procedure',      lo: 150,  hi: 400,  mkts: 'EU, SEA, US, TH' },
+  ];
+  const oopColors = ['#1e3a5f','#2e6da4','#4a90d9','#7ec8e3','#b3dff0','#e05c2a'];
+  Plotly.react('chartOOP', oopData.map((d,i) => ({
+    x: [d.ind], y: [d.hi - d.lo], base: [d.lo], type: 'bar',
+    name: d.ind, marker: { color: oopColors[i] },
+    text: [`$${d.lo.toLocaleString()}–$${d.hi.toLocaleString()}`], textposition: 'inside',
+    hovertemplate: `<b>${d.ind}</b><br>Range: $${d.lo.toLocaleString()}–$${d.hi.toLocaleString()}<br>Markets: ${d.mkts}<extra></extra>`,
+  })), {
+    barmode: 'stack', showlegend: false, height: 380,
+    margin: { t: 20, b: 80, l: 60, r: 10 },
+    yaxis: { title: 'OOP Price to Patient (USD)' }, xaxis: { tickangle: -20 },
+    paper_bgcolor: '#fff', plot_bgcolor: '#fff',
+  }, { responsive: true, displayModeBar: false });
+  const tiers = ['Premium Ortho/Medical','Aesthetic/Wellness','Distributor/Wholesale','CDMO / Bulk'];
+  const tierLo = [350, 200, 150, 120];
+  const tierHi = [500, 320, 220, 180];
+  const tierMid = tierLo.map((l,i) => (l+tierHi[i])/2);
+  const tierColors = ['#1e3a5f','#2e6da4','#7ec8e3','#b3dff0'];
+  Plotly.react('chartTier', [
+    ...tiers.map((t,i) => ({
+      x: [t], y: [tierHi[i]-tierLo[i]], base: [tierLo[i]], type: 'bar',
+      name: t, marker: { color: tierColors[i] },
+      text: [`$${tierLo[i]}–$${tierHi[i]}`], textposition: 'inside',
+      showlegend: false,
+    })),
+    {
+      x: tiers, y: tierMid, mode: 'lines+markers+text', type: 'scatter',
+      line: { color: '#e05c2a', dash: 'dot', width: 2 },
+      marker: { size: 8, color: '#e05c2a' },
+      text: tierMid.map(v=>`$${Math.round(v)}`), textposition: 'top center',
+      name: 'Midpoint', showlegend: false,
+    }
+  ], {
+    barmode: 'stack', height: 320, margin: { t: 20, b: 80, l: 60, r: 10 },
+    yaxis: { title: 'B2B Price per 10B particles (USD)' },
+    paper_bgcolor: '#fff', plot_bgcolor: '#fff',
+  }, { responsive: true, displayModeBar: false });
+}
+
+const COGS_DATA = [
+  { c: 'BM-MSC donor procurement',   '2023l':800,'2023h':1200,'2026l':500,'2026h':800,'2030l':200,'2030h':350 },
+  { c: 'Cell expansion media (GMP)',  '2023l':600,'2023h':900, '2026l':400,'2026h':600,'2030l':150,'2030h':250 },
+  { c: 'Bioreactor operation',        '2023l':400,'2023h':700, '2026l':250,'2026h':400,'2030l':80, '2030h':150 },
+  { c: 'Isolation & purification',    '2023l':600,'2023h':1000,'2026l':350,'2026h':600,'2030l':100,'2030h':200 },
+  { c: 'QC & characterization',       '2023l':400,'2023h':600, '2026l':250,'2026h':400,'2030l':80, '2030h':150 },
+  { c: 'Lyophilization (optional)',   '2023l':200,'2023h':400, '2026l':150,'2026h':250,'2030l':50, '2030h':100 },
+  { c: 'Batch release / regulatory',  '2023l':300,'2023h':500, '2026l':200,'2026h':350,'2030l':80, '2030h':150 },
+];
+
+function renderCogs() {
+  const yr = S.cogsYear;
+  const mids  = COGS_DATA.map(d => (d[`${yr}l`]+d[`${yr}h`])/2);
+  const errs  = COGS_DATA.map(d => (d[`${yr}h`]-d[`${yr}l`])/2);
+  const comps = COGS_DATA.map(d => d.c);
+  const totalLo = COGS_DATA.reduce((s,d)=>s+d[`${yr}l`],0);
+  const totalHi = COGS_DATA.reduce((s,d)=>s+d[`${yr}h`],0);
+  Plotly.react('chartCogsBar', [{
+    x: mids, y: comps, type: 'bar', orientation: 'h',
+    marker: { color: mids, colorscale: [[0,'#b3dff0'],[1,'#1e3a5f']], showscale: false },
+    error_x: { type: 'data', array: errs, color: '#1e3a5f', thickness: 1.5 },
+    text: mids.map(v=>`$${Math.round(v).toLocaleString()}`), textposition: 'outside',
+  }], {
+    height: 360, margin: { t: 10, b: 40, l: 180, r: 80 },
+    xaxis: { title: `USD per dose (${yr})` }, paper_bgcolor: '#fff', plot_bgcolor: '#fff',
+    shapes: [{ type: 'line', x0: totalLo, x1: totalLo, y0: -0.5, y1: comps.length-0.5,
+               line: { color: '#e05c2a', dash: 'dot', width: 2 } }],
+    showlegend: false,
+  }, { responsive: true, displayModeBar: false });
+  const pieColors = ['#1e3a5f','#2e6da4','#4a90d9','#7ec8e3','#b3dff0','#e05c2a','#f0a07a'];
+  Plotly.react('chartCogsPie', [{
+    labels: comps, values: mids, type: 'pie', hole: 0.4,
+    marker: { colors: pieColors }, textinfo: 'percent+label', textposition: 'outside',
+  }], {
+    height: 360, margin: { t: 10, b: 80, l: 10, r: 10 }, showlegend: false,
+    paper_bgcolor: '#fff',
+  }, { responsive: true, displayModeBar: false });
+  document.getElementById('cogsSummary').innerHTML =
+    `📊 <strong>Total COGS range — ${yr}:</strong> <strong>$${totalLo.toLocaleString()} – $${totalHi.toLocaleString()}</strong> per 10B-particle clinical dose. BM-MSC is ~15–25% higher than UC-MSC equivalents due to donor procurement complexity.`;
+  const trajYr  = [2023, 2024, 2026, 2028, 2030];
+  const trajLo  = [3300, 2800, 2100, 1200, 740];
+  const trajHi  = [5300, 4500, 3400, 2000, 1100];
+  const trajMid = trajLo.map((l,i)=>(l+trajHi[i])/2);
+  Plotly.react('chartCogsTraj', [
+    { x: trajYr, y: trajHi, fill: 'none', mode: 'lines', line: { color: '#b3dff0' }, name: 'High', showlegend: false },
+    { x: trajYr, y: trajLo, fill: 'tonexty', mode: 'lines', line: { color: '#7ec8e3' },
+      fillcolor: 'rgba(126,200,227,.25)', name: 'Range', showlegend: false },
+    { x: trajYr, y: trajMid, mode: 'lines+markers+text', line: { color: '#1e3a5f', width: 3 },
+      marker: { size: 10, color: '#2e6da4' },
+      text: trajMid.map(v=>`$${v.toLocaleString()}`), textposition: 'top center', name: 'Midpoint' },
+  ], {
+    height: 300, margin: { t: 20, b: 30, l: 70, r: 20 },
+    xaxis: { title: 'Year' }, yaxis: { title: 'COGS per 10B-particle dose (USD)' },
+    paper_bgcolor: '#fff', plot_bgcolor: '#f7f9fc',
+    legend: { orientation: 'h', y: 1.06 },
+  }, { responsive: true, displayModeBar: false });
+}
+
+document.querySelectorAll('#cogsYearRadio input').forEach(inp => {
+  inp.addEventListener('change', () => {
+    S.cogsYear = inp.value;
+    document.querySelectorAll('#cogsYearRadio label').forEach(l => {
+      l.classList.toggle('checked', l.querySelector('input').value === S.cogsYear);
+    });
+    renderCogs();
+  });
+});
+
+function renderSignals() {
+  if (!S.signals.length) return;
+  const lbl = document.getElementById('sigLiveLbl');
+  if (lbl) { lbl.textContent = S.isLive ? '🟢 Live' : '🟡 Static'; lbl.className = `live-lbl ${S.isLive?'live':'static'}`; }
+  const get = (row, k) => row[k] || row[k.toLowerCase()] || '';
+  const allTypes = [...new Set(S.signals.map(s => get(s,'type')).filter(Boolean))].sort();
+  const ckBox = document.getElementById('sigTypeChecks');
+  if (ckBox && ckBox.children.length === 0) {
+    if (S.sigTypes.size === 0) allTypes.forEach(t => S.sigTypes.add(t));
+    allTypes.forEach(t => {
+      const lbl = document.createElement('label');
+      lbl.innerHTML = `<input type="checkbox" value="${t}" ${S.sigTypes.has(t)?'checked':''} onchange="onSigTypeChange()"> ${t}`;
+      ckBox.appendChild(lbl);
+    });
+  }
+  const filtered = S.signals.filter(s => S.sigTypes.has(get(s,'type')));
+  const pos  = filtered.filter(s => (get(s,'sentiment')||'').includes('Positive')).length;
+  const risk = filtered.filter(s => (get(s,'sentiment')||'').includes('Risk')).length;
+  const neu  = filtered.filter(s => (get(s,'sentiment')||'').includes('Neutral')).length;
+  document.getElementById('sigMetrics').innerHTML = `
+    <div class="pill"><div class="pill-v">${pos}</div><div class="pill-l">🟢 Positive Signals</div></div>
+    <div class="pill"><div class="pill-v">${risk}</div><div class="pill-l">🔴 Risk Signals</div></div>
+    <div class="pill"><div class="pill-v">${neu}</div><div class="pill-l">🟡 Neutral/Watch</div></div>
+    <div class="pill"><div class="pill-v">${filtered.length}</div><div class="pill-l">📋 Total Tracked</div></div>`;
+  document.getElementById('sigTable').innerHTML = `<table>
+    <tr><th>Date</th><th>Type</th><th>Event</th><th>Impact</th><th>Sentiment</th><th>Territory</th></tr>
+    ${filtered.map(s => `<tr>
+      <td style="white-space:nowrap;font-size:.75rem">${get(s,'date')}</td>
+      <td><span style="background:#e8f0ff;padding:2px 7px;border-radius:3px;font-size:.72rem;white-space:nowrap">${get(s,'type')}</span></td>
+      <td style="font-size:.78rem">${get(s,'event')}</td>
+      <td style="font-size:.75rem">${get(s,'impact')}</td>
+      <td style="white-space:nowrap">${get(s,'sentiment')}</td>
+      <td style="font-size:.75rem">${get(s,'territory')}</td>
+    </tr>`).join('')}
+  </table>`;
+  const typeCounts = {};
+  S.signals.forEach(s => { const t = get(s,'type'); if(t) typeCounts[t] = (typeCounts[t]||0)+1; });
+  const tKeys = Object.keys(typeCounts).sort((a,b)=>typeCounts[a]-typeCounts[b]);
+  Plotly.react('chartSigType', [{
+    x: tKeys.map(k=>typeCounts[k]), y: tKeys, type: 'bar', orientation: 'h',
+    marker: { color: tKeys.map(k=>typeCounts[k]), colorscale: [[0,'#b3dff0'],[1,'#1e3a5f']], showscale: false },
+    text: tKeys.map(k=>typeCounts[k]), textposition: 'outside',
+  }], {
+    height: 280, margin: { t: 10, b: 30, l: 120, r: 40 },
+    xaxis: { title: 'Number of Signals' }, paper_bgcolor: '#fff', plot_bgcolor: '#fff',
+    showlegend: false,
+  }, { responsive: true, displayModeBar: false });
+}
+
+function onSigTypeChange() {
+  S.sigTypes.clear();
+  document.querySelectorAll('#sigTypeChecks input:checked').forEach(cb => S.sigTypes.add(cb.value));
+  renderSignals();
+}
+
+function renderStrategy() {
+  const items = [
+    { p:'CRITICAL', cls:'c-crit', title:'Obtain NTA-verified CoA', detail:'Batch-level Certificate of Analysis with particle count, size distribution, and CD63/CD81/CD73/CD90 markers. Required by all serious distributors globally.' },
+    { p:'CRITICAL', cls:'c-crit', title:'No therapeutic claims on cosmetic-grade products', detail:'Comply with FDA/EU labeling enforcement. Any therapeutic claim on a cosmetic channel product risks immediate warning letter and market access loss.' },
+    { p:'HIGH',     cls:'c-warn', title:'Develop lyophilized format', detail:'Opens Thailand, Philippines, Brazil, Mexico channels. Adds ~$150–250/dose cost but eliminates cold-chain barrier and significantly increases distributor appeal.' },
+    { p:'HIGH',     cls:'c-warn', title:'Obtain Philippine FDA cosmetic notification', detail:'Use as ASEAN compliance signal. Jan 2026 UnicoCell approval validates the blueprint for TH, MY, and ID market entry.' },
+    { p:'HIGH',     cls:'c-warn', title:'Prepare Free Sale Certificate from country of origin', detail:'Required for all Thai FDA imports of regulated products. Essential for Thailand entry.' },
+    { p:'HIGH',     cls:'c-warn', title:'Use ANVISA-COFEPRIS MoU for dual LATAM entry', detail:'Register in one territory → gain reliance in the other. Cuts LATAM regulatory timeline by 40–60%.' },
+    { p:'HIGH',     cls:'c-warn', title:'Position BM-MSC vs UC-MSC clinical literature', detail:'Orthopedic, neuroprotective, and wound-healing evidence base justifies 15–25% price premium to distributors.' },
+    { p:'MEDIUM',   cls:'c-sig',  title:'Tiered distributor pricing with volume thresholds', detail:'50/200/500+ vial tiers with cumulative discounts. Increases distributor commitment and stocking forecasting.' },
+    { p:'MEDIUM',   cls:'c-sig',  title:'Engage HSA Singapore approval as ASEAN gateway', detail:'Thai FDA reliance route (2021) recognizes HSA clearance. Fastest path to multiple ASEAN markets simultaneously.' },
+    { p:'MEDIUM',   cls:'c-sig',  title:'Target DUBIMED (UAE) and Croma-Pharma (EU) as anchor distributors', detail:'Both actively seeking new regenerative brands. DUBIMED: 40-year exclusive relationships; Croma-Pharma: signed new distribution deal Mar 2024.' },
+    { p:'MEDIUM',   cls:'c-sig',  title:'US strategy: cosmetic topical + CDMO only', detail:'OEM/white-label for medspas and post-laser protocols. Consider GMP supply to clinical-stage US biotech for Phase I/II trials.' },
+    { p:'MEDIUM',   cls:'c-sig',  title:'Thailand: appoint local licensed importer', detail:'All imports require locally registered Thai entity holding import license. Foreign manufacturers must appoint local representative.' },
+  ];
+  const pColors = { CRITICAL:'#c62828', HIGH:'#e05c2a', MEDIUM:'#f0a030' };
+  document.getElementById('checklist').innerHTML = items.map(it =>
+    `<div class="${it.cls}" style="margin:6px 0">
+      <span style="background:${pColors[it.p]};color:#fff;border-radius:4px;padding:2px 8px;font-size:.7rem;font-weight:700;margin-right:7px">${it.p}</span>
+      <strong>${it.title}</strong><br>
+      <span style="font-size:.84rem">${it.detail}</span>
+    </div>`
+  ).join('');
+  const pCounts = { CRITICAL: items.filter(i=>i.p==='CRITICAL').length, HIGH: items.filter(i=>i.p==='HIGH').length, MEDIUM: items.filter(i=>i.p==='MEDIUM').length };
+  Plotly.react('chartPriority', [{
+    x: Object.keys(pCounts), y: Object.values(pCounts), type: 'bar',
+    marker: { color: ['#c62828','#e05c2a','#f0a030'] },
+    text: Object.values(pCounts), textposition: 'outside',
+  }], {
+    height: 220, margin: { t: 10, b: 40, l: 30, r: 30 },
+    yaxis: { title: 'Number of Actions' }, showlegend: false,
+    paper_bgcolor: '#fff', plot_bgcolor: '#fff',
+  }, { responsive: true, displayModeBar: false });
+}
+
+function showTab(idx, btn) {
+  document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  S.activeTab = idx;
+  if (idx === 1) setTimeout(renderGeographic, 50);
+  if (idx === 4) { setTimeout(renderPricing, 50); setTimeout(renderCogs, 50); }
+}
+
+function showSubTab(idx) {
+  ['stPanel0','stPanel1','stPanel2'].forEach((id,i) => {
+    document.getElementById(id).style.display = i===idx ? '' : 'none';
+  });
+  document.querySelectorAll('#tab4 .tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+  S.activeSubTab = idx;
+  if (idx === 1) setTimeout(() => { renderPricing(); }, 50);
+  if (idx === 2) setTimeout(() => { renderCogs(); }, 50);
+}
+
+function startCountdown() {
+  clearInterval(countdownTimer);
+  countdownSec = REFRESH_MS / 1000;
+  countdownTimer = setInterval(() => {
+    countdownSec--;
+    const m = Math.floor(countdownSec / 60);
+    const s = countdownSec % 60;
+    const lbl = document.getElementById('countdownLbl');
+    if (lbl) lbl.textContent = `Next auto-refresh in ${m}:${String(s).padStart(2,'0')}`;
+    if (countdownSec <= 0) {
+      clearInterval(countdownTimer);
+      loadAllData().then(startCountdown);
+    }
+  }, 1000);
+}
+
+function manualRefresh() {
+  clearInterval(countdownTimer);
+  loadAllData().then(startCountdown);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  loadAllData().then(startCountdown);
+});
+</script>
+</body>
+</html>

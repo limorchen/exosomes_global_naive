@@ -2,15 +2,15 @@ name: Update Exosome Market Signals
 
 on:
   schedule:
-    - cron: '0 7 * * 1'   # every Monday at 7am UTC
-  workflow_dispatch:        # manual trigger from GitHub Actions tab
+    - cron: '0 7 * * *'
+  workflow_dispatch:
 
 jobs:
   fetch-and-commit:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write       # needed to commit back to the repo
+      contents: write
 
     steps:
       - name: Checkout repo
