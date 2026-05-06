@@ -420,6 +420,7 @@ const REFRESH_MS = 5 * 60 * 1000;
 
 const S = {
   signals: [], distributors: [], regulatory: [], pricing: [], meta: {},
+  market: [], segments: [], kpis: [],
   lastRefreshed: null, isLive: false, activeTab: 0, activeSubTab: 0,
   cogsYear: '2026',
   distFilters: { region: 'All', channel: 'All', priority: 'All' },
@@ -440,15 +441,19 @@ async function loadCSV(filename) {
 
 async function loadAllData() {
   document.getElementById('loadingOverlay').classList.add('visible');
-  const [sig, dist, reg, price, meta] = await Promise.all([
+  const [sig, dist, reg, price, meta, mkt, seg, kpi] = await Promise.all([
     loadCSV('signals.csv'), loadCSV('distributors.csv'),
     loadCSV('regulatory.csv'), loadCSV('pricing.csv'), loadCSV('meta.csv'),
+    loadCSV('market.csv'), loadCSV('segments.csv'), loadCSV('kpis.csv'),
   ]);
   if (sig)   S.signals      = sig;
   if (dist)  S.distributors = dist;
   if (reg)   S.regulatory   = reg;
   if (price) S.pricing      = price;
   if (meta)  { S.meta = {}; meta.forEach(r => { S.meta[r.key] = r.value; }); }
+  if (mkt)   S.market   = mkt;
+  if (seg)   S.segments = seg;
+  if (kpi)   S.kpis     = kpi;
   S.lastRefreshed = new Date();
   S.isLive = !!(sig && dist && reg && price);
   document.getElementById('loadingOverlay').classList.remove('visible');
