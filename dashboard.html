@@ -116,7 +116,7 @@ hr{border:none;border-top:1px solid #dce8f4;margin:14px 0}
 
 <div class="tab-panel active" id="tab0">
 <div class="content">
-  <div class="sh">Global Market KPIs (Addressable Wellness + Soft Indications)</div>
+  <div class="sh">Global Market KPIs (Addressable Wellness + Soft Indications) <span class="live-lbl" id="marketLiveLbl">⏳ loading</span></div>
   <div class="kpi-row" id="kpiRow">
     <div class="kpi"><div class="kpi-v">~$88.5M</div><div class="kpi-l">2024 Addressable Market</div><div class="kpi-s">Wellness + soft indications only</div></div>
     <div class="kpi"><div class="kpi-v">~$494M</div><div class="kpi-l">2030 Forecast</div><div class="kpi-s">Wellness + soft indications</div></div>
@@ -152,7 +152,7 @@ hr{border:none;border-top:1px solid #dce8f4;margin:14px 0}
 
 <div class="tab-panel" id="tab1">
 <div class="content">
-  <div class="sh">Market Opportunity vs Regulatory Risk (All Regions)</div>
+  <div class="sh">Market Opportunity vs Regulatory Risk (All Regions) <span class="live-lbl" id="geoLiveLbl">⏳ loading</span></div>
   <div class="chart-box"><div id="chartBubble" style="height:440px"></div></div>
   <div class="g2" style="margin-top:10px">
     <div>
@@ -481,6 +481,8 @@ function renderAll() {
 }
 
 function renderMarketOverview() {
+  const mlbl = document.getElementById('marketLiveLbl');
+  if (mlbl) { mlbl.textContent = S.isLive ? '🟢 Live' : '🟡 Static'; mlbl.className = `live-lbl ${S.isLive?'live':'static'}`; }
   if (S.kpis.length) {
     const kpiRow = document.getElementById('kpiRow');
     if (kpiRow) kpiRow.innerHTML = S.kpis.map(k =>
@@ -539,6 +541,8 @@ function renderMarketOverview() {
 }
 
 function renderGeographic() {
+  const glbl = document.getElementById('geoLiveLbl');
+  if (glbl) { glbl.textContent = S.isLive ? '🟢 Live' : '🟡 Static'; glbl.className = `live-lbl ${S.isLive?'live':'static'}`; }
   const raw = S.market.length ? S.market : [
     {region:'Europe',stage:'Established',cagr:'29',risk:'Medium',m2030:'105'},
     {region:'Latin America',stage:'Growing',cagr:'31',risk:'Medium',m2030:'90'},
