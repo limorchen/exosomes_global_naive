@@ -117,7 +117,7 @@ hr{border:none;border-top:1px solid #dce8f4;margin:14px 0}
 <div class="tab-panel active" id="tab0">
 <div class="content">
   <div class="sh">Global Market KPIs (Addressable Wellness + Soft Indications)</div>
-  <div class="kpi-row">
+  <div class="kpi-row" id="kpiRow">
     <div class="kpi"><div class="kpi-v">~$88.5M</div><div class="kpi-l">2024 Addressable Market</div><div class="kpi-s">Wellness + soft indications only</div></div>
     <div class="kpi"><div class="kpi-v">~$494M</div><div class="kpi-l">2030 Forecast</div><div class="kpi-s">Wellness + soft indications</div></div>
     <div class="kpi"><div class="kpi-v">~33%</div><div class="kpi-l">CAGR 2024–2030</div><div class="kpi-s">Addressable segment</div></div>
@@ -128,7 +128,7 @@ hr{border:none;border-top:1px solid #dce8f4;margin:14px 0}
   <div class="g2">
     <div>
       <div class="sh">Market Segments — Size, Forecast &amp; Access</div>
-      <div class="tw">
+      <div class="tw" id="segmentsTable">
         <table>
           <tr><th>Segment</th><th>2024 ($M)</th><th>2030 ($M)</th><th>CAGR</th><th>Access Now?</th></tr>
           <tr><td>Exosome Diagnostics</td><td>83.5</td><td>1,100</td><td>47.6%</td><td>Partial</td></tr>
@@ -481,11 +481,30 @@ function renderAll() {
 }
 
 function renderMarketOverview() {
-  const regions  = ['Europe','Latin America','Southeast Asia','UAE/GCC','North America','Thailand','Australia','Rest of World'];
-  const m2024    = [22, 18, 14, 12, 8.5, 6, 5, 3];
-  const m2030    = [105, 90, 95, 75, 43, 40, 28, 18];
-  const cagr_num = [29, 31, 37, 36, 31, 37, 33, 35];
-  const cagr_lbl = ['29%','31%','37%','36%','31%','37%','33%','35%'];
+  if (S.kpis.length) {
+    const kpiRow = document.getElementById('kpiRow');
+    if (kpiRow) kpiRow.innerHTML = S.kpis.map(k =>
+      `<div class="kpi"><div class="kpi-v">${k.value}</div><div class="kpi-l">${k.label}</div><div class="kpi-s">${k.sub}</div></div>`
+    ).join('');
+  }
+  if (S.segments.length) {
+    const tbl = document.getElementById('segmentsTable');
+    if (tbl) tbl.innerHTML = `<table>
+      <tr><th>Segment</th><th>2024 ($M)</th><th>2030 ($M)</th><th>CAGR</th><th>Access Now?</th></tr>
+      ${S.segments.map(s => `<tr><td>${s.segment}</td><td>${s.m2024}</td><td>${s.m2030}</td><td>${s.cagr}%</td><td>${s.access_now}</td></tr>`).join('')}
+    </table>`;
+  }
+  const src = S.market.length ? S.market : [
+    {region:'Europe',m2024:'22',m2030:'105',cagr:'29'},{region:'Latin America',m2024:'18',m2030:'90',cagr:'31'},
+    {region:'Southeast Asia',m2024:'14',m2030:'95',cagr:'37'},{region:'UAE/GCC',m2024:'12',m2030:'75',cagr:'36'},
+    {region:'North America',m2024:'8.5',m2030:'43',cagr:'31'},{region:'Thailand',m2024:'6',m2030:'40',cagr:'37'},
+    {region:'Australia',m2024:'5',m2030:'28',cagr:'33'},{region:'Rest of World',m2024:'3',m2030:'18',cagr:'35'},
+  ];
+  const regions  = src.map(r => r.region);
+  const m2024    = src.map(r => parseFloat(r.m2024));
+  const m2030    = src.map(r => parseFloat(r.m2030));
+  const cagr_num = src.map(r => parseFloat(r.cagr));
+  const cagr_lbl = cagr_num.map(v => v + '%');
 
   Plotly.react('chartAddrBar', [
     { x: regions, y: m2024, name: '2024 ($M)', type: 'bar', marker: { color: '#2e6da4' }, text: m2024.map(v => v.toFixed(1)), textposition: 'outside' },
@@ -520,15 +539,16 @@ function renderMarketOverview() {
 }
 
 function renderGeographic() {
-  const geo = [
-    { r: 'Europe',         stage: 'Established',   cagr: 29, risk: 'Medium',   m30: 105 },
-    { r: 'Latin America',  stage: 'Growing',        cagr: 31, risk: 'Medium',   m30: 90  },
-    { r: 'Southeast Asia', stage: 'Emerging',       cagr: 37, risk: 'Low',      m30: 95  },
-    { r: 'UAE/GCC',        stage: 'Niche/Premium',  cagr: 36, risk: 'Low-Med',  m30: 75  },
-    { r: 'Thailand',       stage: 'Emerging',       cagr: 37, risk: 'Low-Med',  m30: 40  },
-    { r: 'Australia',      stage: 'Established',    cagr: 33, risk: 'High',     m30: 28  },
-    { r: 'North America',  stage: 'Restricted',     cagr: 31, risk: 'High',     m30: 43  },
+  const raw = S.market.length ? S.market : [
+    {region:'Europe',stage:'Established',cagr:'29',risk:'Medium',m2030:'105'},
+    {region:'Latin America',stage:'Growing',cagr:'31',risk:'Medium',m2030:'90'},
+    {region:'Southeast Asia',stage:'Emerging',cagr:'37',risk:'Low',m2030:'95'},
+    {region:'UAE/GCC',stage:'Niche/Premium',cagr:'36',risk:'Low-Med',m2030:'75'},
+    {region:'Thailand',stage:'Emerging',cagr:'37',risk:'Low-Med',m2030:'40'},
+    {region:'Australia',stage:'Established',cagr:'33',risk:'High',m2030:'28'},
+    {region:'North America',stage:'Restricted',cagr:'31',risk:'High',m2030:'43'},
   ];
+  const geo = raw.map(r => ({ r: r.region, stage: r.stage, cagr: parseFloat(r.cagr), risk: r.risk, m30: parseFloat(r.m2030) }));
   const stages = [...new Set(geo.map(g => g.stage))];
   const stageColors = { 'Established': '#1e3a5f', 'Growing': '#2e6da4', 'Emerging': '#7ec8e3', 'Niche/Premium': '#e05c2a', 'Restricted': '#c62828' };
   const traces = stages.map(s => {
