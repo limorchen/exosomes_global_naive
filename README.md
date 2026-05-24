@@ -4,8 +4,7 @@ Strategic intelligence for BM-MSC-derived exosome market entry — built for [Nu
 
 ## 🔗 Live Dashboard
 
-**👉 [Open the dashboard](https://YOUR-STREAMLIT-URL.streamlit.app)**
-> Replace this link once deployed on Streamlit Community Cloud
+**👉 [Open the dashboard](https://exosomesglobalnaive-5z5mybbmpuedvsdmbcybjv.streamlit.app/)**
 
 ---
 
