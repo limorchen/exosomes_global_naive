@@ -24,7 +24,7 @@ st.set_page_config(
 # CONFIG
 # ══════════════════════════════════════════════════════════════
 REPORT_DATE  = "March 2026"
-DATA_VERSION = "v2.4-strategic-r2"
+DATA_VERSION = "v2.4-strategic"
 
 # ── Change these to match your GitHub repo ───────────────────
 GITHUB_USER = "limorchen"
@@ -309,12 +309,14 @@ with tabs[0]:
             },
             text="Value",
             log_y=True,
+            title="All market size estimates — log scale (dark blue = relevant to manufacturer)",
         )
         fig_recon.update_traces(texttemplate="%{text:,.0f}M", textposition="outside")
         fig_recon.update_layout(
-            height=420, margin=dict(t=10, b=130), showlegend=True,
+            height=420, margin=dict(t=20, b=120), showlegend=True,
             yaxis_title="USD Million (log scale)", xaxis_title="",
-            legend=dict(orientation="h", yanchor="top", y=-0.30, xanchor="center", x=0.5, font=dict(size=9)),
+            title=None,
+            legend=dict(orientation="h", yanchor="top", y=-0.28, xanchor="center", x=0.5, font=dict(size=9)),
         )
         st.plotly_chart(fig_recon, use_container_width=True)
         st.caption("Log scale required — values span $81M to $58,000M. Dark blue bars are the most relevant to a clinical-grade vial manufacturer. Each bar measures a different economic concept.")
@@ -376,15 +378,15 @@ with tabs[0]:
             pull=[0.03]*10,
         )
         fig_pie.update_layout(
-            margin=dict(t=10, l=10, r=180, b=10),
+            margin=dict(t=10, l=10, r=160, b=10),
             showlegend=True,
-            height=520,
+            height=480,
             legend=dict(
                 orientation="v",
                 yanchor="top", y=1.0,
                 xanchor="left", x=1.01,
                 font=dict(size=10),
-                tracegroupgap=1,
+                tracegroupgap=2,
             ),
         )
         st.plotly_chart(fig_pie, use_container_width=True)
@@ -435,6 +437,112 @@ with tabs[0]:
         )
 # ════════════════════════════════════════════════════════════════
 with tabs[1]:
+    # ── Choropleth world map ─────────────────────────────────────
+    st.markdown('<div class="section-header">🗺️ Global Entry Map — Regulatory Risk by Country (March 2026)</div>', unsafe_allow_html=True)
+    st.caption("Color = regulatory risk for naive MSC exosome products. Bubble size = 2030 market forecast (USD million).")
+
+    choropleth_df = pd.DataFrame([
+        {"Country":"United States",    "ISO":"USA","Risk":"High",    "Risk_Num":4,"2030_M":206,"Channel":"Cosmetic topical only (FDA 12+ WLs)","Flag":"🇺🇸"},
+        {"Country":"Australia",        "ISO":"AUS","Risk":"High",    "Risk_Num":4,"2030_M":9,  "Channel":"TGA-registered clinics only",         "Flag":"🇦🇺"},
+        {"Country":"Germany",          "ISO":"DEU","Risk":"Medium",  "Risk_Num":3,"2030_M":18, "Channel":"Aesthetic / Medical spa",              "Flag":"🇩🇪"},
+        {"Country":"France",           "ISO":"FRA","Risk":"Medium",  "Risk_Num":3,"2030_M":14, "Channel":"Aesthetic / Dermatology",              "Flag":"🇫🇷"},
+        {"Country":"Switzerland",      "ISO":"CHE","Risk":"Medium",  "Risk_Num":3,"2030_M":5,  "Channel":"Longevity clinics (private)",          "Flag":"🇨🇭"},
+        {"Country":"Brazil",           "ISO":"BRA","Risk":"Medium",  "Risk_Num":3,"2030_M":12, "Channel":"ANVISA RDC 949/2024 + IOR required",  "Flag":"🇧🇷"},
+        {"Country":"South Korea",      "ISO":"KOR","Risk":"Medium",  "Risk_Num":3,"2030_M":35, "Channel":"K-beauty / hospital partnerships",     "Flag":"🇰🇷"},
+        {"Country":"United Arab Emirates","ISO":"ARE","Risk":"Medium","Risk_Num":3,"2030_M":30,"Channel":"Active IV longevity clinics + cosmetic","Flag":"🇦🇪"},
+        {"Country":"Mexico",           "ISO":"MEX","Risk":"Low",     "Risk_Num":1,"2030_M":13, "Channel":"Physician dispensing — active",        "Flag":"🇲🇽"},
+        {"Country":"Thailand",         "ISO":"THA","Risk":"Low-Med", "Risk_Num":2,"2030_M":21, "Channel":"Cosmetic notification + physician",    "Flag":"🇹🇭"},
+        {"Country":"Philippines",      "ISO":"PHL","Risk":"Low",     "Risk_Num":1,"2030_M":8,  "Channel":"✅ PH FDA notif. approved Jan 2026",   "Flag":"🇵🇭"},
+        {"Country":"Malaysia",         "ISO":"MYS","Risk":"Low",     "Risk_Num":1,"2030_M":5,  "Channel":"ASEAN cosmetic directive",             "Flag":"🇲🇾"},
+        {"Country":"Indonesia",        "ISO":"IDN","Risk":"Low",     "Risk_Num":1,"2030_M":5,  "Channel":"ASEAN cosmetic directive + BPOM",     "Flag":"🇮🇩"},
+        {"Country":"Singapore",        "ISO":"SGP","Risk":"Low-Med", "Risk_Num":2,"2030_M":8,  "Channel":"HSA gateway → ASEAN reliance route",  "Flag":"🇸🇬"},
+        {"Country":"Colombia",         "ISO":"COL","Risk":"Low",     "Risk_Num":1,"2030_M":4,  "Channel":"2025 LATAM reform pathway",            "Flag":"🇨🇴"},
+        {"Country":"Argentina",        "ISO":"ARG","Risk":"Low",     "Risk_Num":1,"2030_M":4,  "Channel":"2025 deregulation — fast-track",       "Flag":"🇦🇷"},
+        {"Country":"Poland",           "ISO":"POL","Risk":"Low",     "Risk_Num":1,"2030_M":8,  "Channel":"CEE hub — LaserMe / Teoxane Polska",  "Flag":"🇵🇱"},
+        {"Country":"Romania",          "ISO":"ROU","Risk":"Low",     "Risk_Num":1,"2030_M":5,  "Channel":"Medical tourism hub; $300M cos. surg.","Flag":"🇷🇴"},
+        {"Country":"Czechia",          "ISO":"CZE","Risk":"Low",     "Risk_Num":1,"2030_M":4,  "Channel":"Clinical expansion in Prague",         "Flag":"🇨🇿"},
+    ])
+    choropleth_df["Risk_Label"] = choropleth_df["Risk"].map({
+        "High":"🔴 High","Medium":"🟡 Medium","Low-Med":"🟡 Low-Med","Low":"🟢 Low",
+    })
+
+    risk_color_map = {"High":"#c62828","Medium":"#f0a030","Low-Med":"#a0c040","Low":"#3db07a"}
+    choropleth_df["Color"] = choropleth_df["Risk"].map(risk_color_map)
+    choropleth_df["Hover"] = (
+        choropleth_df["Flag"] + " " + choropleth_df["Country"] +
+        "<br>Risk: " + choropleth_df["Risk_Label"] +
+        "<br>2030 market: $" + choropleth_df["2030_M"].astype(str) + "M" +
+        "<br>Channel: " + choropleth_df["Channel"]
+    )
+
+    fig_choro = go.Figure()
+    fig_choro.add_trace(go.Choropleth(
+        locations=choropleth_df["ISO"],
+        z=choropleth_df["Risk_Num"],
+        text=choropleth_df["Hover"],
+        hovertemplate="%{text}<extra></extra>",
+        colorscale=[[0,"#3db07a"],[0.33,"#a0c040"],[0.66,"#f0a030"],[1,"#c62828"]],
+        zmin=1, zmax=4,
+        showscale=False,
+        marker_line_color="#fff",
+        marker_line_width=0.5,
+    ))
+    # Overlay bubble layer for tracked markets
+    fig_choro.add_trace(go.Scattergeo(
+        locations=choropleth_df["ISO"],
+        mode="markers",
+        marker=dict(
+            size=choropleth_df["2030_M"] ** 0.5 * 2.2,
+            color=choropleth_df["Color"],
+            opacity=0.75,
+            line=dict(color="#fff", width=1),
+        ),
+        text=choropleth_df["Hover"],
+        hovertemplate="%{text}<extra></extra>",
+        showlegend=False,
+    ))
+    fig_choro.update_layout(
+        geo=dict(
+            showframe=False,
+            showcoastlines=True,
+            coastlinecolor="#ccc",
+            projection_type="natural earth",
+            bgcolor="#f7f9fc",
+            landcolor="#f0f4f8",
+            oceancolor="#e8f4f8",
+            showocean=True,
+            showlakes=False,
+            lakecolor="#e8f4f8",
+        ),
+        height=420,
+        margin=dict(t=10, b=10, l=0, r=0),
+        paper_bgcolor="#f7f9fc",
+    )
+    st.plotly_chart(fig_choro, use_container_width=True)
+
+    # Legend for the choropleth
+    leg_cols = st.columns(4)
+    for col, (risk, color, desc) in zip(leg_cols, [
+        ("🔴 High",     "#c62828", "IND/ATMP required — no topical exceptions"),
+        ("🟡 Medium",   "#f0a030", "Cosmetic OK — soft indications grey area"),
+        ("🟡 Low-Med",  "#a0c040", "Cosmetic notification + physician grey area"),
+        ("🟢 Low",      "#3db07a", "Permissive — cosmetic notification pathway"),
+    ]):
+        col.markdown(
+            f'<div style="border-left:4px solid {color};background:#fff;padding:6px 10px;'
+            f'border-radius:4px;font-size:.78rem;"><strong>{risk}</strong><br>{desc}</div>',
+            unsafe_allow_html=True,
+        )
+    st.markdown("")
+
+    # ── Sortable country table with quick reference ────────────────
+    st.markdown('<div class="section-header">Country Quick-Reference</div>', unsafe_allow_html=True)
+    choro_display = choropleth_df[["Flag","Country","Risk_Label","2030_M","Channel"]].copy()
+    choro_display.columns = ["","Country","Reg. Risk","2030 Forecast ($M)","Channel / Entry Status"]
+    choro_display = choro_display.sort_values("2030 Forecast ($M)", ascending=False)
+    st.dataframe(choro_display, hide_index=True, use_container_width=True, height=300)
+    st.markdown("")
+
     st.markdown('<div class="section-header">Market Opportunity vs Regulatory Risk (All Regions)</div>', unsafe_allow_html=True)
     st.markdown("")
 
@@ -770,7 +878,7 @@ with tabs[2]:
 with tabs[3]:
     st.markdown('<div class="section-header">Global Regulatory Framework (March 2026)</div>', unsafe_allow_html=True)
 
-    reg_df = pd.DataFrame([
+    reg_df_static = pd.DataFrame([
         {"Territory":"USA",         "Body":"FDA",          "Topical/Cosmetic":"Permitted — no claims",       "Soft Indications":"Gray — physician discretion",    "IV/Therapeutic":"IND required — 12+ warning letters","Risk":"🔴 HIGH",    "Conf.":"🟢 80"},
         {"Territory":"EU",          "Body":"EMA",          "Topical/Cosmetic":"CE-IVD compliant",            "Soft Indications":"Cosmetic grade only",             "IV/Therapeutic":"ATMP required — 0 approved",        "Risk":"🔴 HIGH",    "Conf.":"🟢 80"},
         {"Territory":"Australia",   "Body":"TGA",          "Topical/Cosmetic":"Cosmetic — limited claims",   "Soft Indications":"TGA-registered only",             "IV/Therapeutic":"ATMP / PBAC risk-sharing",          "Risk":"🔴 HIGH",    "Conf.":"🟢 70"},
@@ -788,6 +896,19 @@ with tabs[3]:
         {"Territory":"Colombia",    "Body":"INVIMA",       "Topical/Cosmetic":"2025 Regional Reform",       "Soft Indications":"LATAM integration",                "IV/Therapeutic":"Streamlined pathway",              "Risk":"🟢 LOW",     "Conf.":"🟡 60"},
         {"Territory":"Argentina",   "Body":"ANMAT",        "Topical/Cosmetic":"2025 Deregulation",          "Soft Indications":"Fast-track entry",                 "IV/Therapeutic":"Streamlined",                      "Risk":"🟢 LOW",     "Conf.":"🟡 60"},
     ])
+
+    # ── Live data wiring ──────────────────────────────────────────
+    reg_df, reg_is_live = get_live_or_static(live_regulatory, reg_df_static)
+    # Normalise column names from CSV (may be lowercase/different case)
+    if reg_is_live:
+        col_map = {c.lower(): c for c in reg_df_static.columns}
+        reg_df = reg_df.rename(columns={c: col_map.get(c.lower(), c) for c in reg_df.columns})
+        # Ensure all expected columns exist; fall back to static if not
+        expected = set(reg_df_static.columns)
+        if not expected.issubset(set(reg_df.columns)):
+            reg_df = reg_df_static
+            reg_is_live = False
+    live_badge(reg_is_live, last_run)
 
     risk_filter = st.multiselect(
         "Filter by Risk Level",
@@ -877,6 +998,7 @@ with tabs[4]:
         "📦 B2B Derived from 10B Data",
         "🗺️ Market Ceiling Analysis",
         "🧮 BM-MSC COGS Breakdown",
+        "📈 Margin Scenario Modeler",
     ])
 
     # ── Sub-tab 1: PER-10B PARTICLE BENCHMARK ────────────────────
@@ -893,7 +1015,7 @@ with tabs[4]:
         st.markdown("")
 
         # ── Per-10B observed data ─────────────────────────────────
-        p10b_df = pd.DataFrame([
+        p10b_df_static = pd.DataFrame([
             {"Product":"EXOMIDE (Jolifill, Germany)",    "Source Type":"Retail",      "Vial Size":"5mL",       "Vial Price":"€115 (~$125)","10B Low":250,"10B High":250,"Confidence":"🟢 High","Source":"Jolifill.de — confirmed"},
             {"Product":"EXOGEN (HUK Aesthetics, UK)",    "Source Type":"Retail",      "Vial Size":"1mg+6mL",   "Vial Price":"£60 2-vial kit","10B Low":37,"10B High":75,"Confidence":"🟢 High","Source":"HUK Aesthetics — confirmed"},
             {"Product":"EXOXE Exosomes (50mg, EU/CEE)",  "Source Type":"Retail",      "Vial Size":"50mg",      "Vial Price":"~$85 (80 EUR)","10B Low":60,"10B High":90,"Confidence":"🟢 High","Source":"EU/CEE retail — confirmed"},
@@ -904,6 +1026,20 @@ with tabs[4]:
             {"Product":"Generic BM-MSC (Alibaba B2B)",   "Source Type":"B2B Bulk",    "Vial Size":"1mg≈10–15B","Vial Price":"$180–280/mg","10B Low":150,"10B High":280,"Confidence":"🟡 Med","Source":"Alibaba supplier data 2024–25"},
             {"Product":"BENEV (ExoCoBio US)",            "Source Type":"Professional","Vial Size":"20–30B est.","Vial Price":"$400–600","10B Low":160,"10B High":250,"Confidence":"🟡 Med","Source":"US professional channel est."},
         ])
+        # ── Live pricing data wiring ──────────────────────────────
+        p10b_df, pricing_is_live = get_live_or_static(live_pricing, p10b_df_static)
+        if pricing_is_live:
+            # Normalise column names from CSV
+            col_map_p = {c.lower().replace(" ","_"): c for c in p10b_df_static.columns}
+            p10b_df = p10b_df.rename(columns={c: col_map_p.get(c.lower().replace(" ","_"), c) for c in p10b_df.columns})
+            expected_p = {"10B Low","10B High","Product"}
+            if not expected_p.issubset(set(p10b_df.columns)):
+                p10b_df = p10b_df_static
+                pricing_is_live = False
+            else:
+                p10b_df["10B Low"]  = pd.to_numeric(p10b_df["10B Low"],  errors="coerce").fillna(0).astype(int)
+                p10b_df["10B High"] = pd.to_numeric(p10b_df["10B High"], errors="coerce").fillna(0).astype(int)
+        live_badge(pricing_is_live, last_run)
         p10b_df["10B Mid"] = ((p10b_df["10B Low"] + p10b_df["10B High"]) / 2).astype(int)
 
         # ── Horizontal range bar chart — per-10B ─────────────────
@@ -1305,6 +1441,230 @@ with tabs[4]:
             {"Parameter":"Regulatory differentiation",      "BM-MSC":"Strong clinical lit.","UC-MSC (WJ)":"Most commercially available","Adipose MSC":"Lower clinical lit."},
         ])
         st.dataframe(src_df, hide_index=True, use_container_width=True)
+
+    # ── Sub-tab 6: MARGIN SCENARIO MODELER ───────────────────────
+    with subtabs[5]:
+        st.markdown('<div class="section-header">Margin & Viability Scenario Modeler</div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="signal-card">📊 <strong>How to use:</strong> Select your target market and production scale. '
+            "The modeler computes your B2B ceiling price (derived from observed per-10B market data), "
+            "your COGS at the selected production year/scale, and whether you can hit your target gross margin. "
+            "Adjust sliders to find the conditions under which the market becomes profitable.</div>",
+            unsafe_allow_html=True,
+        )
+        st.markdown("")
+
+        # ── Market reference data (per 10B particles) ─────────────
+        MARKET_REF = {
+            "Germany / EU":      {"b2b_lo": 130, "b2b_hi": 210, "end_user_lo": 100, "end_user_hi": 200, "flag": "🇩🇪"},
+            "UAE / GCC":         {"b2b_lo": 160, "b2b_hi": 270, "end_user_lo": 180, "end_user_hi": 350, "flag": "🇦🇪"},
+            "USA (aesthetic)":   {"b2b_lo": 140, "b2b_hi": 260, "end_user_lo": 150, "end_user_hi": 300, "flag": "🇺🇸"},
+            "Australia":         {"b2b_lo": 160, "b2b_hi": 270, "end_user_lo": 180, "end_user_hi": 350, "flag": "🇦🇺"},
+            "Mexico / LATAM":    {"b2b_lo": 95,  "b2b_hi": 165, "end_user_lo": 100, "end_user_hi": 200, "flag": "🇲🇽"},
+            "Thailand":          {"b2b_lo": 80,  "b2b_hi": 140, "end_user_lo": 80,  "end_user_hi": 180, "flag": "🇹🇭"},
+            "Philippines / SEA": {"b2b_lo": 65,  "b2b_hi": 115, "end_user_lo": 60,  "end_user_hi": 120, "flag": "🇵🇭"},
+        }
+
+        # ── COGS scale data (per 10B particles, mid values) ───────
+        COGS_SCALE = {
+            "2026 — Small batch (<200 doses/mo)":       {"mid": 2550, "lo": 1950, "hi": 3150},
+            "2026 — Commercial mid (500–2k/mo)":        {"mid": 1800, "lo": 1400, "hi": 2200},
+            "2026 — Scale-up (2k–5k/mo)":               {"mid": 1200, "lo": 900,  "hi": 1500},
+            "2030 — Industrial (>5k/mo)":               {"mid": 870,  "lo": 690,  "hi": 1050},
+            "2030 — Ultra-scale / platform optimized":  {"mid": 500,  "lo": 350,  "hi": 700},
+            "Custom — enter your COGS below":           {"mid": None, "lo": None, "hi": None},
+        }
+
+        col_inp1, col_inp2 = st.columns([1, 1])
+        with col_inp1:
+            st.markdown('<div class="section-subheader">🎛 Inputs</div>', unsafe_allow_html=True)
+            market_sel = st.selectbox(
+                "Target market",
+                list(MARKET_REF.keys()),
+                help="Select the market you are entering. B2B ceiling is derived from observed per-10B retail/wholesale data.",
+            )
+            cogs_scale_sel = st.selectbox(
+                "Production scale / year",
+                list(COGS_SCALE.keys()),
+                index=1,
+                help="Select your production scale. COGS figures from Astute Analytica 2035 + RoosterBio 2025.",
+            )
+            if COGS_SCALE[cogs_scale_sel]["mid"] is None:
+                custom_cogs = st.number_input(
+                    "Your COGS per 10B particles (USD)",
+                    min_value=50, max_value=5000, value=1200, step=50,
+                )
+                cogs_mid = custom_cogs
+                cogs_lo  = int(custom_cogs * 0.85)
+                cogs_hi  = int(custom_cogs * 1.15)
+            else:
+                cogs_mid = COGS_SCALE[cogs_scale_sel]["mid"]
+                cogs_lo  = COGS_SCALE[cogs_scale_sel]["lo"]
+                cogs_hi  = COGS_SCALE[cogs_scale_sel]["hi"]
+
+            target_margin = st.slider(
+                "Target gross margin %",
+                min_value=20, max_value=80, value=50, step=5,
+                help="Gross margin = (B2B price − COGS) / B2B price × 100",
+            )
+            particles_per_vial_sc = st.number_input(
+                "Vial particle count (Billions) — for per-vial output",
+                min_value=1, max_value=100, value=10, step=1,
+            )
+
+        with col_inp2:
+            st.markdown('<div class="section-subheader">📊 Results</div>', unsafe_allow_html=True)
+            mkt    = MARKET_REF[market_sel]
+            b2b_lo = mkt["b2b_lo"]
+            b2b_hi = mkt["b2b_hi"]
+            b2b_mid = (b2b_lo + b2b_hi) / 2
+
+            # Actual margin at current COGS
+            actual_margin_pct = ((b2b_mid - cogs_mid) / b2b_mid * 100) if b2b_mid > 0 else -999
+
+            # COGS required to hit target margin at this B2B price
+            req_cogs_for_margin = b2b_mid * (1 - target_margin / 100)
+
+            # B2B price needed to hit target margin at current COGS
+            req_b2b_for_margin = cogs_mid / (1 - target_margin / 100) if target_margin < 100 else float("inf")
+
+            # Per-vial values
+            vial_b2b_mid = (b2b_mid / 10) * particles_per_vial_sc
+            vial_cogs    = (cogs_mid / 10) * particles_per_vial_sc
+
+            # Viability assessment
+            is_viable  = actual_margin_pct >= target_margin
+            gap_to_viable = req_cogs_for_margin - cogs_mid  # positive = need to reduce COGS
+
+            if is_viable:
+                result_cls  = "success-card"
+                result_icon = "✅"
+                result_msg  = f"<strong>Viable at this scale.</strong> Actual margin ({actual_margin_pct:.1f}%) exceeds target ({target_margin}%)."
+            elif actual_margin_pct > 0:
+                result_cls  = "warning-card"
+                result_icon = "⚠️"
+                result_msg  = (
+                    f"<strong>Profitable but below target margin.</strong> "
+                    f"Actual margin: {actual_margin_pct:.1f}% vs target {target_margin}%. "
+                    f"Reduce COGS by ${abs(gap_to_viable):,.0f}/10B to hit target."
+                )
+            else:
+                result_cls  = "critical-card"
+                result_icon = "🔴"
+                result_msg  = (
+                    f"<strong>Not yet profitable at this scale.</strong> "
+                    f"COGS (${cogs_mid:,}/10B) exceeds B2B ceiling (${b2b_mid:,.0f}/10B). "
+                    f"Need to reduce COGS by ${abs(gap_to_viable):,.0f}/10B to break even, "
+                    f"${abs(cogs_mid - req_cogs_for_margin):,.0f}/10B to reach {target_margin}% margin."
+                )
+
+            st.markdown(
+                f'<div class="{result_cls}">{result_icon} {result_msg}</div>',
+                unsafe_allow_html=True,
+            )
+            st.markdown("")
+
+            # ── KPI cards ────────────────────────────────────────
+            kpi_r = [
+                (f"${b2b_lo}–${b2b_hi}", "B2B Ceiling/10B", f"{mkt['flag']} {market_sel}"),
+                (f"${cogs_mid:,}", "Your COGS/10B", cogs_scale_sel.split("—")[0].strip()),
+                (f"{actual_margin_pct:.1f}%", "Actual Gross Margin", "at B2B midpoint"),
+                (f"${req_cogs_for_margin:,.0f}", f"COGS Needed for {target_margin}% Margin", "per 10B particles"),
+                (f"${vial_b2b_mid:,.0f}", f"B2B per vial ({particles_per_vial_sc}B)", "at market midpoint"),
+                (f"${req_b2b_for_margin:,.0f}", f"B2B Needed for {target_margin}% Margin", "per 10B particles"),
+            ]
+            kpi_cols = st.columns(3)
+            for i, (val, label, sub) in enumerate(kpi_r):
+                kpi_cols[i % 3].markdown(
+                    f'<div class="metric-card" style="margin-bottom:8px;">'
+                    f'<div class="metric-value" style="font-size:1.4rem;">{val}</div>'
+                    f'<div class="metric-label">{label}</div>'
+                    f'<div class="metric-sub">{sub}</div>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+
+        # ── Waterfall: COGS → B2B → End-user price ────────────────
+        st.markdown("")
+        st.markdown('<div class="section-header">Price Waterfall — COGS to End-User</div>', unsafe_allow_html=True)
+        end_lo = mkt["end_user_lo"]
+        end_hi = mkt["end_user_hi"]
+        end_mid = (end_lo + end_hi) / 2
+
+        waterfall_df = pd.DataFrame({
+            "Stage":   ["Your COGS/10B", f"B2B to Distributor\n({market_sel})", "Distributor Markup\n(~30%)", f"End-User/Vial\n({market_sel})"],
+            "Value":   [cogs_mid, b2b_mid, b2b_mid * 0.3, end_mid],
+            "Color":   ["#e05c2a", "#2e6da4", "#7ec8e3", "#1e3a5f"],
+        })
+        fig_wf = go.Figure(go.Bar(
+            x=waterfall_df["Stage"],
+            y=waterfall_df["Value"],
+            marker_color=waterfall_df["Color"],
+            text=[f"${v:,.0f}" for v in waterfall_df["Value"]],
+            textposition="outside",
+        ))
+        fig_wf.update_layout(
+            height=360, margin=dict(t=20, b=20),
+            yaxis_title="USD per 10B particles", showlegend=False,
+        )
+        st.plotly_chart(fig_wf, use_container_width=True)
+        st.caption("Distributor markup (30%) is indicative. End-user price per vial is an estimate from per-treatment OOP data ÷ typical session counts. COGS will vary with production scale.")
+
+        # ── Break-even COGS trajectory ────────────────────────────
+        st.markdown('<div class="section-header">All Markets — Break-Even COGS Required for Target Margin</div>', unsafe_allow_html=True)
+        bev_rows = []
+        for mkt_name, mkt_vals in MARKET_REF.items():
+            b2b_m = (mkt_vals["b2b_lo"] + mkt_vals["b2b_hi"]) / 2
+            req   = b2b_m * (1 - target_margin / 100)
+            curr_margin = ((b2b_m - cogs_mid) / b2b_m * 100) if b2b_m > 0 else -999
+            bev_rows.append({
+                "Market": f"{mkt_vals['flag']} {mkt_name}",
+                "B2B Mid ($/10B)":  round(b2b_m),
+                f"COGS Needed for {target_margin}% Margin": round(req),
+                "Your COGS": cogs_mid,
+                "Margin Gap": round(req - cogs_mid),
+                "Current Margin %": round(curr_margin, 1),
+                "Status": "✅ Viable" if curr_margin >= target_margin else ("🟡 Below target" if curr_margin > 0 else "🔴 Loss"),
+            })
+        bev_df = pd.DataFrame(bev_rows).sort_values("B2B Mid ($/10B)", ascending=False)
+
+        fig_bev = go.Figure()
+        colors_bev = ["#3db07a" if r["Current Margin %"] >= target_margin
+                      else ("#f0a030" if r["Current Margin %"] > 0 else "#c62828")
+                      for _, r in bev_df.iterrows()]
+        fig_bev.add_trace(go.Bar(
+            x=bev_df[f"COGS Needed for {target_margin}% Margin"],
+            y=bev_df["Market"],
+            orientation="h",
+            marker_color=colors_bev,
+            text=[f"${v:,}" for v in bev_df[f"COGS Needed for {target_margin}% Margin"]],
+            textposition="outside",
+            name="Required COGS",
+        ))
+        fig_bev.add_vline(
+            x=cogs_mid, line_dash="dash", line_color="#1e3a5f", line_width=2,
+            annotation_text=f"Your COGS: ${cogs_mid:,}/10B",
+            annotation_position="top right",
+            annotation_font_color="#1e3a5f",
+        )
+        fig_bev.update_layout(
+            height=340, margin=dict(t=20, b=20),
+            xaxis_title=f"Required COGS to achieve {target_margin}% gross margin (USD/10B)",
+            yaxis_title="", showlegend=False,
+            title=f"Markets where your COGS (${cogs_mid:,}/10B) is left of the bar are profitable",
+        )
+        st.plotly_chart(fig_bev, use_container_width=True)
+
+        st.dataframe(
+            bev_df[["Market","B2B Mid ($/10B)", f"COGS Needed for {target_margin}% Margin",
+                    "Your COGS", "Margin Gap", "Current Margin %", "Status"]],
+            hide_index=True, use_container_width=True,
+        )
+        st.caption(
+            f"🔵 Vertical line = your current COGS. Markets where the bar extends past the line can support "
+            f"a {target_margin}% gross margin at current pricing. 🟢 = Viable | 🟡 = Below target | 🔴 = Loss-making. "
+            f"Improve profitability by increasing production scale (reduces COGS) or entering higher-ceiling markets first."
+        )
 
     # ── Tab 5 Sources ────────────────────────────────────────────
     st.markdown("---")
