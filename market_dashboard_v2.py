@@ -879,22 +879,22 @@ with tabs[3]:
     st.markdown('<div class="section-header">Global Regulatory Framework (March 2026)</div>', unsafe_allow_html=True)
 
     reg_df_static = pd.DataFrame([
-        {"Territory":"USA",         "Body":"FDA",          "Topical/Cosmetic":"Permitted — no claims",       "Soft Indications":"Gray — physician discretion",    "IV/Therapeutic":"IND required — 12+ warning letters","Risk":"🔴 HIGH",    "Conf.":"🟢 80"},
-        {"Territory":"EU",          "Body":"EMA",          "Topical/Cosmetic":"CE-IVD compliant",            "Soft Indications":"Cosmetic grade only",             "IV/Therapeutic":"ATMP required — 0 approved",        "Risk":"🔴 HIGH",    "Conf.":"🟢 80"},
-        {"Territory":"Australia",   "Body":"TGA",          "Topical/Cosmetic":"Cosmetic — limited claims",   "Soft Indications":"TGA-registered only",             "IV/Therapeutic":"ATMP / PBAC risk-sharing",          "Risk":"🔴 HIGH",    "Conf.":"🟢 70"},
-        {"Territory":"Germany",     "Body":"BfArM",        "Topical/Cosmetic":"Cosmetic — active market",    "Soft Indications":"Medical spa channel",             "IV/Therapeutic":"ATMP pathway",                     "Risk":"🟡 MEDIUM",  "Conf.":"🟢 75"},
-        {"Territory":"France",      "Body":"ANSM",         "Topical/Cosmetic":"Cosmetic — active",           "Soft Indications":"Dermatology protocols",           "IV/Therapeutic":"ATMP pathway",                     "Risk":"🟡 MEDIUM",  "Conf.":"🟢 75"},
-        {"Territory":"Switzerland", "Body":"Swissmedic",   "Topical/Cosmetic":"High-value cosmetic",         "Soft Indications":"Longevity clinics (private)",     "IV/Therapeutic":"Clinical registration",            "Risk":"🟡 MEDIUM",  "Conf.":"🟢 70"},
-        {"Territory":"Brazil",      "Body":"ANVISA",       "Topical/Cosmetic":"RDC 949/2024 notification",  "Soft Indications":"IOR required",                    "IV/Therapeutic":"AFE license required",             "Risk":"🟡 MEDIUM",  "Conf.":"🟢 70"},
-        {"Territory":"South Korea", "Body":"MFDS",         "Topical/Cosmetic":"K-beauty cosmetic framework","Soft Indications":"Hospital partnerships",           "IV/Therapeutic":"Clinical approval route",          "Risk":"🟡 MEDIUM",  "Conf.":"🟡 60"},
-        {"Territory":"UAE",         "Body":"MOHAP/DHA",    "Topical/Cosmetic":"CE/FDA-cert device",         "Soft Indications":"Clinic-based IV protocols — active","IV/Therapeutic":"Strict cosmetic procedure standards","Risk":"🟡 MEDIUM","Conf.":"🟡 65"},
-        {"Territory":"Mexico",      "Body":"COFEPRIS",     "Topical/Cosmetic":"Cosmetic compliant",          "Soft Indications":"Physician dispensing — active",   "IV/Therapeutic":"MoU reliance with ANVISA",         "Risk":"🟢 LOW",     "Conf.":"🟢 75"},
-        {"Territory":"Thailand",    "Body":"Thai FDA",     "Topical/Cosmetic":"Cosmetic notif. + post-audit","Soft Indications":"Gray — active physician use",     "IV/Therapeutic":"Drug Act B.E. 2510 — no explicit guideline","Risk":"🟡 LOW-MED","Conf.":"🟢 80"},
-        {"Territory":"Philippines", "Body":"PH FDA",       "Topical/Cosmetic":"✅ Notif. approved Jan 2026", "Soft Indications":"ASEAN compliant",                 "IV/Therapeutic":"Emerging",                         "Risk":"🟢 LOW",     "Conf.":"🟢 80"},
-        {"Territory":"Malaysia",    "Body":"NPRA",         "Topical/Cosmetic":"ASEAN aligned",              "Soft Indications":"cGMP research active",             "IV/Therapeutic":"Early stage",                      "Risk":"🟢 LOW",     "Conf.":"🟢 75"},
-        {"Territory":"Indonesia",   "Body":"BPOM",         "Topical/Cosmetic":"ASEAN cosmetic directive",   "Soft Indications":"Physician training pathway",       "IV/Therapeutic":"BPOM engaged",                     "Risk":"🟢 LOW",     "Conf.":"🟢 70"},
-        {"Territory":"Colombia",    "Body":"INVIMA",       "Topical/Cosmetic":"2025 Regional Reform",       "Soft Indications":"LATAM integration",                "IV/Therapeutic":"Streamlined pathway",              "Risk":"🟢 LOW",     "Conf.":"🟡 60"},
-        {"Territory":"Argentina",   "Body":"ANMAT",        "Topical/Cosmetic":"2025 Deregulation",          "Soft Indications":"Fast-track entry",                 "IV/Therapeutic":"Streamlined",                      "Risk":"🟢 LOW",     "Conf.":"🟡 60"},
+        {"Territory":"USA",         "Body":"FDA",          "Topical/Cosmetic":"Permitted — no claims",       "Soft Indications":"Gray — physician discretion",    "IV/Therapeutic":"IND required — 12+ warning letters","Risk":"🔴 HIGH",    "Conf.":"🟢 80","Source URL":"https://www.armstrongbradylyons.com/library/fda-warning-letters-exosome-product"},
+        {"Territory":"EU",          "Body":"EMA",          "Topical/Cosmetic":"CE-IVD compliant",            "Soft Indications":"Cosmetic grade only",             "IV/Therapeutic":"ATMP required — 0 approved",        "Risk":"🔴 HIGH",    "Conf.":"🟢 80","Source URL":"https://www.regulatoryrapporteur.org/industry-news/ema-accepts-new-guidelines-on-investigational-atmps/843.article"},
+        {"Territory":"Australia",   "Body":"TGA",          "Topical/Cosmetic":"Cosmetic — limited claims",   "Soft Indications":"TGA-registered only",             "IV/Therapeutic":"ATMP / PBAC risk-sharing",          "Risk":"🔴 HIGH",    "Conf.":"🟢 70","Source URL":"https://www.atlantisbioscience.com/blog/commercialising-exosome-therapeutics-key-regulatory-pathways/"},
+        {"Territory":"Germany",     "Body":"BfArM",        "Topical/Cosmetic":"Cosmetic — active market",    "Soft Indications":"Medical spa channel",             "IV/Therapeutic":"ATMP pathway",                     "Risk":"🟡 MEDIUM",  "Conf.":"🟢 75","Source URL":"https://www.regulatoryrapporteur.org/industry-news/ema-accepts-new-guidelines-on-investigational-atmps/843.article"},
+        {"Territory":"France",      "Body":"ANSM",         "Topical/Cosmetic":"Cosmetic — active",           "Soft Indications":"Dermatology protocols",           "IV/Therapeutic":"ATMP pathway",                     "Risk":"🟡 MEDIUM",  "Conf.":"🟢 75","Source URL":"https://www.regulatoryrapporteur.org/industry-news/ema-accepts-new-guidelines-on-investigational-atmps/843.article"},
+        {"Territory":"Switzerland", "Body":"Swissmedic",   "Topical/Cosmetic":"High-value cosmetic",         "Soft Indications":"Longevity clinics (private)",     "IV/Therapeutic":"Clinical registration",            "Risk":"🟡 MEDIUM",  "Conf.":"🟢 70","Source URL":"https://www.atlantisbioscience.com/blog/commercialising-exosome-therapeutics-key-regulatory-pathways/"},
+        {"Territory":"Brazil",      "Body":"ANVISA",       "Topical/Cosmetic":"RDC 949/2024 notification",  "Soft Indications":"IOR required",                    "IV/Therapeutic":"AFE license required",             "Risk":"🟡 MEDIUM",  "Conf.":"🟢 70","Source URL":"https://www.emergobyul.com/news/brazil-anvisa-announces-priorities-2026-2027-year"},
+        {"Territory":"South Korea", "Body":"MFDS",         "Topical/Cosmetic":"K-beauty cosmetic framework","Soft Indications":"Hospital partnerships",           "IV/Therapeutic":"Clinical approval route",          "Risk":"🟡 MEDIUM",  "Conf.":"🟡 60","Source URL":"https://stylestory.com.au/blogs/podcast/why-korea-banned-exosome-skincare-ads-and-what-it-means-for-the-industry"},
+        {"Territory":"UAE",         "Body":"MOHAP/DHA",    "Topical/Cosmetic":"CE/FDA-cert device",         "Soft Indications":"Clinic-based IV protocols — active","IV/Therapeutic":"Strict cosmetic procedure standards","Risk":"🟡 MEDIUM","Conf.":"🟡 65","Source URL":"https://www.atlantisbioscience.com/blog/commercialising-exosome-therapeutics-key-regulatory-pathways/"},
+        {"Territory":"Mexico",      "Body":"COFEPRIS",     "Topical/Cosmetic":"Cosmetic compliant",          "Soft Indications":"Physician dispensing — active",   "IV/Therapeutic":"MoU reliance with ANVISA",         "Risk":"🟢 LOW",     "Conf.":"🟢 75","Source URL":"https://www.atlantisbioscience.com/blog/commercialising-exosome-therapeutics-key-regulatory-pathways/"},
+        {"Territory":"Thailand",    "Body":"Thai FDA",     "Topical/Cosmetic":"Cosmetic notif. + post-audit","Soft Indications":"Gray — active physician use",     "IV/Therapeutic":"Drug Act B.E. 2510 — no explicit guideline","Risk":"🟡 LOW-MED","Conf.":"🟢 80","Source URL":"https://www.cirs-group.com/en/cosmetics/global-cosmetics-regulatory-updates-vol-32-october-2025"},
+        {"Territory":"Philippines", "Body":"PH FDA",       "Topical/Cosmetic":"✅ Notif. approved Jan 2026", "Soft Indications":"ASEAN compliant",                 "IV/Therapeutic":"Emerging",                         "Risk":"🟢 LOW",     "Conf.":"🟢 80","Source URL":"https://www.fda.gov.ph/fda-circular-no-2025-002-updates-and-amendments-to-the-asean-cosmetic-directive-acd-as-adopted-during-the-39th-asean-cosmetic-committee-acc-meeting-and-its-related-meetings/"},
+        {"Territory":"Malaysia",    "Body":"NPRA",         "Topical/Cosmetic":"ASEAN aligned",              "Soft Indications":"cGMP research active",             "IV/Therapeutic":"Early stage",                      "Risk":"🟢 LOW",     "Conf.":"🟢 75","Source URL":"https://www.atlantisbioscience.com/blog/commercialising-exosome-therapeutics-key-regulatory-pathways/"},
+        {"Territory":"Indonesia",   "Body":"BPOM",         "Topical/Cosmetic":"ASEAN cosmetic directive",   "Soft Indications":"Physician training pathway",       "IV/Therapeutic":"BPOM engaged",                     "Risk":"🟢 LOW",     "Conf.":"🟢 70","Source URL":"https://www.atlantisbioscience.com/blog/commercialising-exosome-therapeutics-key-regulatory-pathways/"},
+        {"Territory":"Colombia",    "Body":"INVIMA",       "Topical/Cosmetic":"2025 Regional Reform",       "Soft Indications":"LATAM integration",                "IV/Therapeutic":"Streamlined pathway",              "Risk":"🟢 LOW",     "Conf.":"🟡 60","Source URL":"https://www.atlantisbioscience.com/blog/commercialising-exosome-therapeutics-key-regulatory-pathways/"},
+        {"Territory":"Argentina",   "Body":"ANMAT",        "Topical/Cosmetic":"2025 Deregulation",          "Soft Indications":"Fast-track entry",                 "IV/Therapeutic":"Streamlined",                      "Risk":"🟢 LOW",     "Conf.":"🟡 60","Source URL":"https://www.atlantisbioscience.com/blog/commercialising-exosome-therapeutics-key-regulatory-pathways/"},
     ])
 
     # ── Live data wiring ──────────────────────────────────────────
@@ -918,6 +918,9 @@ with tabs[3]:
     st.dataframe(
         reg_df[reg_df["Risk"].isin(risk_filter)],
         hide_index=True, use_container_width=True, height=380,
+        column_config={
+            "Source URL": st.column_config.LinkColumn("Source", display_text="🔗 Link"),
+        },
     )
     st.caption("Conf. = Confidence score 0–100 based on validation against official sources. 🟢 70+ = High (govt/peer-reviewed); 🟡 50–69 = Medium (industry sources); 🔴 <50 = Low (unverified).")
 
@@ -1016,15 +1019,15 @@ with tabs[4]:
 
         # ── Per-10B observed data ─────────────────────────────────
         p10b_df_static = pd.DataFrame([
-            {"Product":"EXOMIDE (Jolifill, Germany)",    "Source Type":"Retail",      "Vial Size":"5mL",       "Vial Price":"€115 (~$125)","10B Low":250,"10B High":250,"Confidence":"🟢 High","Source":"Jolifill.de — confirmed"},
-            {"Product":"EXOGEN (HUK Aesthetics, UK)",    "Source Type":"Retail",      "Vial Size":"1mg+6mL",   "Vial Price":"£60 2-vial kit","10B Low":37,"10B High":75,"Confidence":"🟢 High","Source":"HUK Aesthetics — confirmed"},
-            {"Product":"EXOXE Exosomes (50mg, EU/CEE)",  "Source Type":"Retail",      "Vial Size":"50mg",      "Vial Price":"~$85 (80 EUR)","10B Low":60,"10B High":90,"Confidence":"🟢 High","Source":"EU/CEE retail — confirmed"},
-            {"Product":"Selastin Exo Plus (100mg, Poland)","Source Type":"Retail",    "Vial Size":"100mg liquid","Vial Price":"~$50 (46 EUR)","10B Low":35,"10B High":55,"Confidence":"🟢 High","Source":"Poland/CEE retail — confirmed"},
-            {"Product":"EXOJUV (plant-derived)",         "Source Type":"Wholesale",   "Vial Size":"6B/vial",   "Vial Price":"$150–200","10B Low":250,"10B High":333,"Confidence":"🟡 Med","Source":"MedicaDepot wholesale"},
-            {"Product":"EXOBLOOM (Dermax)",              "Source Type":"Wholesale",   "Vial Size":"5B+/vial",  "Vial Price":"$120–180","10B Low":240,"10B High":360,"Confidence":"🟡 Med","Source":"DermaxMed B2B"},
-            {"Product":"ReBellaXO (UC-MSC, R3)",         "Source Type":"Wholesale",   "Vial Size":"15B/cc",    "Vial Price":"$300–450","10B Low":200,"10B High":300,"Confidence":"🟡 Med","Source":"R3 Stem Cell 2024"},
-            {"Product":"Generic BM-MSC (Alibaba B2B)",   "Source Type":"B2B Bulk",    "Vial Size":"1mg≈10–15B","Vial Price":"$180–280/mg","10B Low":150,"10B High":280,"Confidence":"🟡 Med","Source":"Alibaba supplier data 2024–25"},
-            {"Product":"BENEV (ExoCoBio US)",            "Source Type":"Professional","Vial Size":"20–30B est.","Vial Price":"$400–600","10B Low":160,"10B High":250,"Confidence":"🟡 Med","Source":"US professional channel est."},
+            {"Product":"EXOMIDE (Jolifill, Germany)",    "Source Type":"Retail",      "Vial Size":"5mL",       "Vial Price":"€115 (~$125)","10B Low":250,"10B High":250,"Confidence":"🟢 High","Source":"Jolifill.de — confirmed","Source URL":"https://jolifill.de"},
+            {"Product":"EXOGEN (HUK Aesthetics, UK)",    "Source Type":"Retail",      "Vial Size":"1mg+6mL",   "Vial Price":"£60 2-vial kit","10B Low":37,"10B High":75,"Confidence":"🟢 High","Source":"HUK Aesthetics — confirmed","Source URL":"https://huk-aesthetics.com"},
+            {"Product":"EXOXE Exosomes (50mg, EU/CEE)",  "Source Type":"Retail",      "Vial Size":"50mg",      "Vial Price":"~$85 (80 EUR)","10B Low":60,"10B High":90,"Confidence":"🟢 High","Source":"EU/CEE retail — confirmed","Source URL":"https://www.medicadepot.com/exosomes.html"},
+            {"Product":"Selastin Exo Plus (100mg, Poland)","Source Type":"Retail",    "Vial Size":"100mg liquid","Vial Price":"~$50 (46 EUR)","10B Low":35,"10B High":55,"Confidence":"🟢 High","Source":"Poland/CEE retail — confirmed","Source URL":"https://www.medicadepot.com/exosomes.html"},
+            {"Product":"EXOJUV (plant-derived)",         "Source Type":"Wholesale",   "Vial Size":"6B/vial",   "Vial Price":"$150–200","10B Low":250,"10B High":333,"Confidence":"🟡 Med","Source":"MedicaDepot wholesale","Source URL":"https://www.medicadepot.com/exojuv.html"},
+            {"Product":"EXOBLOOM (Dermax)",              "Source Type":"Wholesale",   "Vial Size":"5B+/vial",  "Vial Price":"$120–180","10B Low":240,"10B High":360,"Confidence":"🟡 Med","Source":"DermaxMed B2B","Source URL":"https://www.medicadepot.com/exosomes.html"},
+            {"Product":"ReBellaXO (UC-MSC, R3)",         "Source Type":"Wholesale",   "Vial Size":"15B/cc",    "Vial Price":"$300–450","10B Low":200,"10B High":300,"Confidence":"🟡 Med","Source":"R3 Stem Cell 2024","Source URL":"https://r3stemcell.com"},
+            {"Product":"Generic BM-MSC (Alibaba B2B)",   "Source Type":"B2B Bulk",    "Vial Size":"1mg≈10–15B","Vial Price":"$180–280/mg","10B Low":150,"10B High":280,"Confidence":"🟡 Med","Source":"Alibaba supplier data 2024–25","Source URL":"https://www.alibaba.com/trade/search?SearchText=exosome+MSC"},
+            {"Product":"BENEV (ExoCoBio US)",            "Source Type":"Professional","Vial Size":"20–30B est.","Vial Price":"$400–600","10B Low":160,"10B High":250,"Confidence":"🟡 Med","Source":"US professional channel est.","Source URL":"https://benev.com"},
         ])
         # ── Live pricing data wiring ──────────────────────────────
         p10b_df, pricing_is_live = get_live_or_static(live_pricing, p10b_df_static)
@@ -1082,14 +1085,18 @@ with tabs[4]:
 
         # ── Full data table ───────────────────────────────────────
         st.markdown('<div class="section-header">Full Per-10B Particle Data Table</div>', unsafe_allow_html=True)
-        display_cols = ["Product","Source Type","Vial Size","Vial Price","10B Low","10B High","10B Mid","Confidence","Source"]
+        display_cols = ["Product","Source Type","Vial Size","Vial Price","10B Low","10B High","10B Mid","Confidence","Source","Source URL"]
+        avail_cols = [c for c in display_cols if c in p10b_df.columns]
         st.dataframe(
-            p10b_df[display_cols].assign(**{
+            p10b_df[avail_cols].assign(**{
                 "10B Low": p10b_df["10B Low"].apply(lambda x: f"${x:,}"),
                 "10B High": p10b_df["10B High"].apply(lambda x: f"${x:,}"),
                 "10B Mid": p10b_df["10B Mid"].apply(lambda x: f"${x:,}"),
             }),
             hide_index=True, use_container_width=True,
+            column_config={
+                "Source URL": st.column_config.LinkColumn("Source", display_text="🔗 Link"),
+            },
         )
 
         # ── Key takeaways ─────────────────────────────────────────

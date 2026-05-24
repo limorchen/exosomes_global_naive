@@ -1,13 +1,13 @@
-Product,Source Type,Vial Size,Vial Price,10B Low,10B High,Confidence,Source,Last Updated
-"EXOMIDE (Jolifill, Germany)",Retail,5mL,€115 (~$125),250,250,🟢 High,Jolifill.de — confirmed Mar 2026,May 2026
-"EXOGEN (HUK Aesthetics, UK)",Retail,1mg+6mL,£60 2-vial kit,37,75,🟢 High,HUK Aesthetics — confirmed,May 2026
-"EXOXE Exosomes (50mg, EU/CEE)",Retail,50mg,~$85 (80 EUR),60,90,🟢 High,EU/CEE retail — confirmed,May 2026
-"Selastin Exo Plus (100mg, Poland)",Retail,100mg liquid,~$50 (46 EUR),35,55,🟢 High,Poland/CEE retail — confirmed,May 2026
-"EXOJUV (plant-derived, MedicaDepot)",Wholesale,6B/vial,$150–200,250,333,🟡 Med,MedicaDepot wholesale 2026,May 2026
-EXOBLOOM (Dermax),Wholesale,5B+/vial,$120–180,240,360,🟡 Med,DermaxMed B2B 2026,May 2026
-"ReBellaXO (UC-MSC, R3)",Wholesale,15B/cc,$300–450,200,300,🟡 Med,R3 Stem Cell / Regen Suppliers 2026,May 2026
-Generic BM-MSC (Alibaba B2B),B2B Bulk,1mg≈10–15B,$180–280/mg,150,280,🟡 Med,Alibaba supplier comparison 2026,May 2026
-BENEV (ExoCoBio US),Professional,20–30B est.,$400–600,160,250,🟡 Med,US professional channel est. 2026,May 2026
-V-Tech System (Maylips),Wholesale,est. 10–20B,$200–350 est.,150,250,🟡 Med,Maylips wholesale 2026 — price not public,May 2026
-"3DExo+ (Stem Nova Network, UC-MSC)",Wholesale,60B/vial,$550 wholesale,92,92,🟢 High,"Stem Nova Network — confirmed wholesale price May 2026; retail $1,500/session",May 2026
-US clinic OOP avg (Bookimed Apr 2026),OOP Treatment,Multi-vial course,"$2,910–$6,400 full treatment",0,0,🟢 High,"Bookimed verified April 2026; avg $4,974/treatment",May 2026
+Product,Source Type,Vial Size,Vial Price,10B Low,10B High,Confidence,Source,Last Updated,Source URL
+"EXOMIDE (Jolifill, Germany)",Retail,5mL,€115 (~$125),250,250,🟢 High,Jolifill.de — confirmed Mar 2026,May 2026,https://jolifill.de
+"EXOGEN (HUK Aesthetics, UK)",Retail,1mg+6mL,£60 2-vial kit,37,75,🟢 High,HUK Aesthetics — confirmed,May 2026,https://huk-aesthetics.com
+"EXOXE Exosomes (50mg, EU/CEE)",Retail,50mg,~$85 (80 EUR),60,90,🟢 High,EU/CEE retail — confirmed,May 2026,https://www.medicadepot.com/exosomes.html
+"Selastin Exo Plus (100mg, Poland)",Retail,100mg liquid,~$50 (46 EUR),35,55,🟢 High,Poland/CEE retail — confirmed,May 2026,https://www.medicadepot.com/exosomes.html
+"EXOJUV (plant-derived, MedicaDepot)",Wholesale,6B/vial,$150–200,250,333,🟡 Med,MedicaDepot wholesale 2026,May 2026,https://www.medicadepot.com/exojuv.html
+EXOBLOOM (Dermax),Wholesale,5B+/vial,$120–180,240,360,🟡 Med,DermaxMed B2B 2026,May 2026,https://www.medicadepot.com/exosomes.html
+"ReBellaXO (UC-MSC, R3)",Wholesale,15B/cc,$300–450,200,300,🟡 Med,R3 Stem Cell / Regen Suppliers 2026,May 2026,https://r3stemcell.com
+Generic BM-MSC (Alibaba B2B),B2B Bulk,1mg≈10–15B,$180–280/mg,150,280,🟡 Med,Alibaba supplier comparison 2026,May 2026,https://www.alibaba.com/trade/search?SearchText=exosome+MSC
+BENEV (ExoCoBio US),Professional,20–30B est.,$400–600,160,250,🟡 Med,US professional channel est. 2026,May 2026,https://benev.com
+V-Tech System (Maylips),Wholesale,est. 10–20B,$200–350 est.,150,250,🟡 Med,Maylips wholesale 2026 — price not public,May 2026,https://maylips.com
+"3DExo+ (Stem Nova Network, UC-MSC)",Wholesale,60B/vial,$550 wholesale,92,92,🟢 High,"Stem Nova Network — confirmed wholesale price May 2026; retail $1,500/session",May 2026,https://www.stemnovanetwork.com/pages/exosome-biologics-for-medspas
+US clinic OOP avg (Bookimed Apr 2026),OOP Treatment,Multi-vial course,"$2,910–$6,400 full treatment",0,0,🟢 High,"Bookimed verified April 2026; avg $4,974/treatment",May 2026,https://bookimed.com
