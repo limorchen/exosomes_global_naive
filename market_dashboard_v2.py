@@ -1497,15 +1497,75 @@ with tabs[4]:
             "Philippines / SEA": {"b2b_lo": 65,  "b2b_hi": 115, "end_user_lo": 60,  "end_user_hi": 120, "flag": "🇵🇭"},
         }
 
-        # ── COGS scale data (per 10B particles, mid values) ───────
-        COGS_SCALE = {
-            "2026 — Small batch (<200 doses/mo)":       {"mid": 2550, "lo": 1950, "hi": 3150},
-            "2026 — Commercial mid (500–2k/mo)":        {"mid": 1800, "lo": 1400, "hi": 2200},
-            "2026 — Scale-up (2k–5k/mo)":               {"mid": 1200, "lo": 900,  "hi": 1500},
-            "2030 — Industrial (>5k/mo)":               {"mid": 870,  "lo": 690,  "hi": 1050},
-            "2030 — Ultra-scale / platform optimized":  {"mid": 500,  "lo": 350,  "hi": 700},
-            "Custom — enter your COGS below":           {"mid": None, "lo": None, "hi": None},
+        # ── COGS by manufacturing context (per 10B particles) ────────
+        # Three distinct manufacturing realities — each yields very different unit economics.
+        # Western GMP: RoosterBio 2025, Astute Analytica 2035, Corning roundtable Feb 2025.
+        # Asian commercial GMP: back-calculated from Alibaba B2B pricing ($150–280/10B wholesale)
+        #   assuming 40–60% gross margin → COGS $60–170/10B.
+        # Platform 3D bioreactor: Stem Nova sells 60B/vial at $92/10B wholesale;
+        #   implying COGS ~$30–55/10B at scale to sustain margin.
+        COGS_BY_CONTEXT = {
+            "🏭 Western GMP (FDA/EMA compliant, US/EU)": {
+                "note": "US/EU pharma-grade GMP facility. Highest quality & regulatory standing. "
+                        "Source: RoosterBio 2025, Astute Analytica, Corning roundtable Feb 2025. "
+                        "⚠️ At current scale, COGS exceeds aesthetic B2B ceiling by 5–20x — "
+                        "viable only in therapeutic channels ($500+/10B) or at industrial scale.",
+                "color": "#e05c2a",
+                "scales": {
+                    "2026 — Small batch (<200 doses/mo)":  {"mid": 2550, "lo": 1950, "hi": 3150},
+                    "2026 — Commercial mid (500–2k/mo)":   {"mid": 1800, "lo": 1400, "hi": 2200},
+                    "2026 — Scale-up (2k–5k/mo)":          {"mid": 1200, "lo": 900,  "hi": 1500},
+                    "2030 — Industrial (>5k/mo)":          {"mid": 870,  "lo": 690,  "hi": 1050},
+                },
+            },
+            "🌏 Asian commercial GMP (KR/CN/SG, ASEAN compliant)": {
+                "note": "South Korea / China / Singapore GMP manufacturing. "
+                        "Back-calculated from Alibaba B2B market pricing ($150–280/10B) assuming 40–60% gross margin. "
+                        "ASEAN cosmetic GMP compliant. Viable in aesthetic wholesale at mid-to-large scale. "
+                        "⚠️ Regulatory acceptance varies — may not satisfy FDA/EMA for therapeutic claims.",
+                "color": "#2e6da4",
+                "scales": {
+                    "2026 — Small batch (<500 doses/mo)":  {"mid": 420,  "lo": 280,  "hi": 560},
+                    "2026 — Commercial mid (500–5k/mo)":   {"mid": 220,  "lo": 140,  "hi": 300},
+                    "2026 — Scale-up (5k–20k/mo)":         {"mid": 115,  "lo": 70,   "hi": 160},
+                    "2030 — Industrial (>20k/mo)":         {"mid": 55,   "lo": 32,   "hi": 78},
+                },
+            },
+            "⚡ Platform-optimized 3D bioreactor": {
+                "note": "Continuous 3D bioreactor culture (e.g. Stem Nova model, RoosterBio AgentV). "
+                        "Stem Nova confirmed: 60B/vial at $92/10B wholesale → implies COGS ~$30–55/10B at scale. "
+                        "Viable across aesthetic and soft-indication channels. "
+                        "⚠️ Requires significant upfront capex and process development.",
+                "color": "#3db07a",
+                "scales": {
+                    "2026 — Early commercial (1k–5k/mo)":  {"mid": 110,  "lo": 72,   "hi": 148},
+                    "2026 — Mid scale (5k–20k/mo)":        {"mid": 62,   "lo": 40,   "hi": 84},
+                    "2028 — Industrial (>20k/mo)":         {"mid": 40,   "lo": 25,   "hi": 55},
+                    "2030 — Ultra-scale":                  {"mid": 25,   "lo": 16,   "hi": 34},
+                },
+            },
+            "✏️ Custom — enter your COGS below": {
+                "note": "Enter your own COGS estimate based on your specific manufacturing setup.",
+                "color": "#7ec8e3",
+                "scales": {"Custom": {"mid": None, "lo": None, "hi": None}},
+            },
         }
+
+        # ── Strategic gap explanation ──────────────────────────────
+        st.markdown(
+            '<div class="warning-card">'
+            "⚠️ <strong>Why the default shows −900%+ gross margin:</strong> "
+            "The market B2B ceiling ($65–270/10B) reflects <em>non-GMP, mostly plant-derived or Asian-manufactured</em> aesthetic products. "
+            "The Western GMP COGS ($1,400–3,150/10B) reflects <em>FDA/EMA-grade BM-MSC production</em> in the US/EU. "
+            "These are different products competing in the same channel — and at current Western GMP costs, the aesthetic wholesale market is not addressable. "
+            "<strong>Three paths to viability:</strong> "
+            "(1) Asian or platform-optimized manufacturing to close the cost gap; "
+            "(2) Therapeutic channel (SCI, neuro, orthopedic) where buyers pay $500–2,000+/10B; "
+            "(3) Scale to industrial volume (&gt;5k doses/mo) to bring Western GMP COGS within range."
+            "</div>",
+            unsafe_allow_html=True,
+        )
+        st.markdown("")
 
         col_inp1, col_inp2 = st.columns([1, 1])
         with col_inp1:
@@ -1515,24 +1575,38 @@ with tabs[4]:
                 list(MARKET_REF.keys()),
                 help="Select the market you are entering. B2B ceiling is derived from observed per-10B retail/wholesale data.",
             )
+            mfg_context_sel = st.selectbox(
+                "Manufacturing context",
+                list(COGS_BY_CONTEXT.keys()),
+                index=0,
+                help="Select your manufacturing setup. Each context has very different unit economics.",
+            )
+            ctx = COGS_BY_CONTEXT[mfg_context_sel]
+            st.markdown(
+                f'<div class="signal-card" style="font-size:0.82rem;padding:8px 12px;">'
+                f'ℹ️ {ctx["note"]}</div>',
+                unsafe_allow_html=True,
+            )
+            st.markdown("")
             cogs_scale_sel = st.selectbox(
                 "Production scale / year",
-                list(COGS_SCALE.keys()),
-                index=1,
-                help="Select your production scale. COGS figures from Astute Analytica 2035 + RoosterBio 2025.",
+                list(ctx["scales"].keys()),
+                index=min(1, len(ctx["scales"]) - 1),
+                help="Select your production scale within the chosen manufacturing context.",
             )
-            if COGS_SCALE[cogs_scale_sel]["mid"] is None:
+            scale_vals = ctx["scales"][cogs_scale_sel]
+            if scale_vals["mid"] is None:
                 custom_cogs = st.number_input(
                     "Your COGS per 10B particles (USD)",
-                    min_value=50, max_value=5000, value=1200, step=50,
+                    min_value=10, max_value=5000, value=500, step=10,
                 )
                 cogs_mid = custom_cogs
                 cogs_lo  = int(custom_cogs * 0.85)
                 cogs_hi  = int(custom_cogs * 1.15)
             else:
-                cogs_mid = COGS_SCALE[cogs_scale_sel]["mid"]
-                cogs_lo  = COGS_SCALE[cogs_scale_sel]["lo"]
-                cogs_hi  = COGS_SCALE[cogs_scale_sel]["hi"]
+                cogs_mid = scale_vals["mid"]
+                cogs_lo  = scale_vals["lo"]
+                cogs_hi  = scale_vals["hi"]
 
             target_margin = st.slider(
                 "Target gross margin %",
@@ -1599,7 +1673,7 @@ with tabs[4]:
             # ── KPI cards ────────────────────────────────────────
             kpi_r = [
                 (f"${b2b_lo}–${b2b_hi}", "B2B Ceiling/10B", f"{mkt['flag']} {market_sel}"),
-                (f"${cogs_mid:,}", "Your COGS/10B", cogs_scale_sel.split("—")[0].strip()),
+                (f"${cogs_mid:,}", "Your COGS/10B", cogs_scale_sel.split("(")[0].strip()[:28]),
                 (f"{actual_margin_pct:.1f}%", "Actual Gross Margin", "at B2B midpoint"),
                 (f"${req_cogs_for_margin:,.0f}", f"COGS Needed for {target_margin}% Margin", "per 10B particles"),
                 (f"${vial_b2b_mid:,.0f}", f"B2B per vial ({particles_per_vial_sc}B)", "at market midpoint"),
