@@ -1122,13 +1122,24 @@ with tabs[4]:
         )
         st.markdown("")
 
+        # Mat. Cost Clinic = total course dose × clinic purchase price per 10B
+        # Clinic purchase range assumed $92–250/10B (Stem Nova confirmed low → mid-market aesthetic wholesale)
+        # ⚠️ Previous version understated material costs by 2–7x vs per-10B benchmark
         oop_df = pd.DataFrame([
-            {"Indication":"Facial Skin Rejuvenation",    "Dose/Session":"5–10B",  "Sessions":"3",   "Mat. Cost Clinic":"$50–150",  "OOP Low":400,  "OOP High":900,  "Markets":"EU, SEA, UAE, TH",     "Conf":"🟢 High"},
-            {"Indication":"Hair Restoration",            "Dose/Session":"10–20B", "Sessions":"3–6", "Mat. Cost Clinic":"$100–250", "OOP Low":900,  "OOP High":2300, "Markets":"UAE, US, EU, TH",       "Conf":"🟢 High"},
-            {"Indication":"Wound Healing / Scar",        "Dose/Session":"10–30B", "Sessions":"1–3", "Mat. Cost Clinic":"$150–400", "OOP Low":500,  "OOP High":2000, "Markets":"MX, TH, SEA, AU",       "Conf":"🟡 Med"},
-            {"Indication":"Joint Pain / Osteoarthritis", "Dose/Session":"30–50B", "Sessions":"1–2", "Mat. Cost Clinic":"$350–700", "OOP Low":1500, "OOP High":3500, "Markets":"MX, UAE, TH, SEA",      "Conf":"🟢 High"},
-            {"Indication":"Systemic IV Longevity",       "Dose/Session":"50–100B","Sessions":"2–4", "Mat. Cost Clinic":"$700–1,500","OOP Low":3750, "OOP High":5500,"Markets":"UAE, AU, TH (premium)", "Conf":"🟢 High"},
-            {"Indication":"Post-Procedure Recovery",     "Dose/Session":"5B",     "Sessions":"1",   "Mat. Cost Clinic":"$40–100",  "OOP Low":150,  "OOP High":400,  "Markets":"EU, SEA, US, TH",       "Conf":"🟡 Med"},
+            # Facial: 5–10B × 3 sessions = 15–30B total. @$92–200/10B → $138–600
+            {"Indication":"Facial Skin Rejuvenation",    "Dose/Session":"5–10B",   "Sessions":"3",   "Mat. Cost Clinic":"$150–600",   "OOP Low":400,  "OOP High":900,   "Markets":"EU, SEA, UAE, TH",      "OOP Conf":"🟢 Sourced",   "Mat. Method":"🟢 Calc"},
+            # Hair: 10–20B × 3–4 sessions typical = 30–80B total. @$100–200/10B → $300–1,200
+            {"Indication":"Hair Restoration",            "Dose/Session":"10–20B",  "Sessions":"3–6", "Mat. Cost Clinic":"$300–1,200",  "OOP Low":900,  "OOP High":2300,  "Markets":"UAE, US, EU, TH",       "OOP Conf":"🟢 Sourced",   "Mat. Method":"🟢 Calc"},
+            # Wound: 10–30B × 1–3 sessions = 15–60B typical. @$100–200/10B → $150–800 (⚠️ note: OOP range may be tight at high dose)
+            {"Indication":"Wound Healing / Scar",        "Dose/Session":"10–30B",  "Sessions":"1–3", "Mat. Cost Clinic":"$200–800",    "OOP Low":600,  "OOP High":2200,  "Markets":"MX, TH, SEA, AU",       "OOP Conf":"🟡 Estimated", "Mat. Method":"🟢 Calc"},
+            # Joint: 30–50B × 1–2 sessions = 30–100B. @$150–250/10B → $450–1,500 (⚠️ was $350–700 — too low)
+            {"Indication":"Joint Pain / Osteoarthritis", "Dose/Session":"30–50B",  "Sessions":"1–2", "Mat. Cost Clinic":"$500–1,500",  "OOP Low":1500, "OOP High":3500,  "Markets":"MX, UAE, TH, SEA",      "OOP Conf":"🟢 Sourced",   "Mat. Method":"🟢 Calc"},
+            # IV Longevity: CORRECTED — realistic clinic protocol is 1–2 sessions of 25–50B (not 2–4 × 50–100B).
+            # Prior entry (2–4 sessions × 50–100B = 100–400B total) implied mat cost >$10,000 vs OOP $3,750–5,500: mathematically impossible.
+            # Premium longevity IV at UAE/AU/TH premium clinics: $5,000–15,000 per protocol (Bookimed, EDEN Aesthetics data).
+            {"Indication":"Systemic IV Longevity",       "Dose/Session":"25–50B",  "Sessions":"1–2", "Mat. Cost Clinic":"$500–2,500",  "OOP Low":5000, "OOP High":15000, "Markets":"UAE, AU, TH (premium)", "OOP Conf":"🟡 Estimated", "Mat. Method":"🟡 Derived"},
+            # Post-procedure: 5B × 1 session. @$92–200/10B → $46–100. Minor adjustment.
+            {"Indication":"Post-Procedure Recovery",     "Dose/Session":"5B",      "Sessions":"1",   "Mat. Cost Clinic":"$50–120",     "OOP Low":150,  "OOP High":400,   "Markets":"EU, SEA, US, TH",       "OOP Conf":"🟡 Estimated", "Mat. Method":"🟢 Calc"},
         ])
         oop_df["OOP Mid"] = ((oop_df["OOP Low"] + oop_df["OOP High"]) / 2).astype(int)
 
@@ -1141,7 +1152,7 @@ with tabs[4]:
                 marker_color=colors[i % len(colors)],
                 text=f'${row["OOP Low"]:,}–${row["OOP High"]:,}',
                 textposition="inside",
-                hovertemplate=f"<b>{row['Indication']}</b><br>${row['OOP Low']:,}–${row['OOP High']:,}<br>Markets: {row['Markets']}<br>Confidence: {row['Conf']}<extra></extra>",
+                hovertemplate=f"<b>{row['Indication']}</b><br>${row['OOP Low']:,}–${row['OOP High']:,}<br>Mat. cost to clinic: {row['Mat. Cost Clinic']}<br>Markets: {row['Markets']}<br>OOP confidence: {row['OOP Conf']}<extra></extra>",
             ))
         fig_oop.update_layout(
             showlegend=False, height=400, barmode="stack",
@@ -1151,12 +1162,26 @@ with tabs[4]:
         )
         st.plotly_chart(fig_oop, use_container_width=True)
         st.dataframe(
-            oop_df[["Indication","Dose/Session","Sessions","Mat. Cost Clinic","OOP Low","OOP High","Markets","Conf"]]
+            oop_df[["Indication","Dose/Session","Sessions","Mat. Cost Clinic","Mat. Method","OOP Low","OOP High","Markets","OOP Conf"]]
             .assign(**{"OOP Low": oop_df["OOP Low"].apply(lambda x: f"${x:,}"),
                        "OOP High": oop_df["OOP High"].apply(lambda x: f"${x:,}")}),
             hide_index=True, use_container_width=True,
+            column_config={
+                "Mat. Method": st.column_config.TextColumn(
+                    "Mat. Basis",
+                    help="🟢 Calc = calculated from per-10B benchmark × dose | 🟡 Derived = estimated from indirect data"
+                ),
+                "OOP Conf": st.column_config.TextColumn(
+                    "OOP Conf",
+                    help="🟢 Sourced = from clinic/aggregator pricing data (Bookimed, R3, BioInformant) | 🟡 Estimated = modeled from adjacent markets"
+                ),
+            },
         )
-        st.caption("Sources: Bookimed clinic data (Mexico, Thailand); R3 Stem Cell Mexico pricing; BioInformant US market research; EDEN Aesthetics Dubai protocol data.")
+        st.caption(
+            "Mat. Basis: 🟢 Calc = total course dose × clinic purchase price ($92–250/10B from per-10B benchmark). "
+            "OOP Conf: 🟢 Sourced = Bookimed/R3/BioInformant clinic data; 🟡 Estimated = modeled from adjacent markets. "
+            "⚠️ Systemic IV Longevity corrected to 1–2 sessions of 25–50B (prior 2–4 × 50–100B was inconsistent with observed OOP prices)."
+        )
         st.markdown("")
 
         # ── US vs CEE OOP comparison ──────────────────────────────
