@@ -1487,61 +1487,98 @@ with tabs[4]:
         st.markdown("")
 
         # ── Market reference data (per 10B particles) ─────────────
+        # Aesthetic/wellness markets: B2B prices from observed retail/wholesale benchmark data.
+        # Therapeutic markets: back-calculated from clinical OOP pricing and industry estimates.
+        # These are SEPARATE channels — match product grade to the correct market tier.
         MARKET_REF = {
-            "Germany / EU":      {"b2b_lo": 130, "b2b_hi": 210, "end_user_lo": 100, "end_user_hi": 200, "flag": "🇩🇪"},
-            "UAE / GCC":         {"b2b_lo": 160, "b2b_hi": 270, "end_user_lo": 180, "end_user_hi": 350, "flag": "🇦🇪"},
-            "USA (aesthetic)":   {"b2b_lo": 140, "b2b_hi": 260, "end_user_lo": 150, "end_user_hi": 300, "flag": "🇺🇸"},
-            "Australia":         {"b2b_lo": 160, "b2b_hi": 270, "end_user_lo": 180, "end_user_hi": 350, "flag": "🇦🇺"},
-            "Mexico / LATAM":    {"b2b_lo": 95,  "b2b_hi": 165, "end_user_lo": 100, "end_user_hi": 200, "flag": "🇲🇽"},
-            "Thailand":          {"b2b_lo": 80,  "b2b_hi": 140, "end_user_lo": 80,  "end_user_hi": 180, "flag": "🇹🇭"},
-            "Philippines / SEA": {"b2b_lo": 65,  "b2b_hi": 115, "end_user_lo": 60,  "end_user_hi": 120, "flag": "🇵🇭"},
+            # ── Aesthetic / wellness channel ─────────────────────────
+            "🧴 Germany / EU (aesthetic)":       {"b2b_lo": 130, "b2b_hi": 210, "end_user_lo": 100, "end_user_hi": 200, "flag": "🇩🇪", "tier": "aesthetic"},
+            "🧴 UAE / GCC (aesthetic)":          {"b2b_lo": 160, "b2b_hi": 270, "end_user_lo": 180, "end_user_hi": 350, "flag": "🇦🇪", "tier": "aesthetic"},
+            "🧴 USA (aesthetic wholesale)":      {"b2b_lo": 140, "b2b_hi": 260, "end_user_lo": 150, "end_user_hi": 300, "flag": "🇺🇸", "tier": "aesthetic"},
+            "🧴 Australia (aesthetic)":          {"b2b_lo": 160, "b2b_hi": 270, "end_user_lo": 180, "end_user_hi": 350, "flag": "🇦🇺", "tier": "aesthetic"},
+            "🧴 Mexico / LATAM (aesthetic)":     {"b2b_lo": 95,  "b2b_hi": 165, "end_user_lo": 100, "end_user_hi": 200, "flag": "🇲🇽", "tier": "aesthetic"},
+            "🧴 Thailand (aesthetic)":           {"b2b_lo": 80,  "b2b_hi": 140, "end_user_lo": 80,  "end_user_hi": 180, "flag": "🇹🇭", "tier": "aesthetic"},
+            "🧴 Philippines / SEA (aesthetic)":  {"b2b_lo": 65,  "b2b_hi": 115, "end_user_lo": 60,  "end_user_hi": 120, "flag": "🇵🇭", "tier": "aesthetic"},
+            # ── Therapeutic / clinical channel ────────────────────────
+            # Sources: Bookimed premium IV longevity ($5,000–15,000/treatment at 25–50B/session = $500–3,000/10B);
+            # R3 Stem Cell orthopedic ($3,950 for 150B = $263/10B at clinic cost, B2B ~$150–400/10B);
+            # NurExone ExoPTEN compassionate/Phase II: estimated $1,500–5,000/10B based on comparable
+            # therapeutic biologics (Spinraza $125K/dose; AVONEX $50K/year) discounted for early market.
+            "💊 IV Longevity / Premium Wellness": {"b2b_lo": 500,  "b2b_hi": 1500, "end_user_lo": 1000, "end_user_hi": 3000, "flag": "🌐", "tier": "therapeutic"},
+            "💊 Orthopedic / Joint (therapeutic)":{"b2b_lo": 300,  "b2b_hi": 800,  "end_user_lo": 600,  "end_user_hi": 1500, "flag": "🌐", "tier": "therapeutic"},
+            "💊 Neurological / SCI (Phase II)":   {"b2b_lo": 1500, "b2b_hi": 5000, "end_user_lo": 3000, "end_user_hi": 10000,"flag": "🌐", "tier": "therapeutic"},
         }
 
-        # ── COGS by manufacturing context (per 10B particles) ────────
-        # Three distinct manufacturing realities — each yields very different unit economics.
-        # Western GMP: RoosterBio 2025, Astute Analytica 2035, Corning roundtable Feb 2025.
-        # Asian commercial GMP: back-calculated from Alibaba B2B pricing ($150–280/10B wholesale)
-        #   assuming 40–60% gross margin → COGS $60–170/10B.
-        # Platform 3D bioreactor: Stem Nova sells 60B/vial at $92/10B wholesale;
-        #   implying COGS ~$30–55/10B at scale to sustain margin.
+        # ── COGS by product grade (per 10B particles) ──────────────
+        # ROOT CAUSE OF PREVIOUS -900% MARGIN: prior model applied clinical therapeutic GMP COGS
+        # ($1,400–3,150/10B) to aesthetic market prices ($65–270/10B). These are different product
+        # categories and should never be compared in the same scenario without explicit labeling.
+        #
+        # Sources:
+        # • Cosmetic/aesthetic grade: back-calculated from AnteAGE MDX (14B/vial, ~$150–250/vial
+        #   wholesale from US ISO Class 5 facility → 50–60% gross margin → COGS $45–90/10B).
+        # • Professional US (bioreactor): Stem Nova 3DExo+ confirmed $92/10B wholesale →
+        #   implied COGS $35–55/10B at commercial scale (40–60% gross margin).
+        # • Asian commercial GMP: back-calculated from Alibaba B2B ($150–280/10B wholesale,
+        #   20–40% gross margin → COGS $90–220/10B). Alibaba suppliers must be profitable.
+        # • Clinical therapeutic GMP: RoosterBio 2025, Astute Analytica 2035, Corning Feb 2025.
+        #   $150K release testing per lot + $50K/day GMP labor. Correct for ExoPTEN/IND-enabling.
         COGS_BY_CONTEXT = {
-            "🏭 Western GMP (FDA/EMA compliant, US/EU)": {
-                "note": "US/EU pharma-grade GMP facility. Highest quality & regulatory standing. "
-                        "Source: RoosterBio 2025, Astute Analytica, Corning roundtable Feb 2025. "
-                        "⚠️ At current scale, COGS exceeds aesthetic B2B ceiling by 5–20x — "
-                        "viable only in therapeutic channels ($500+/10B) or at industrial scale.",
+            "🧴 Cosmetic / aesthetic grade (ISO Class 7–8)": {
+                "note": "Cosmetic-grade exosome manufacturing — ISO Class 7–8 cleanroom, basic NTA characterization, "
+                        "lyophilized fill/finish. Matches the products in the Per-10B Benchmark table (EXOMIDE, EXOGEN, "
+                        "Selastin etc). Source: AnteAGE MDX US manufacturing back-calculation "
+                        "(14B/vial, ~$150–250/vial wholesale, 50–60% gross margin → COGS $45–90/10B). "
+                        "✅ VIABLE in aesthetic wholesale channel at commercial scale.",
+                "color": "#3db07a",
+                "scales": {
+                    "2026 — Small batch (<500 doses/mo)":  {"mid": 95,  "lo": 60,  "hi": 130},
+                    "2026 — Commercial mid (500–5k/mo)":   {"mid": 55,  "lo": 35,  "hi": 75},
+                    "2026 — Scale-up (5k–20k/mo)":         {"mid": 32,  "lo": 20,  "hi": 44},
+                    "2030 — Industrial (>20k/mo)":         {"mid": 18,  "lo": 10,  "hi": 26},
+                },
+            },
+            "⚡ Professional US grade (ISO Class 5, 3D bioreactor)": {
+                "note": "US-based ISO Class 5 manufacturing with bioreactor expansion, TFF, SEC, full NTA "
+                        "characterization and lyophilization (AnteAGE MDX, Stem Nova, BENEV model). "
+                        "Source: Stem Nova 3DExo+ confirmed $92/10B wholesale (60B/vial, $550) → "
+                        "implies COGS $35–55/10B at scale assuming 40–60% gross margin. "
+                        "✅ VIABLE in professional aesthetic and soft-indication channels.",
+                "color": "#2e6da4",
+                "scales": {
+                    "2026 — Early commercial (500–2k/mo)": {"mid": 120, "lo": 80,  "hi": 160},
+                    "2026 — Commercial mid (2k–10k/mo)":   {"mid": 65,  "lo": 42,  "hi": 88},
+                    "2028 — Scale-up (10k–30k/mo)":        {"mid": 40,  "lo": 26,  "hi": 54},
+                    "2030 — Industrial (>30k/mo)":         {"mid": 22,  "lo": 14,  "hi": 30},
+                },
+            },
+            "🌏 Asian commercial GMP (KR/CN/SG, ASEAN compliant)": {
+                "note": "Korean / Chinese / Singapore GMP manufacturing. "
+                        "Back-calculated: Alibaba B2B suppliers sell at $150–280/10B wholesale and must be profitable → "
+                        "COGS ~$90–220/10B assuming 20–40% gross margin. "
+                        "ASEAN cosmetic GMP compliant. Lower CAPEX than US/EU but higher per-unit cost than bioreactor models. "
+                        "⚠️ May not satisfy FDA/EMA for therapeutic claims.",
+                "color": "#f0a030",
+                "scales": {
+                    "2026 — Small batch (<500 doses/mo)":  {"mid": 200, "lo": 130, "hi": 270},
+                    "2026 — Commercial mid (500–5k/mo)":   {"mid": 140, "lo": 90,  "hi": 190},
+                    "2026 — Scale-up (5k–20k/mo)":         {"mid": 90,  "lo": 58,  "hi": 122},
+                    "2030 — Industrial (>20k/mo)":         {"mid": 50,  "lo": 30,  "hi": 70},
+                },
+            },
+            "💊 Clinical therapeutic GMP (IND-enabling, FDA/EMA)": {
+                "note": "Full pharmaceutical-grade GMP — validated processes, $150K release testing per lot, "
+                        "$50K/day GMP labor (Made Scientific / ExoXpert benchmark). "
+                        "Source: RoosterBio 2025, Astute Analytica 2035, Corning roundtable Feb 2025. "
+                        "Correct for NurExone ExoPTEN / IND-enabling therapeutic applications. "
+                        "⚠️ MUST be paired with therapeutic market tiers (💊) — NOT aesthetic pricing. "
+                        "Viable at industrial scale or for high-value indications (SCI, neuro).",
                 "color": "#e05c2a",
                 "scales": {
                     "2026 — Small batch (<200 doses/mo)":  {"mid": 2550, "lo": 1950, "hi": 3150},
                     "2026 — Commercial mid (500–2k/mo)":   {"mid": 1800, "lo": 1400, "hi": 2200},
                     "2026 — Scale-up (2k–5k/mo)":          {"mid": 1200, "lo": 900,  "hi": 1500},
                     "2030 — Industrial (>5k/mo)":          {"mid": 870,  "lo": 690,  "hi": 1050},
-                },
-            },
-            "🌏 Asian commercial GMP (KR/CN/SG, ASEAN compliant)": {
-                "note": "South Korea / China / Singapore GMP manufacturing. "
-                        "Back-calculated from Alibaba B2B market pricing ($150–280/10B) assuming 40–60% gross margin. "
-                        "ASEAN cosmetic GMP compliant. Viable in aesthetic wholesale at mid-to-large scale. "
-                        "⚠️ Regulatory acceptance varies — may not satisfy FDA/EMA for therapeutic claims.",
-                "color": "#2e6da4",
-                "scales": {
-                    "2026 — Small batch (<500 doses/mo)":  {"mid": 420,  "lo": 280,  "hi": 560},
-                    "2026 — Commercial mid (500–5k/mo)":   {"mid": 220,  "lo": 140,  "hi": 300},
-                    "2026 — Scale-up (5k–20k/mo)":         {"mid": 115,  "lo": 70,   "hi": 160},
-                    "2030 — Industrial (>20k/mo)":         {"mid": 55,   "lo": 32,   "hi": 78},
-                },
-            },
-            "⚡ Platform-optimized 3D bioreactor": {
-                "note": "Continuous 3D bioreactor culture (e.g. Stem Nova model, RoosterBio AgentV). "
-                        "Stem Nova confirmed: 60B/vial at $92/10B wholesale → implies COGS ~$30–55/10B at scale. "
-                        "Viable across aesthetic and soft-indication channels. "
-                        "⚠️ Requires significant upfront capex and process development.",
-                "color": "#3db07a",
-                "scales": {
-                    "2026 — Early commercial (1k–5k/mo)":  {"mid": 110,  "lo": 72,   "hi": 148},
-                    "2026 — Mid scale (5k–20k/mo)":        {"mid": 62,   "lo": 40,   "hi": 84},
-                    "2028 — Industrial (>20k/mo)":         {"mid": 40,   "lo": 25,   "hi": 55},
-                    "2030 — Ultra-scale":                  {"mid": 25,   "lo": 16,   "hi": 34},
                 },
             },
             "✏️ Custom — enter your COGS below": {
@@ -1551,17 +1588,14 @@ with tabs[4]:
             },
         }
 
-        # ── Strategic gap explanation ──────────────────────────────
+        # ── Product grade / market tier guidance ──────────────────
         st.markdown(
-            '<div class="warning-card">'
-            "⚠️ <strong>Why the default shows −900%+ gross margin:</strong> "
-            "The market B2B ceiling ($65–270/10B) reflects <em>non-GMP, mostly plant-derived or Asian-manufactured</em> aesthetic products. "
-            "The Western GMP COGS ($1,400–3,150/10B) reflects <em>FDA/EMA-grade BM-MSC production</em> in the US/EU. "
-            "These are different products competing in the same channel — and at current Western GMP costs, the aesthetic wholesale market is not addressable. "
-            "<strong>Three paths to viability:</strong> "
-            "(1) Asian or platform-optimized manufacturing to close the cost gap; "
-            "(2) Therapeutic channel (SCI, neuro, orthopedic) where buyers pay $500–2,000+/10B; "
-            "(3) Scale to industrial volume (&gt;5k doses/mo) to bring Western GMP COGS within range."
+            '<div class="signal-card">'
+            "📊 <strong>How to use this modeler correctly:</strong> Match your <em>product grade</em> to the <em>market tier</em>. "
+            "🧴 Cosmetic/professional grade → select aesthetic markets (🧴). "
+            "💊 Clinical therapeutic GMP → select therapeutic markets (💊). "
+            "Mixing clinical COGS with aesthetic prices will always show negative margins — "
+            "these are fundamentally different products in different channels."
             "</div>",
             unsafe_allow_html=True,
         )
@@ -1576,10 +1610,10 @@ with tabs[4]:
                 help="Select the market you are entering. B2B ceiling is derived from observed per-10B retail/wholesale data.",
             )
             mfg_context_sel = st.selectbox(
-                "Manufacturing context",
+                "Product grade / manufacturing context",
                 list(COGS_BY_CONTEXT.keys()),
                 index=0,
-                help="Select your manufacturing setup. Each context has very different unit economics.",
+                help="Match to the market tier you selected. 🧴 aesthetic markets → cosmetic/professional grade. 💊 therapeutic markets → clinical GMP.",
             )
             ctx = COGS_BY_CONTEXT[mfg_context_sel]
             st.markdown(
@@ -1621,6 +1655,22 @@ with tabs[4]:
         with col_inp2:
             st.markdown('<div class="section-subheader">📊 Results</div>', unsafe_allow_html=True)
             mkt    = MARKET_REF[market_sel]
+            # Warn if product grade and market tier are mismatched
+            mkt_tier  = mkt.get("tier", "aesthetic")
+            is_therapeutic_cogs = "Clinical therapeutic" in mfg_context_sel
+            is_therapeutic_mkt  = mkt_tier == "therapeutic"
+            if is_therapeutic_cogs and not is_therapeutic_mkt:
+                st.markdown(
+                    '<div class="warning-card">⚠️ <strong>Tier mismatch:</strong> Clinical therapeutic GMP COGS paired with an aesthetic market. '
+                    'Switch to a 💊 therapeutic market or a lower-cost product grade for a meaningful comparison.</div>',
+                    unsafe_allow_html=True,
+                )
+            elif not is_therapeutic_cogs and is_therapeutic_mkt:
+                st.markdown(
+                    '<div class="signal-card">ℹ️ <strong>Note:</strong> Cosmetic/professional grade COGS in a therapeutic market — '
+                    'this is optimistic; therapeutic buyers typically require clinical GMP documentation.</div>',
+                    unsafe_allow_html=True,
+                )
             b2b_lo = mkt["b2b_lo"]
             b2b_hi = mkt["b2b_hi"]
             b2b_mid = (b2b_lo + b2b_hi) / 2
