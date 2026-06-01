@@ -438,27 +438,40 @@ with tabs[0]:
 # ════════════════════════════════════════════════════════════════
 with tabs[1]:
     # ── Choropleth world map ─────────────────────────────────────
-    st.markdown('<div class="section-header">🗺️ Global Entry Map — Regulatory Risk by Country (March 2026)</div>', unsafe_allow_html=True)
-    st.caption("Color = regulatory risk for naive MSC exosome products. Bubble size = 2030 market forecast (USD million).")
+    st.markdown('<div class="section-header">🗺️ Global Entry Map — Regulatory Risk by Country (B2B Cosmetic / Soft Medical Channel)</div>', unsafe_allow_html=True)
+    st.caption(
+        "Risk rating = regulatory risk for **non-IND, non-therapeutic** naive MSC exosome products "
+        "(topical cosmetic, physician-dispensed aesthetic, soft medical use). "
+        "⚠️ IV/injectable therapeutic use carries higher risk in all markets regardless of color shown here. "
+        "Bubble size = 2030 market forecast (USD million)."
+    )
 
     choropleth_df = pd.DataFrame([
-        {"Country":"United States",    "ISO":"USA","Risk":"High",    "Risk_Num":4,"2030_M":206,"Channel":"Cosmetic topical only (FDA 12+ WLs)","Flag":"🇺🇸"},
-        {"Country":"Australia",        "ISO":"AUS","Risk":"High",    "Risk_Num":4,"2030_M":9,  "Channel":"TGA-registered clinics only",         "Flag":"🇦🇺"},
-        {"Country":"Germany",          "ISO":"DEU","Risk":"Medium",  "Risk_Num":3,"2030_M":18, "Channel":"Aesthetic / Medical spa",              "Flag":"🇩🇪"},
-        {"Country":"France",           "ISO":"FRA","Risk":"Medium",  "Risk_Num":3,"2030_M":14, "Channel":"Aesthetic / Dermatology",              "Flag":"🇫🇷"},
-        {"Country":"Switzerland",      "ISO":"CHE","Risk":"Medium",  "Risk_Num":3,"2030_M":5,  "Channel":"Longevity clinics (private)",          "Flag":"🇨🇭"},
-        {"Country":"Brazil",           "ISO":"BRA","Risk":"Medium",  "Risk_Num":3,"2030_M":12, "Channel":"ANVISA RDC 949/2024 + IOR required",  "Flag":"🇧🇷"},
-        {"Country":"South Korea",      "ISO":"KOR","Risk":"Medium",  "Risk_Num":3,"2030_M":35, "Channel":"K-beauty / hospital partnerships",     "Flag":"🇰🇷"},
-        {"Country":"United Arab Emirates","ISO":"ARE","Risk":"Medium","Risk_Num":3,"2030_M":30,"Channel":"Active IV longevity clinics + cosmetic","Flag":"🇦🇪"},
-        {"Country":"Mexico",           "ISO":"MEX","Risk":"Low",     "Risk_Num":1,"2030_M":13, "Channel":"Physician dispensing — active",        "Flag":"🇲🇽"},
-        {"Country":"Thailand",         "ISO":"THA","Risk":"Low-Med", "Risk_Num":2,"2030_M":21, "Channel":"Cosmetic notification + physician",    "Flag":"🇹🇭"},
-        {"Country":"Philippines",      "ISO":"PHL","Risk":"Low",     "Risk_Num":1,"2030_M":8,  "Channel":"✅ PH FDA notif. approved Jan 2026",   "Flag":"🇵🇭"},
-        {"Country":"Malaysia",         "ISO":"MYS","Risk":"Low",     "Risk_Num":1,"2030_M":5,  "Channel":"ASEAN cosmetic directive",             "Flag":"🇲🇾"},
-        {"Country":"Indonesia",        "ISO":"IDN","Risk":"Low",     "Risk_Num":1,"2030_M":5,  "Channel":"ASEAN cosmetic directive + BPOM",     "Flag":"🇮🇩"},
-        {"Country":"Singapore",        "ISO":"SGP","Risk":"Low-Med", "Risk_Num":2,"2030_M":8,  "Channel":"HSA gateway → ASEAN reliance route",  "Flag":"🇸🇬"},
-        {"Country":"Colombia",         "ISO":"COL","Risk":"Low",     "Risk_Num":1,"2030_M":4,  "Channel":"2025 LATAM reform pathway",            "Flag":"🇨🇴"},
-        {"Country":"Argentina",        "ISO":"ARG","Risk":"Low",     "Risk_Num":1,"2030_M":4,  "Channel":"2025 deregulation — fast-track",       "Flag":"🇦🇷"},
-        {"Country":"Poland",           "ISO":"POL","Risk":"Low",     "Risk_Num":1,"2030_M":8,  "Channel":"CEE hub — LaserMe / Teoxane Polska",  "Flag":"🇵🇱"},
+        # USA: FDA 12+ warning letters target IV/injectable/drug-claim products ONLY.
+        # Topical B2B cosmetic (no drug claims) operates legally — AnteAGE, BENEV, Stem Nova all active.
+        # Risk for B2B cosmetic channel: MEDIUM (claims compliance required; IV = 🔴).
+        {"Country":"United States",    "ISO":"USA","Risk":"Medium",  "Risk_Num":3,"2030_M":206,"Channel":"Cosmetic/topical B2B active; IV = 🔴 enforcement; no drug claims","Flag":"🇺🇸"},
+        # Australia: TGA applies only when therapeutic claims are made.
+        # Topical cosmetics regulated by ACCC (consumer law), not TGA.
+        # Practitioner aesthetic channel active. Risk for B2B cosmetic: MEDIUM.
+        {"Country":"Australia",        "ISO":"AUS","Risk":"Medium",  "Risk_Num":3,"2030_M":9,  "Channel":"Cosmetic = ACCC (not TGA); aesthetic practitioner channel active; IV = TGA-restricted","Flag":"🇦🇺"},
+        # EU: Cosmetics Regulation EC 1223/2009 — clear pathway: notification + safety assessment + responsible person.
+        {"Country":"Germany",          "ISO":"DEU","Risk":"Low-Med", "Risk_Num":2,"2030_M":18, "Channel":"EU Cosmetics Reg 1223/2009 — notification pathway; medical spa channel active","Flag":"🇩🇪"},
+        {"Country":"France",           "ISO":"FRA","Risk":"Low-Med", "Risk_Num":2,"2030_M":14, "Channel":"EU Cosmetics Reg — notification pathway; dermatology / aesthetics active","Flag":"🇫🇷"},
+        {"Country":"Switzerland",      "ISO":"CHE","Risk":"Medium",  "Risk_Num":3,"2030_M":5,  "Channel":"Cosmetic compliant; longevity clinics (private); Swissmedic for therapeutic","Flag":"🇨🇭"},
+        {"Country":"Brazil",           "ISO":"BRA","Risk":"Medium",  "Risk_Num":3,"2030_M":12, "Channel":"ANVISA RDC 949/2024 notification pathway; IOR required for import","Flag":"🇧🇷"},
+        # South Korea: 'exosome' term banned in cosmetic ads Jan 2025 — terminology compliance required.
+        {"Country":"South Korea",      "ISO":"KOR","Risk":"Medium",  "Risk_Num":3,"2030_M":35, "Channel":"K-beauty cosmetic active; 'exosome' ad term banned Jan 2025 — rebranding needed","Flag":"🇰🇷"},
+        {"Country":"United Arab Emirates","ISO":"ARE","Risk":"Low-Med","Risk_Num":2,"2030_M":30,"Channel":"Active IV longevity + cosmetic clinics; CE/FDA-cert devices accepted","Flag":"🇦🇪"},
+        {"Country":"Mexico",           "ISO":"MEX","Risk":"Low",     "Risk_Num":1,"2030_M":13, "Channel":"Physician dispensing — active; COFEPRIS cosmetic compliant","Flag":"🇲🇽"},
+        {"Country":"Thailand",         "ISO":"THA","Risk":"Low-Med", "Risk_Num":2,"2030_M":21, "Channel":"Cosmetic notification + physician grey area; no exosome-specific enforcement","Flag":"🇹🇭"},
+        {"Country":"Philippines",      "ISO":"PHL","Risk":"Low",     "Risk_Num":1,"2030_M":8,  "Channel":"✅ ACD compliant; May 2026 enforcement deadline passed — clean channel","Flag":"🇵🇭"},
+        {"Country":"Malaysia",         "ISO":"MYS","Risk":"Low",     "Risk_Num":1,"2030_M":5,  "Channel":"ASEAN cosmetic directive — compliant pathway","Flag":"🇲🇾"},
+        {"Country":"Indonesia",        "ISO":"IDN","Risk":"Low",     "Risk_Num":1,"2030_M":5,  "Channel":"ASEAN cosmetic directive + BPOM pathway","Flag":"🇮🇩"},
+        {"Country":"Singapore",        "ISO":"SGP","Risk":"Low-Med", "Risk_Num":2,"2030_M":8,  "Channel":"HSA: exosomes = therapeutic products; early engagement recommended","Flag":"🇸🇬"},
+        {"Country":"Colombia",         "ISO":"COL","Risk":"Low",     "Risk_Num":1,"2030_M":4,  "Channel":"2025 LATAM reform — streamlined pathway","Flag":"🇨🇴"},
+        {"Country":"Argentina",        "ISO":"ARG","Risk":"Low",     "Risk_Num":1,"2030_M":4,  "Channel":"2025 deregulation — fast-track entry","Flag":"🇦🇷"},
+        {"Country":"Poland",           "ISO":"POL","Risk":"Low",     "Risk_Num":1,"2030_M":8,  "Channel":"CEE hub — LaserMe / Teoxane Polska; EU cosmetics framework","Flag":"🇵🇱"},
         {"Country":"Romania",          "ISO":"ROU","Risk":"Low",     "Risk_Num":1,"2030_M":5,  "Channel":"Medical tourism hub; $300M cos. surg.","Flag":"🇷🇴"},
         {"Country":"Czechia",          "ISO":"CZE","Risk":"Low",     "Risk_Num":1,"2030_M":4,  "Channel":"Clinical expansion in Prague",         "Flag":"🇨🇿"},
     ])
@@ -523,10 +536,10 @@ with tabs[1]:
     # Legend for the choropleth
     leg_cols = st.columns(4)
     for col, (risk, color, desc) in zip(leg_cols, [
-        ("🔴 High",     "#c62828", "IND/ATMP required — no topical exceptions"),
-        ("🟡 Medium",   "#f0a030", "Cosmetic OK — soft indications grey area"),
-        ("🟡 Low-Med",  "#a0c040", "Cosmetic notification + physician grey area"),
-        ("🟢 Low",      "#3db07a", "Permissive — cosmetic notification pathway"),
+        ("🔴 High",     "#c62828", "IV/injectable therapeutic only — cosmetic channel not established"),
+        ("🟡 Medium",   "#f0a030", "Cosmetic B2B viable with claims compliance / terminology care"),
+        ("🟡 Low-Med",  "#a0c040", "Clear cosmetic pathway + active physician soft-indication channel"),
+        ("🟢 Low",      "#3db07a", "Permissive — cosmetic notification; physician dispensing active"),
     ]):
         col.markdown(
             f'<div style="border-left:4px solid {color};background:#fff;padding:6px 10px;'
@@ -547,7 +560,7 @@ with tabs[1]:
     st.markdown("")
 
     geo_df = pd.DataFrame([
-        {"Region":"North America", "Stage":"Restricted",    "Segment":"Cosmetic / Research",  "Reg Risk":"High",   "CAGR":23,"OOP":False,"2024 ($M)":58,  "2030 ($M)":206, "Note":"Largest market — cosmetic channel only; FL medspa $1.2B; Nevada SB128/AB148"},
+        {"Region":"North America", "Stage":"Active",        "Segment":"Cosmetic / Aesthetic",  "Reg Risk":"Medium", "CAGR":23,"OOP":False,"2024 ($M)":58,  "2030 ($M)":206, "Note":"Largest market — topical B2B active (AnteAGE, BENEV, Stem Nova); IV = 🔴; FL medspa $1.2B; Nevada SB128/AB148"},
         {"Region":"Europe (W)",    "Stage":"Established",   "Segment":"Aesthetic/Wellness",   "Reg Risk":"Medium", "CAGR":19,"OOP":True, "2024 ($M)":25,  "2030 ($M)":72,  "Note":"20% regional share (Credence); Germany, France, Italy lead"},
         {"Region":"CEE",           "Stage":"Emerging",      "Segment":"Medical Tourism Hub",  "Reg Risk":"Low",    "CAGR":22,"OOP":True, "2024 ($M)":5,   "2030 ($M)":16,  "Note":"Romania $300.9M cosmetic surgery; Poland $4.8M; Prague sessions ~$320"},
         {"Region":"Rest of APAC",  "Stage":"Emerging",      "Segment":"K-Beauty/Hospital",    "Reg Risk":"Medium", "CAGR":27,"OOP":True, "2024 ($M)":22,  "2030 ($M)":93,  "Note":"Korea ExoCoBio 9.6% share; China 23.1% CAGR (FMI)"},
@@ -555,7 +568,7 @@ with tabs[1]:
         {"Region":"Latin America", "Stage":"Growing",       "Segment":"Medical Tourism",      "Reg Risk":"Medium", "CAGR":21,"OOP":True, "2024 ($M)":8,   "2030 ($M)":25,  "Note":"4.5% of broader market (Credence); ANVISA-COFEPRIS MoU Aug 2025"},
         {"Region":"UAE/GCC",       "Stage":"Niche/Premium", "Segment":"Longevity/Luxury",     "Reg Risk":"Low-Med","CAGR":24,"OOP":True, "2024 ($M)":8,   "2030 ($M)":30,  "Note":"Premium MEA subset; luxury longevity channel"},
         {"Region":"Thailand",      "Stage":"Emerging",      "Segment":"Medical Tourism",      "Reg Risk":"Low-Med","CAGR":27,"OOP":True, "2024 ($M)":5,   "2030 ($M)":21,  "Note":"Medical tourism hub; Thai FDA modernising 2025"},
-        {"Region":"Australia",     "Stage":"Established",   "Segment":"Medical Regen",        "Reg Risk":"High",   "CAGR":20,"OOP":False,"2024 ($M)":3,   "2030 ($M)":9,   "Note":"TGA-restricted; regenerative protocols only"},
+        {"Region":"Australia",     "Stage":"Established",   "Segment":"Cosmetic / Aesthetic",  "Reg Risk":"Medium", "CAGR":20,"OOP":False,"2024 ($M)":3,   "2030 ($M)":9,   "Note":"Cosmetic = ACCC not TGA; practitioner aesthetic channel active; IV/therapeutic = TGA-restricted"},
     ])
 
     risk_order = {"Low":1,"Low-Med":2,"Medium":3,"High":4}
@@ -876,14 +889,21 @@ with tabs[2]:
 # TAB 4 — REGULATION
 # ════════════════════════════════════════════════════════════════
 with tabs[3]:
-    st.markdown('<div class="section-header">Global Regulatory Framework (March 2026)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">Global Regulatory Framework — B2B Cosmetic & Soft Medical Channel (May 2026)</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="signal-card">📋 <strong>Channel context:</strong> Risk ratings reflect the <em>non-IND, non-therapeutic</em> channel — '
+        'topical cosmetic B2B, physician-dispensed aesthetic, and soft medical (no drug claims). '
+        'IV/injectable therapeutic use carries 🔴 HIGH risk in <em>all</em> markets regardless of overall rating shown. '
+        'See the IV/Therapeutic column for territory-specific therapeutic risk.</div>',
+        unsafe_allow_html=True,
+    )
 
     reg_df_static = pd.DataFrame([
-        {"Territory":"USA",         "Body":"FDA",          "Topical/Cosmetic":"Permitted — no claims",       "Soft Indications":"Gray — physician discretion",    "IV/Therapeutic":"IND required — 12+ warning letters","Risk":"🔴 HIGH",    "Conf.":"🟢 80","Source URL":"https://www.armstrongbradylyons.com/library/fda-warning-letters-exosome-product"},
-        {"Territory":"EU",          "Body":"EMA",          "Topical/Cosmetic":"CE-IVD compliant",            "Soft Indications":"Cosmetic grade only",             "IV/Therapeutic":"ATMP required — 0 approved",        "Risk":"🔴 HIGH",    "Conf.":"🟢 80","Source URL":"https://www.regulatoryrapporteur.org/industry-news/ema-accepts-new-guidelines-on-investigational-atmps/843.article"},
-        {"Territory":"Australia",   "Body":"TGA",          "Topical/Cosmetic":"Cosmetic — limited claims",   "Soft Indications":"TGA-registered only",             "IV/Therapeutic":"ATMP / PBAC risk-sharing",          "Risk":"🔴 HIGH",    "Conf.":"🟢 70","Source URL":"https://www.atlantisbioscience.com/blog/commercialising-exosome-therapeutics-key-regulatory-pathways/"},
-        {"Territory":"Germany",     "Body":"BfArM",        "Topical/Cosmetic":"Cosmetic — active market",    "Soft Indications":"Medical spa channel",             "IV/Therapeutic":"ATMP pathway",                     "Risk":"🟡 MEDIUM",  "Conf.":"🟢 75","Source URL":"https://www.regulatoryrapporteur.org/industry-news/ema-accepts-new-guidelines-on-investigational-atmps/843.article"},
-        {"Territory":"France",      "Body":"ANSM",         "Topical/Cosmetic":"Cosmetic — active",           "Soft Indications":"Dermatology protocols",           "IV/Therapeutic":"ATMP pathway",                     "Risk":"🟡 MEDIUM",  "Conf.":"🟢 75","Source URL":"https://www.regulatoryrapporteur.org/industry-news/ema-accepts-new-guidelines-on-investigational-atmps/843.article"},
+        {"Territory":"USA",         "Body":"FDA",          "Topical/Cosmetic":"✅ Active B2B market — no drug claims; AnteAGE/BENEV/Stem Nova operate legally","Soft Indications":"Physician discretion (grey); no IV drug claims","IV/Therapeutic":"🔴 IND required; 12+ warning letters; DOJ active — IV/injectable only","Risk":"🟡 MEDIUM",  "Conf.":"🟢 90","Source URL":"https://www.armstrongbradylyons.com/library/fda-warning-letters-exosome-product"},
+        {"Territory":"EU",          "Body":"EMA",          "Topical/Cosmetic":"✅ EU Cosmetics Reg 1223/2009 — notification + safety assessment + responsible person","Soft Indications":"Cosmetic grade — dermatology, aesthetics active","IV/Therapeutic":"🔴 ATMP required — 0 exosome-based approved globally; EMA Jul 2025 guideline","Risk":"🟡 LOW-MED","Conf.":"🟢 85","Source URL":"https://www.regulatoryrapporteur.org/industry-news/ema-accepts-new-guidelines-on-investigational-atmps/843.article"},
+        {"Territory":"Australia",   "Body":"TGA/ACCC",     "Topical/Cosmetic":"✅ Cosmetics = ACCC (consumer law), not TGA — no registration required","Soft Indications":"Practitioner aesthetic channel active — cosmetic claims only","IV/Therapeutic":"🔴 TGA-restricted; ATMP / PBAC risk-sharing model","Risk":"🟡 MEDIUM",  "Conf.":"🟢 80","Source URL":"https://www.atlantisbioscience.com/blog/commercialising-exosome-therapeutics-key-regulatory-pathways/"},
+        {"Territory":"Germany",     "Body":"BfArM",        "Topical/Cosmetic":"✅ EU cosmetics notification — active medical spa market","Soft Indications":"Medical spa / aesthetic clinic channel active","IV/Therapeutic":"ATMP pathway; EMA Jul 2025 guideline applies","Risk":"🟡 LOW-MED","Conf.":"🟢 80","Source URL":"https://www.regulatoryrapporteur.org/industry-news/ema-accepts-new-guidelines-on-investigational-atmps/843.article"},
+        {"Territory":"France",      "Body":"ANSM",         "Topical/Cosmetic":"✅ EU cosmetics notification — dermatology & aesthetics active","Soft Indications":"Dermatology protocols active","IV/Therapeutic":"ATMP pathway; EMA Jul 2025 guideline applies","Risk":"🟡 LOW-MED","Conf.":"🟢 80","Source URL":"https://www.regulatoryrapporteur.org/industry-news/ema-accepts-new-guidelines-on-investigational-atmps/843.article"},
         {"Territory":"Switzerland", "Body":"Swissmedic",   "Topical/Cosmetic":"High-value cosmetic",         "Soft Indications":"Longevity clinics (private)",     "IV/Therapeutic":"Clinical registration",            "Risk":"🟡 MEDIUM",  "Conf.":"🟢 70","Source URL":"https://www.atlantisbioscience.com/blog/commercialising-exosome-therapeutics-key-regulatory-pathways/"},
         {"Territory":"Brazil",      "Body":"ANVISA",       "Topical/Cosmetic":"RDC 949/2024 notification",  "Soft Indications":"IOR required",                    "IV/Therapeutic":"AFE license required",             "Risk":"🟡 MEDIUM",  "Conf.":"🟢 70","Source URL":"https://www.emergobyul.com/news/brazil-anvisa-announces-priorities-2026-2027-year"},
         {"Territory":"South Korea", "Body":"MFDS",         "Topical/Cosmetic":"K-beauty cosmetic framework","Soft Indications":"Hospital partnerships",           "IV/Therapeutic":"Clinical approval route",          "Risk":"🟡 MEDIUM",  "Conf.":"🟡 60","Source URL":"https://stylestory.com.au/blogs/podcast/why-korea-banned-exosome-skincare-ads-and-what-it-means-for-the-industry"},
