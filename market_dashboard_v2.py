@@ -1406,13 +1406,13 @@ with tabs[4]:
         #   labor dominates; media base $150/L; labor $200/hr.
         # 2030/Industrial: Extrapolated ~50% reduction per further scale-up (S2).
         cogs_df = pd.DataFrame([
-            {"Component":"BM-MSC donor procurement",    "2022 Low":1000, "2022 High":1800, "2026 Low":20,   "2026 High":47,   "2030 Low":8,  "2030 High":18},
-            {"Component":"Cell expansion media (GMP)",  "2022 Low":840,  "2022 High":1700, "2026 Low":19,   "2026 High":44,   "2030 Low":7,  "2030 High":18},
-            {"Component":"Bioreactor operation",        "2022 Low":560,  "2022 High":1000, "2026 Low":12,   "2026 High":38,   "2030 Low":5,  "2030 High":15},
-            {"Component":"Isolation & purification",    "2022 Low":2100, "2022 High":3800, "2026 Low":39,   "2026 High":110,  "2030 Low":15, "2030 High":43},
-            {"Component":"QC & characterization",       "2022 Low":1200, "2022 High":2100, "2026 Low":22,   "2026 High":57,   "2030 Low":8,  "2030 High":22},
-            {"Component":"Lyophilization (optional)",   "2022 Low":400,  "2022 High":700,  "2026 Low":6,    "2026 High":19,   "2030 Low":2,  "2030 High":7},
-            {"Component":"Batch release / regulatory",  "2022 Low":700,  "2022 High":1200, "2026 Low":12,   "2026 High":32,   "2030 Low":5,  "2030 High":12},
+            {"Component":"BM-MSC donor procurement",    "2022 Low":1000, "2022 High":1800, "2026 Low":23,   "2026 High":46,   "2030 Low":8,  "2030 High":18},
+            {"Component":"Cell expansion media (GMP)",  "2022 Low":840,  "2022 High":1700, "2026 Low":21,   "2026 High":42,   "2030 Low":7,  "2030 High":18},
+            {"Component":"Bioreactor operation",        "2022 Low":560,  "2022 High":1000, "2026 Low":13,   "2026 High":26,   "2030 Low":5,  "2030 High":15},
+            {"Component":"Isolation & purification",    "2022 Low":2100, "2022 High":3800, "2026 Low":47,   "2026 High":97,   "2030 Low":15, "2030 High":43},
+            {"Component":"QC & characterization",       "2022 Low":1200, "2022 High":2100, "2026 Low":27,   "2026 High":55,   "2030 Low":8,  "2030 High":22},
+            {"Component":"Lyophilization (optional)",   "2022 Low":400,  "2022 High":700,  "2026 Low":9,    "2026 High":18,   "2030 Low":2,  "2030 High":7},
+            {"Component":"Batch release / regulatory",  "2022 Low":700,  "2022 High":1000, "2026 Low":15,   "2026 High":31,   "2030 Low":5,  "2030 High":12},
         ])
 
         year_sel = st.radio("Select scale view", ["2022 (Research <100/mo) — S3/S5", "2026 (Commercial mid 500–2k/mo) — S1+G2", "2030 (Industrial >5k/mo) — Extrapolated"], horizontal=True)
@@ -1438,7 +1438,7 @@ with tabs[4]:
                 height=380, margin=dict(t=20, b=10),
                 coloraxis_showscale=False,
                 xaxis_title="USD per dose", yaxis_title="",
-                title=None,
+                title="",
             )
             fig_cogs_bar.add_vline(
                 x=total_lo, line_dash="dot", line_color="#e05c2a",
@@ -1459,7 +1459,7 @@ with tabs[4]:
         st.markdown(
             f'<div class="signal-card">📊 <strong>Total COGS — {year_sel}:</strong> '
             f'<strong>${total_lo:,} – ${total_hi:,}</strong> per 10B-particle BM-MSC dose. '
-            f'Research scale ($6,800–12,100/10B, S3+S5) → Commercial mid ($130–347/10B, S1+G2) → Industrial ($50–135/10B, extrapolated). '
+            f'Research scale ($6,800–12,100/10B, S3+S5) → Commercial mid ($155–315/10B, S1+G2) → Industrial ($50–135/10B, extrapolated). '
             f'BM-MSC is ~15–25% higher than UC-MSC due to donor procurement complexity (G2 derivation). '
             f'Component % splits from Ng et al. 2019 (S2, PMC6322973): EV harvest &gt;50% of total COG; labor dominates. '
             f'Commercial mid anchor: Silva et al. 2025 (S1, PMC11913891) UC-MSC selling price €166–309 ÷ 1.36 ROI × 1.11 USD/EUR = $135–252 COGS + 15–25% BM-MSC premium. '
