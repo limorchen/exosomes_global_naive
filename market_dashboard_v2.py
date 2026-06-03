@@ -209,7 +209,7 @@ with tabs[0]:
         ("$81M–$218M", "2024 Addressable Market",    "Professional/clinical channel — 5-source range"),
         ("~$150M",     "2024 Midpoint Estimate",      "Triangulated from InsightAce + Insight Partners"),
         ("17–36%",     "CAGR Range Across Sources",   "CMI 9.9% → InsightAce 35.9%"),
-        ("~$2,500",    "BM-MSC COGS/Dose (2026)",     "Per 10B-particle dose midpoint"),
+        ("$155–315",   "BM-MSC COGS/Dose (2026)",     "Commercial mid scale · Per 10B-particle dose · S1+G2"),
         ("$418M–$852M","Broader Skincare Market 2025","Incl. retail serums, creams, DTC"),
         ("$218M",      "Insight Partners 2024",       "Most specifically scoped to aesthetics"),
     ]
@@ -424,7 +424,7 @@ with tabs[0]:
         ("Transparency Market Research", "Exosome Market for Cosmetic Applications, 2024", "$1.8B cosmetic applications (2024); $26.6B (2035); includes retail cosmeceuticals"),
         ("Statifacts / Precedence Research", "U.S. Exosome-Based Therapy Market, 2025", "$15.61M U.S.-specific therapeutic service revenues (2024); $79.67M (2034)"),
         ("Credence Research", "Exosomes Skincare Market Size, Share and Growth Report 2032", "Regional shares: NA 45%, APAC 25%, Europe 20%, LATAM $18.67M of $418M total"),
-        ("Astute Analytica / RoosterBio", "COGS benchmarks 2025", "COGS trajectory: 2023 $3,100–4,900; 2026 $1,950–3,150; 2030 $690–1,050 per 10B particles"),
+        ("Silva et al. 2025 / RoosterBio 2022+2025 / Ng et al. 2019", "COGS benchmarks — open-access peer-reviewed sources (PMC11913891, PMC6322973, PMC7552727)", "Research scale $6,800–12,100/10B (S3/S5); BM-MSC commercial mid $155–315/10B (S1+G2); Industrial $58–125/10B (extrapolated S2). Component splits: EV harvest >50% of COG (S2)."),
     ]
     col_s1, col_s2 = st.columns(2)
     for i, (firm, title, detail) in enumerate(sources_tab1):
@@ -1348,14 +1348,17 @@ with tabs[4]:
         )
         st.markdown("")
 
+        # B2B prices from S6 (MedicaDepot/Maylips verified 2026). COGS target = max COGS for 40% gross margin
+        # at B2B midpoint. S1 UC-MSC commercial mid COGS $135–252; BM-MSC +15–25% = $155–315.
+        # Cosmetic grade ~40% lower = $90–190. Source: Exosome_COGS_Model_Sourced.xlsx, Sheet 3.
         attr_df = pd.DataFrame([
-            {"Market":"Germany/EU",     "Est. End-User/Vial":"$100–200 (est.)", "Max B2B":"$50–100 (est.)", "COGS Target":"<$30–60",  "Key Pitch":"BM-MSC clinical lit; CD73/CD90 CoA; NTA data","Conf":"🟡 Estimate"},
-            {"Market":"UAE/GCC",        "Est. End-User/Vial":"$180–350 (est.)", "Max B2B":"$90–175 (est.)", "COGS Target":"<$55–100", "Key Pitch":"Longevity angle; high-dose IV protocols",       "Conf":"🟡 Estimate"},
-            {"Market":"Mexico/LATAM",   "Est. End-User/Vial":"$100–200 (est.)", "Max B2B":"$50–100 (est.)", "COGS Target":"<$30–60",  "Key Pitch":"Lyophilized; ANVISA-COFEPRIS MoU compliance",   "Conf":"🟡 Estimate"},
-            {"Market":"Thailand",       "Est. End-User/Vial":"$80–180 (est.)",  "Max B2B":"$40–90 (est.)",  "COGS Target":"<$25–55",  "Key Pitch":"Thai FDA cosmetic notification; ASEAN docs",    "Conf":"🟡 Estimate"},
-            {"Market":"Philippines/SEA","Est. End-User/Vial":"$60–120 (est.)",  "Max B2B":"$30–60 (est.)",  "COGS Target":"<$20–40",  "Key Pitch":"PH FDA notification gateway; ASEAN directive",  "Conf":"🟡 Estimate"},
-            {"Market":"USA (aesthetic)","Est. End-User/Vial":"$150–300 (est.)", "Max B2B":"$75–150 (est.)", "COGS Target":"<$45–90",  "Key Pitch":"CoA CD63/CD81; no therapeutic claims; GMP",     "Conf":"🟡 Estimate"},
-            {"Market":"Australia",      "Est. End-User/Vial":"$180–350 (est.)", "Max B2B":"$90–175 (est.)", "COGS Target":"<$55–100", "Key Pitch":"TGA compliance documentation",                  "Conf":"🟡 Estimate"},
+            {"Market":"Germany/EU",     "B2B Range (S6)":"$140–225/10B",  "Max COGS for 40% Margin":"<$84–135",  "Grade Needed":"Clinical GMP or cosmetic", "Key Pitch":"BM-MSC clinical lit; CD73/CD90 CoA; NTA data","Source":"S6 MedicaDepot EU pricing"},
+            {"Market":"UAE/GCC",        "B2B Range (S6)":"$175–300/10B",  "Max COGS for 40% Margin":"<$105–180", "Grade Needed":"Clinical GMP",             "Key Pitch":"Longevity angle; high-dose IV protocols",       "Source":"S6 EDEN Aesthetics/DUBIMED est."},
+            {"Market":"USA (aesthetic)","B2B Range (S6)":"$150–275/10B",  "Max COGS for 40% Margin":"<$90–165",  "Grade Needed":"Cosmetic/professional",    "Key Pitch":"CoA CD63/CD81; no therapeutic claims; GMP",     "Source":"S6 Stem Nova/BENEV pricing"},
+            {"Market":"Australia",      "B2B Range (S6)":"$175–300/10B",  "Max COGS for 40% Margin":"<$105–180", "Grade Needed":"Clinical GMP (TGA)",       "Key Pitch":"TGA compliance documentation; Biogenix model",  "Source":"S6 derived from AU premium channel"},
+            {"Market":"Mexico/LATAM",   "B2B Range (S6)":"$100–175/10B",  "Max COGS for 40% Margin":"<$60–105",  "Grade Needed":"Cosmetic grade",           "Key Pitch":"Lyophilized; ANVISA-COFEPRIS MoU compliance",   "Source":"S6 LATAM wholesale est."},
+            {"Market":"Thailand",       "B2B Range (S6)":"$90–150/10B",   "Max COGS for 40% Margin":"<$54–90",   "Grade Needed":"Cosmetic grade",           "Key Pitch":"Thai FDA cosmetic notification; ASEAN docs",    "Source":"S6 TH clinic pricing"},
+            {"Market":"Philippines/SEA","B2B Range (S6)":"$75–125/10B",   "Max COGS for 40% Margin":"<$45–75",   "Grade Needed":"Cosmetic grade",           "Key Pitch":"PH FDA notification gateway; ASEAN directive",  "Source":"S6 SEA wholesale est."},
         ])
         st.dataframe(attr_df, hide_index=True, use_container_width=True)
 
@@ -1387,25 +1390,33 @@ with tabs[4]:
             title="Estimated B2B Price Midpoint by Market (per 10B particles)",
         )
         st.plotly_chart(fig_b2b, use_container_width=True)
-        st.caption("B2B price estimates derived from observed retail market range of $37–360/10B particles. Verify with direct market quotes.")
+        st.caption("B2B price ranges from S6 (MedicaDepot/Maylips/Stem Nova verified wholesale listings, 2026). COGS targets derived from S1 (Silva et al. 2025) + G2 derivation for BM-MSC premium. See Exosome_COGS_Model_Sourced.xlsx for full sourcing.")
 
     # ── Sub-tab 5: COGS BREAKDOWN ─────────────────────────────────
     with subtabs[4]:
         st.markdown('<div class="section-header">BM-MSC Exosome COGS — Component Breakdown (per 10B-particle dose)</div>', unsafe_allow_html=True)
         st.markdown("")
 
+        # ── SOURCED COGS DATA (updated Jun 2026) ──────────────────────────────
+        # 2022/Research scale: S3 (RoosterBio 2022) + S5 (Lembong 2020) — $1M/lot of 5×10¹² EVs
+        #   = ~$8,000/dose at 125 doses/lot (research scale). BM-MSC +15–25% over UC-MSC (G2).
+        # 2026/Commercial mid: S1 (Silva et al. 2025, PMC11913891) UC-MSC selling price
+        #   €166–309 / 1.36 ROI × 1.11 USD/EUR = $135–252 COGS. BM-MSC +15–25% → $155–315.
+        #   Component % splits from S2 (Ng et al. 2019, PMC6322973): EV harvest >50% of COG,
+        #   labor dominates; media base $150/L; labor $200/hr.
+        # 2030/Industrial: Extrapolated ~50% reduction per further scale-up (S2).
         cogs_df = pd.DataFrame([
-            {"Component":"BM-MSC donor procurement",    "2023 Low":800,  "2023 High":1200, "2026 Low":500,  "2026 High":800,  "2030 Low":200, "2030 High":350},
-            {"Component":"Cell expansion media (GMP)",  "2023 Low":600,  "2023 High":900,  "2026 Low":400,  "2026 High":600,  "2030 Low":150, "2030 High":250},
-            {"Component":"Bioreactor operation",        "2023 Low":400,  "2023 High":700,  "2026 Low":250,  "2026 High":400,  "2030 Low":80,  "2030 High":150},
-            {"Component":"Isolation & purification",    "2023 Low":600,  "2023 High":1000, "2026 Low":350,  "2026 High":600,  "2030 Low":100, "2030 High":200},
-            {"Component":"QC & characterization",       "2023 Low":400,  "2023 High":600,  "2026 Low":250,  "2026 High":400,  "2030 Low":80,  "2030 High":150},
-            {"Component":"Lyophilization (optional)",   "2023 Low":200,  "2023 High":400,  "2026 Low":150,  "2026 High":250,  "2030 Low":50,  "2030 High":100},
-            {"Component":"Batch release / regulatory",  "2023 Low":300,  "2023 High":500,  "2026 Low":200,  "2026 High":350,  "2030 Low":80,  "2030 High":150},
+            {"Component":"BM-MSC donor procurement",    "2022 Low":1000, "2022 High":1800, "2026 Low":20,   "2026 High":47,   "2030 Low":8,  "2030 High":18},
+            {"Component":"Cell expansion media (GMP)",  "2022 Low":840,  "2022 High":1700, "2026 Low":19,   "2026 High":44,   "2030 Low":7,  "2030 High":18},
+            {"Component":"Bioreactor operation",        "2022 Low":560,  "2022 High":1000, "2026 Low":12,   "2026 High":38,   "2030 Low":5,  "2030 High":15},
+            {"Component":"Isolation & purification",    "2022 Low":2100, "2022 High":3800, "2026 Low":39,   "2026 High":110,  "2030 Low":15, "2030 High":43},
+            {"Component":"QC & characterization",       "2022 Low":1200, "2022 High":2100, "2026 Low":22,   "2026 High":57,   "2030 Low":8,  "2030 High":22},
+            {"Component":"Lyophilization (optional)",   "2022 Low":400,  "2022 High":700,  "2026 Low":6,    "2026 High":19,   "2030 Low":2,  "2030 High":7},
+            {"Component":"Batch release / regulatory",  "2022 Low":700,  "2022 High":1200, "2026 Low":12,   "2026 High":32,   "2030 Low":5,  "2030 High":12},
         ])
 
-        year_sel = st.radio("Select year view", ["2023 (Baseline)", "2026 (Current)", "2030 (Target)"], horizontal=True)
-        if "2023" in year_sel: lo, hi = "2023 Low", "2023 High"
+        year_sel = st.radio("Select scale view", ["2022 (Research <100/mo) — S3/S5", "2026 (Commercial mid 500–2k/mo) — S1+G2", "2030 (Industrial >5k/mo) — Extrapolated"], horizontal=True)
+        if "2022" in year_sel: lo, hi = "2022 Low", "2022 High"
         elif "2026" in year_sel: lo, hi = "2026 Low", "2026 High"
         else: lo, hi = "2030 Low", "2030 High"
 
@@ -1447,19 +1458,23 @@ with tabs[4]:
 
         st.markdown(
             f'<div class="signal-card">📊 <strong>Total COGS — {year_sel}:</strong> '
-            f'<strong>${total_lo:,} – ${total_hi:,}</strong> per 10B-particle clinical dose. '
-            f'2023: $3,100–4,900 | 2026: $1,950–3,150 | 2030 target: $690–1,050. '
-            f'BM-MSC is ~15–25% higher than UC-MSC due to donor procurement complexity. '
-            f'Sources: Astute Analytica 2035; RoosterBio 2025; Corning/RoosterBio roundtable Feb 2025.</div>',
+            f'<strong>${total_lo:,} – ${total_hi:,}</strong> per 10B-particle BM-MSC dose. '
+            f'Research scale ($6,800–12,100/10B, S3+S5) → Commercial mid ($130–347/10B, S1+G2) → Industrial ($50–135/10B, extrapolated). '
+            f'BM-MSC is ~15–25% higher than UC-MSC due to donor procurement complexity (G2 derivation). '
+            f'Component % splits from Ng et al. 2019 (S2, PMC6322973): EV harvest &gt;50% of total COG; labor dominates. '
+            f'Commercial mid anchor: Silva et al. 2025 (S1, PMC11913891) UC-MSC selling price €166–309 ÷ 1.36 ROI × 1.11 USD/EUR = $135–252 COGS + 15–25% BM-MSC premium. '
+            f'Research scale anchor: RoosterBio 2022 (S3, citing Lembong et al. 2020, S5): $1M/lot of 5×10¹² EVs = ~$8,000/dose at 125 doses/lot. '
+            f'<strong>⚠️ These figures reflect BM-MSC clinical GMP. Cosmetic/aesthetic grade is ~40% lower.</strong></div>',
             unsafe_allow_html=True,
         )
 
-        st.markdown('<div class="section-header">COGS Trajectory — 2023 to 2030</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">COGS Trajectory — Research to Industrial Scale (BM-MSC Clinical GMP)</div>', unsafe_allow_html=True)
+        st.caption("Scale-up drives COGS down far more than time. X-axis shows approximate year at which each scale becomes achievable for new entrants. Sources: S1 (Silva et al. 2025, PMC11913891), S3 (RoosterBio 2022), S5 (Lembong 2020, PMC7552727), S2 (Ng et al. 2019, PMC6322973).")
         traj_df = pd.DataFrame({
-            "Year":  [2023, 2024, 2026, 2028, 2030],
-            "Low":   [3100, 2600, 1950, 1200, 690],
-            "High":  [4900, 4200, 3150, 1900, 1050],
-            "Scale": ["Research (<100 doses/mo)","Small batch","Commercial mid (500–2k/mo)","Scale-up","Industrial (>5k/mo)"],
+            "Year":  [2022, 2024, 2026, 2028, 2030],
+            "Low":   [6800, 3500, 155,  92,   58],
+            "High":  [12100,6250, 315,  190,  125],
+            "Scale": ["Research (<100/mo) — S3/S5","Small batch — interpolated","Commercial mid (500–2k/mo) — S1+G2","Scale-up — extrapolated S2","Industrial (>5k/mo) — extrapolated S2"],
         })
         traj_df["Mid"] = (traj_df["Low"] + traj_df["High"]) / 2
 
@@ -1586,19 +1601,21 @@ with tabs[4]:
                     "2030 — Industrial (>20k/mo)":         {"mid": 50,  "lo": 30,  "hi": 70},
                 },
             },
-            "💊 Clinical therapeutic GMP (IND-enabling, FDA/EMA)": {
-                "note": "Full pharmaceutical-grade GMP — validated processes, $150K release testing per lot, "
-                        "$50K/day GMP labor (Made Scientific / ExoXpert benchmark). "
-                        "Source: RoosterBio 2025, Astute Analytica 2035, Corning roundtable Feb 2025. "
-                        "Correct for NurExone ExoPTEN / IND-enabling therapeutic applications. "
+            "💊 Clinical therapeutic GMP — BM-MSC (IND-enabling, FDA/EMA)": {
+                "note": "Full pharmaceutical-grade GMP — validated processes. "
+                        "SOURCED: Research scale anchor from S3 (RoosterBio 2022) + S5 (Lembong et al. 2020, PMC7552727): "
+                        "$1M/lot of 5×10¹² EVs = ~$8,000/dose at 125 doses/lot. "
+                        "Commercial mid anchor from S1 (Silva et al. 2025, PMC11913891): UC-MSC selling price €166–309 "
+                        "÷ 1.36 ROI × 1.11 USD/EUR = $135–252 COGS; BM-MSC +15–25% (G2) → $155–315. "
+                        "Component splits from S2 (Ng et al. 2019, PMC6322973): EV harvest >50% of COG; $150K/lot release testing (S4). "
                         "⚠️ MUST be paired with therapeutic market tiers (💊) — NOT aesthetic pricing. "
-                        "Viable at industrial scale or for high-value indications (SCI, neuro).",
+                        "Correct for NurExone ExoPTEN / IND-enabling therapeutic applications.",
                 "color": "#e05c2a",
                 "scales": {
-                    "2026 — Small batch (<200 doses/mo)":  {"mid": 2550, "lo": 1950, "hi": 3150},
-                    "2026 — Commercial mid (500–2k/mo)":   {"mid": 1800, "lo": 1400, "hi": 2200},
-                    "2026 — Scale-up (2k–5k/mo)":          {"mid": 1200, "lo": 900,  "hi": 1500},
-                    "2030 — Industrial (>5k/mo)":          {"mid": 870,  "lo": 690,  "hi": 1050},
+                    "2022 — Research (<100 doses/mo) — S3/S5":      {"mid": 9500, "lo": 6800, "hi": 12100},
+                    "2024 — Small batch (100–500 doses/mo) — interpolated": {"mid": 4700, "lo": 3500, "hi": 6250},
+                    "2026 — Commercial mid (500–2k/mo) — S1+G2":    {"mid": 225,  "lo": 155,  "hi": 315},
+                    "2030 — Industrial (>5k/mo) — extrapolated S2":  {"mid": 82,   "lo": 58,   "hi": 125},
                 },
             },
             "✏️ Custom — enter your COGS below": {
@@ -1856,9 +1873,12 @@ with tabs[4]:
         ("Bookimed", "Exosome therapy in Mexico; Thailand 2026", "Mexico $3,000–5,000/treatment; Thailand $2,000–4,000/treatment"),
         ("R3 Stem Cell Mexico", "150 Billion Exosomes for $3,950 announcement", "Mexico OOP benchmark: 150B exosomes for $3,950"),
         ("BioInformant", "Exosome Therapy Costs 2025", "US typical full treatment $3,500–6,500; Miami/Las Vegas average $4,900/session"),
-        ("Astute Analytica", "Exosome Therapy Market Size, Growth Trends Analysis 2035", "COGS trajectory: 2023 $3,100–4,900; 2026 $1,950–3,150; 2030 $690–1,050 per 10B particles"),
-        ("RoosterBio", "Exosome Production Bioreactor Kits — BM, UC, AD-derived, 2025", "Component cost benchmarks; hollow-fiber bioreactor 60–70% media reduction"),
-        ("Corning / Cell & Gene Therapy Insights", "MSC Manufacturing Expert Roundtable, Feb 2025", "BM-MSC donor procurement cost trends; bank pooling cost reductions"),
+        ("Silva RM et al.", "Enabling MSC and MSC-EVs Clinical Availability — J Extracell Biol 2025 (PMC11913891)", "Primary COGS anchor: UC-MSC selling price €166–309/10¹⁰ dose; COGS = selling price ÷ 1.36 ROI = $135–252. BM-MSC +15–25% → $155–315. Open-access TECoA."),
+        ("Ng KS et al.", "Bioprocess decision support tool for scalable EV manufacture — Biotechnol Bioeng 2019 (PMC6322973)", "EV harvest >50% of total COG; labor dominates harvest costs; media base $150/L; labor $200/hr; biological yield = strongest cost driver."),
+        ("Lembong J et al.", "Bioreactor Parameters for Microcarrier-Based MSC Expansion — Bioengineering 2020 (PMC7552727)", "Primary source for $1M/lot of 5×10¹² EVs = ~$8,000/dose at 125 doses/lot (research scale)."),
+        ("RoosterBio (Lenzini)", "EV/Exosome Upstream Process Development blog, Apr 2022", "Research-scale anchor: $1M/lot, 125 dose regimens, ~$8,000/dose. Labor $200/hr. Suite $200K–$1M/month."),
+        ("RoosterBio (Candiello & Takacs)", "Balancing the Scale from the Cellular Bank blog, Aug 2025", "GMP labor $50K/operational day; $150K/lot release testing; Phase I GMP <$1M total; cell bank build $1.5–3M."),
+        ("Corning / Cell & Gene Therapy Insights", "MSC Manufacturing Expert Roundtable, Mar 2025 (recorded Feb 13 2025)", "Qualitative: MSC manufacturing COGs are a key barrier; media, bioreactor, and potency assay costs discussed. No specific cost figures published."),
         ("QY Research", "Exosome Lyophilization Global Market Forecast 2026–2032", "Lyophilization segment $50–60M → low hundreds of millions by early 2030s"),
         ("Frontiers in Pharmacology", "Trends in MSC-EV Clinical Trials 2014–2024, Wang et al. 2025", "Dose estimates per indication; clinical trial dosing review"),
     ]
@@ -1959,7 +1979,7 @@ with tabs[5]:
             ("🧬 BM-MSC vs UC-MSC Differentiation", "Buyers maturing — seeking source differentiation. BM-MSC carries deepest orthopedic/neuroprotective evidence base."),
             ("🤖 AI Exosome Profiling", "ML-integrated characterization accelerating biomarker discovery. Cargo profiles (miRNA, protein markers) command premium."),
             ("🌏 Thailand & SEA Medical Tourism", "Post-COVID recovery accelerating. High-value patients from US, EU, Middle East returning to Thailand/Singapore."),
-            ("💊 COGS Collapse", "$2,500/dose (2026) → $500/dose (2030) — enter now before commoditization compresses margins."),
+            ("💊 COGS Collapses with Scale", "Research scale $9,500/dose → Commercial mid $225/dose (2026, S1+G2) → Industrial $80/dose (2030) — scale-up is the primary lever, not time."),
             ("🌿 Plant-Derived Exosomes", "EU investor interest rising as lower-risk cosmetic entry point — BM-MSC must actively counter with clinical evidence."),
             ("💉 Sexual Wellness Niche", "Vaginal rejuvenation + erectile function — high-demand in Dubai, Australia, and Thailand."),
         ]
