@@ -1015,6 +1015,48 @@ with tabs[3]:
 with tabs[4]:
     st.markdown("")
 
+    with st.expander("📋 What changed in June 2026 — click to expand", expanded=False):
+        st.markdown(
+            "**This update corrects the COGS component allocation and adds the NurExone optimized "
+            "manufacturing track, based on three new peer-reviewed TEA sources.**"
+        )
+        st.markdown("")
+
+        col_wc1, col_wc2 = st.columns(2)
+
+        with col_wc1:
+            st.markdown(
+                '<div class="signal-card">'
+                '<strong>🧮 COGS Breakdown — component allocation rebalanced</strong><br>'
+                'Three independent TEA sources confirm the correct cost structure: '
+                '<strong>cell expansion media ≈ 50% of total COG</strong>, all upstream combined ≈ 90%, '
+                'downstream processing (TFF + polishing) ≈ 10%.<br><br>'
+                'The previous version overstated downstream at ~30% and understated media at ~13%. '
+                'The totals ($155–315/10B at 2026 commercial mid) are <strong>unchanged</strong>.<br><br>'
+                '"Isolation &amp; purification" has been split into two rows: '
+                '<strong>EV harvest / cell collection (USP)</strong> (~8%) and '
+                '<strong>Downstream purification (TFF + polish)</strong> (~10%). '
+                'This split applies to all three scale years (2022 · 2026 · 2030).</div>',
+                unsafe_allow_html=True,
+            )
+
+        with col_wc2:
+            st.markdown(
+                '<div class="signal-card">'
+                '<strong>📈 New: 3D Optimized ATMP track</strong><br>'
+                'The COGS trajectory chart now shows two tracks on a log scale:<br>'
+                '• <strong>Blue band</strong> — standard BM-MSC clinical GMP ($155–315/10B in 2026)<br>'
+                '• <strong>Orange band</strong> — 3D optimized ATMP-grade, NurExone-style (≈$25–60/10B in 2026), '
+                'anchored to the RoosterBio optimized 3D benchmark (&lt;$25/10B) plus ATMP overhead.<br><br>'
+                'In the <strong>Margin Scenario Modeler</strong>, select '
+                '"🔬 3D Optimized ATMP-grade (BM-MSC, NurExone-style)" to model margins '
+                'at the optimized cost level.<br><br>'
+                '<strong>Sources added:</strong> RoosterBio 2024 bioprocess TEA abstract · '
+                'IST Lisbon 2025 operational analysis · PMC5895685 hMSC manufacturing review · '
+                'RoosterBio DSP blog 2025. See the Sources section at the bottom of this tab.</div>',
+                unsafe_allow_html=True,
+            )
+
     subtabs = st.tabs([
         "🔬 Per-10B Particle Benchmark",
         "💊 Per-Treatment OOP (Validated)",
