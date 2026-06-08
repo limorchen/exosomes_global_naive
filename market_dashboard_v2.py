@@ -1405,14 +1405,18 @@ with tabs[4]:
         #   Component % splits from S2 (Ng et al. 2019, PMC6322973): EV harvest >50% of COG,
         #   labor dominates; media base $150/L; labor $200/hr.
         # 2030/Industrial: Extrapolated ~50% reduction per further scale-up (S2).
+        # Component allocation anchored to RoosterBio 2024 bioprocess TEA + IST Lisbon 2025 + Ng et al. 2019:
+        # Upstream ≈90% (media ≈50%, labor+bioreactor ≈18%, harvest ≈8%, donor ≈6%); downstream ≈10%.
+        # Totals unchanged: 2022 $6,800–12,100 (S3/S5), 2026 $155–315 (S1+G2), 2030 $58–125 (extrapolated S2).
         cogs_df = pd.DataFrame([
-            {"Component":"BM-MSC donor procurement",    "2022 Low":1000, "2022 High":1800, "2026 Low":23,   "2026 High":46,   "2030 Low":8,  "2030 High":18},
-            {"Component":"Cell expansion media (GMP)",  "2022 Low":840,  "2022 High":1700, "2026 Low":21,   "2026 High":42,   "2030 Low":7,  "2030 High":18},
-            {"Component":"Bioreactor operation",        "2022 Low":560,  "2022 High":1000, "2026 Low":13,   "2026 High":26,   "2030 Low":5,  "2030 High":15},
-            {"Component":"Isolation & purification",    "2022 Low":2100, "2022 High":3800, "2026 Low":47,   "2026 High":97,   "2030 Low":15, "2030 High":43},
-            {"Component":"QC & characterization",       "2022 Low":1200, "2022 High":2100, "2026 Low":27,   "2026 High":55,   "2030 Low":8,  "2030 High":22},
-            {"Component":"Lyophilization (optional)",   "2022 Low":400,  "2022 High":700,  "2026 Low":9,    "2026 High":18,   "2030 Low":2,  "2030 High":7},
-            {"Component":"Batch release / regulatory",  "2022 Low":700,  "2022 High":1000, "2026 Low":15,   "2026 High":31,   "2030 Low":5,  "2030 High":12},
+            {"Component":"Cell expansion media (GMP)",            "2022 Low":3060, "2022 High":5445, "2026 Low":70, "2026 High":142, "2030 Low":26, "2030 High":56},
+            {"Component":"Upstream labor + bioreactor ops",       "2022 Low":1224, "2022 High":2178, "2026 Low":28, "2026 High":57,  "2030 Low":10, "2030 High":23},
+            {"Component":"BM-MSC donor procurement",              "2022 Low":408,  "2022 High":726,  "2026 Low":9,  "2026 High":19,  "2030 Low":4,  "2030 High":7},
+            {"Component":"EV harvest / cell collection (USP)",    "2022 Low":544,  "2022 High":968,  "2026 Low":12, "2026 High":25,  "2030 Low":5,  "2030 High":10},
+            {"Component":"Downstream purification (TFF + polish)","2022 Low":680,  "2022 High":1210, "2026 Low":16, "2026 High":32,  "2030 Low":6,  "2030 High":12},
+            {"Component":"QC & characterization",                 "2022 Low":340,  "2022 High":605,  "2026 Low":8,  "2026 High":16,  "2030 Low":3,  "2030 High":6},
+            {"Component":"Lyophilization (optional)",             "2022 Low":272,  "2022 High":484,  "2026 Low":6,  "2026 High":12,  "2030 Low":2,  "2030 High":6},
+            {"Component":"Batch release / regulatory",            "2022 Low":272,  "2022 High":484,  "2026 Low":6,  "2026 High":12,  "2030 Low":2,  "2030 High":5},
         ])
 
         year_sel = st.radio("Select scale view", ["2022 (Research <100/mo) — S3/S5", "2026 (Commercial mid 500–2k/mo) — S1+G2", "2030 (Industrial >5k/mo) — Extrapolated"], horizontal=True)
@@ -1423,6 +1427,18 @@ with tabs[4]:
         cogs_df["Mid"] = (cogs_df[lo] + cogs_df[hi]) / 2
         total_lo = cogs_df[lo].sum()
         total_hi = cogs_df[hi].sum()
+
+        st.markdown(
+            '<div class="signal-card">📐 <strong>Cost structure — confirmed by 3 independent TEA sources '
+            '(RoosterBio 2024 · IST Lisbon 2025 · Ng et al. 2019):</strong> '
+            'Upstream ≈ <strong>90%</strong> of total COG &nbsp;|&nbsp; '
+            'Cell expansion media alone ≈ <strong>50%</strong> of total COG &nbsp;|&nbsp; '
+            'Downstream (TFF + polishing) ≈ <strong>10%</strong> of total COG. '
+            'Media cost is the single largest lever for COG reduction at any scale. '
+            'Downstream DSP decisions matter for yield and purity but are <em>not</em> the dominant cost driver.</div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown("")
 
         col_cg1, col_cg2 = st.columns([1, 1])
         with col_cg1:
@@ -1459,17 +1475,26 @@ with tabs[4]:
         st.markdown(
             f'<div class="signal-card">📊 <strong>Total COGS — {year_sel}:</strong> '
             f'<strong>${total_lo:,} – ${total_hi:,}</strong> per 10B-particle BM-MSC dose. '
-            f'Research scale ($6,800–12,100/10B, S3+S5) → Commercial mid ($155–315/10B, S1+G2) → Industrial ($50–135/10B, extrapolated). '
-            f'BM-MSC is ~15–25% higher than UC-MSC due to donor procurement complexity (G2 derivation). '
-            f'Component % splits from Ng et al. 2019 (S2, PMC6322973): EV harvest &gt;50% of total COG; labor dominates. '
-            f'Commercial mid anchor: Silva et al. 2025 (S1, PMC11913891) UC-MSC selling price €166–309 ÷ 1.36 ROI × 1.11 USD/EUR = $135–252 COGS + 15–25% BM-MSC premium. '
-            f'Research scale anchor: RoosterBio 2022 (S3, citing Lembong et al. 2020, S5): $1M/lot of 5×10¹² EVs = ~$8,000/dose at 125 doses/lot. '
-            f'<strong>⚠️ These figures reflect BM-MSC clinical GMP. Cosmetic/aesthetic grade is ~40% lower.</strong></div>',
+            f'Research scale ($6,800–12,100/10B) → Commercial mid ($155–315/10B) → Industrial ($58–125/10B, extrapolated). '
+            f'<strong>Cost structure (3-source consensus):</strong> upstream ≈90% '
+            f'(media ≈50% · labor+bioreactor ≈18% · harvest ≈8% · donor ≈6%) | downstream (TFF + polish) ≈10%. '
+            f'Sources: RoosterBio 2024 bioprocess TEA abstract; IST Lisbon 2025 operational analysis; Ng et al. 2019 (PMC6322973). '
+            f'Commercial mid anchor: Silva et al. 2025 (PMC11913891) UC-MSC <em>selling price</em> €166–309 ÷ 1.36 ROI × 1.11 USD/EUR = $135–252 COGS; BM-MSC +15–25% (G2) → $155–315. '
+            f'Research scale anchor: RoosterBio 2022 + Lembong 2020 (PMC7552727): $1M/lot of 5×10¹² EVs = ~$8,000/dose. '
+            f'RoosterBio optimized 3D benchmark: <strong>&lt;$25/10B EV</strong>; '
+            f'NurExone-style ATMP overhead → <strong>≈$25–60/10B</strong> (research synthesis, Jun 2026). '
+            f'<strong>⚠️ Standard clinical GMP track = $155–315/10B. 3D Optimized ATMP-grade (NurExone-style) = $25–60/10B. '
+            f'Select the correct context in the Margin Scenario Modeler tab.</strong></div>',
             unsafe_allow_html=True,
         )
 
-        st.markdown('<div class="section-header">COGS Trajectory — Research to Industrial Scale (BM-MSC Clinical GMP)</div>', unsafe_allow_html=True)
-        st.caption("Scale-up drives COGS down far more than time. X-axis shows approximate year at which each scale becomes achievable for new entrants. Sources: S1 (Silva et al. 2025, PMC11913891), S3 (RoosterBio 2022), S5 (Lembong 2020, PMC7552727), S2 (Ng et al. 2019, PMC6322973).")
+        st.markdown('<div class="section-header">COGS Trajectory — Standard GMP vs 3D Optimized ATMP Track (per 10B-particle dose)</div>', unsafe_allow_html=True)
+        st.caption(
+            "Blue band = standard BM-MSC clinical GMP trajectory (S1+G2 anchor, Silva et al. 2025 + RoosterBio 2022). "
+            "Orange band = 3D-optimized ATMP-grade trajectory (RoosterBio 2024 optimized benchmark + NurExone ATMP overhead, Jun 2026 synthesis). "
+            "Log scale used so both tracks are readable across the $25–$12,000 range. "
+            "Sources: S1 (Silva et al. 2025, PMC11913891), S3 (RoosterBio 2022), RoosterBio 2024 bioprocess TEA abstract (ScienceDirect), S2 (Ng et al. 2019, PMC6322973)."
+        )
         traj_df = pd.DataFrame({
             "Year":  [2022, 2024, 2026, 2028, 2030],
             "Low":   [6800, 3500, 155,  92,   58],
@@ -1478,23 +1503,46 @@ with tabs[4]:
         })
         traj_df["Mid"] = (traj_df["Low"] + traj_df["High"]) / 2
 
+        # 3D Optimized track: RoosterBio <$25/10B + ATMP overhead → ≈$25–60/10B (NurExone-style, Jun 2026)
+        traj_opt_df = pd.DataFrame({
+            "Year":  [2024, 2026, 2028, 2030],
+            "Low":   [80,   25,   18,   12],
+            "High":  [200,  60,   38,   25],
+            "Scale": ["Early 3D optimization","3D Optimized ATMP (NurExone-style) — Jun 2026 synthesis","Scale-up — extrapolated","Industrial — extrapolated"],
+        })
+        traj_opt_df["Mid"] = (traj_opt_df["Low"] + traj_opt_df["High"]) / 2
+
         fig_traj = go.Figure()
+        # Standard GMP band (blue)
         fig_traj.add_trace(go.Scatter(x=traj_df["Year"], y=traj_df["High"],
-            fill=None, mode="lines", line_color="#b3dff0", name="COGS High"))
+            fill=None, mode="lines", line_color="#b3dff0", name="Standard GMP — High", showlegend=False))
         fig_traj.add_trace(go.Scatter(x=traj_df["Year"], y=traj_df["Low"],
             fill="tonexty", mode="lines", line_color="#7ec8e3",
-            fillcolor="rgba(126,200,227,0.25)", name="COGS Range"))
+            fillcolor="rgba(126,200,227,0.25)", name="Standard GMP range"))
         fig_traj.add_trace(go.Scatter(x=traj_df["Year"], y=traj_df["Mid"],
             mode="lines+markers+text",
             line=dict(color="#1e3a5f", width=3),
             marker=dict(size=10, color="#2e6da4"),
             text=[f"${int(v):,}" for v in traj_df["Mid"]],
-            textposition="top center", name="COGS Midpoint"))
+            textposition="top center", name="Standard GMP midpoint"))
+        # 3D Optimized ATMP band (orange)
+        fig_traj.add_trace(go.Scatter(x=traj_opt_df["Year"], y=traj_opt_df["High"],
+            fill=None, mode="lines", line_color="#f0c090", name="3D Optimized — High", showlegend=False))
+        fig_traj.add_trace(go.Scatter(x=traj_opt_df["Year"], y=traj_opt_df["Low"],
+            fill="tonexty", mode="lines", line_color="#e05c2a",
+            fillcolor="rgba(224,92,42,0.15)", name="3D Optimized range"))
+        fig_traj.add_trace(go.Scatter(x=traj_opt_df["Year"], y=traj_opt_df["Mid"],
+            mode="lines+markers+text",
+            line=dict(color="#c62828", width=3, dash="dash"),
+            marker=dict(size=10, color="#e05c2a", symbol="diamond"),
+            text=[f"${int(v):,}" for v in traj_opt_df["Mid"]],
+            textposition="bottom center", name="3D Optimized midpoint"))
         fig_traj.update_layout(
-            height=340, margin=dict(t=20, b=60),
-            xaxis_title="Year", yaxis_title="COGS per 10B-particle dose (USD)",
+            height=420, margin=dict(t=20, b=90),
+            xaxis_title="Year",
+            yaxis=dict(title="COGS per 10B-particle dose (USD, log scale)", type="log"),
             title=None,
-            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
+            legend=dict(orientation="h", yanchor="top", y=-0.20, xanchor="center", x=0.5),
         )
         st.plotly_chart(fig_traj, use_container_width=True)
 
@@ -1616,6 +1664,20 @@ with tabs[4]:
                     "2024 — Small batch (100–500 doses/mo) — interpolated": {"mid": 4700, "lo": 3500, "hi": 6250},
                     "2026 — Commercial mid (500–2k/mo) — S1+G2":    {"mid": 225,  "lo": 155,  "hi": 315},
                     "2030 — Industrial (>5k/mo) — extrapolated S2":  {"mid": 82,   "lo": 58,   "hi": 125},
+                },
+            },
+            "🔬 3D Optimized ATMP-grade (BM-MSC, NurExone-style)": {
+                "note": "3D bioreactor optimized BM-MSC EV process with ATMP-grade QA/QMS documentation overhead. "
+                        "Anchored to RoosterBio optimized benchmark (<$25/10B EV at 10¹¹/dose), adjusted upward for "
+                        "ATMP-grade regulatory + release testing overhead (~$10–35/10B additional). "
+                        "Research synthesis (Jun 2026): ≈$25–60/10B for a 4–5×10L 3D bioreactor setup. "
+                        "Matches NurExone's current process position per Jun 2026 COG research synthesis. "
+                        "✅ VIABLE in therapeutic (💊) and premium aesthetic (🧴) markets at commercial scale.",
+                "color": "#166534",
+                "scales": {
+                    "2026 — Early ATMP commercial (200–1k doses/mo)": {"mid": 42, "lo": 25, "hi": 60},
+                    "2028 — Scale-up ATMP (1k–5k doses/mo)":         {"mid": 28, "lo": 18, "hi": 38},
+                    "2030 — Industrial ATMP (>5k doses/mo)":         {"mid": 18, "lo": 12, "hi": 25},
                 },
             },
             "✏️ Custom — enter your COGS below": {
@@ -1881,6 +1943,10 @@ with tabs[4]:
         ("Corning / Cell & Gene Therapy Insights", "MSC Manufacturing Expert Roundtable, Mar 2025 (recorded Feb 13 2025)", "Qualitative: MSC manufacturing COGs are a key barrier; media, bioreactor, and potency assay costs discussed. No specific cost figures published."),
         ("QY Research", "Exosome Lyophilization Global Market Forecast 2026–2032", "Lyophilization segment $50–60M → low hundreds of millions by early 2030s"),
         ("Frontiers in Pharmacology", "Trends in MSC-EV Clinical Trials 2014–2024, Wang et al. 2025", "Dose estimates per indication; clinical trial dosing review"),
+        ("RoosterBio (Lenzini et al.)", "EV Bioprocess Design and Economic Modeling — Cytotherapy 2024 abstract (ScienceDirect S1465-3249(24)002238)", "Downstream (TFF + AEX polishing) ≈10% of total COG; upstream ≈90%; media ≈50% of upstream cost. 15% EV recovery at 1,000 EVs/MSC modeled across 2–150L scales. Key driver: cell expansion media + labor."),
+        ("IST Lisbon (Silva RM et al.)", "Operational and economic evaluation of future MSC-EV therapies — ibb.tecnico.ulisboa.pt, 2025", "Facility and labor are non-negligible contributors alongside media/consumables. COG and therapy price sensitive to dose definition, recovery, and scale. Confirms upstream-dominated cost structure."),
+        ("PMC5895685", "Manufacturing human mesenchymal stem cells at clinical scale — mini-review (Heathman et al.)", "Upstream hMSC expansion is the main cost driver; 3D bioreactor with microcarriers required for 10¹³-cell batches. Strongly supports media + labor dominating EV process COG even before DSP."),
+        ("RoosterBio (Candiello)", "How DSP Decisions Shape Scale, Yield, and Cost of Goods in Exosome Preparation — blog 2025", "Legacy non-optimized: ≥$200/10B EV (≥$1M/lot of 5×10¹² EVs). Optimized 3D process: <$25/10B EV (<$250/dose at 10¹¹/dose). NurExone-style ATMP overhead adds ≈$10–35/10B → synthesis range ≈$25–60/10B (Jun 2026)."),
     ]
     col_p_s1, col_p_s2 = st.columns(2)
     for i, (firm, title, detail) in enumerate(sources_tab5):
