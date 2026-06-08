@@ -279,7 +279,7 @@ with tabs[0]:
         fig_tri.update_layout(
             height=300, margin=dict(t=20, b=10),
             yaxis_title="2024 Market Size (USD Million)",
-            title=None,
+            title="",
         )
         st.plotly_chart(fig_tri, use_container_width=True)
         st.caption("Orange = triangulated synthesis of two most specifically-scoped sources. Blue = individual source values. Broader retail market ($418M–$852M) excluded as it measures DTC consumer products, not B2B vial sales.")
@@ -315,7 +315,7 @@ with tabs[0]:
         fig_recon.update_layout(
             height=420, margin=dict(t=20, b=120), showlegend=True,
             yaxis_title="USD Million (log scale)", xaxis_title="",
-            title=None,
+            title="",
             legend=dict(orientation="h", yanchor="top", y=-0.28, xanchor="center", x=0.5, font=dict(size=9)),
         )
         st.plotly_chart(fig_recon, use_container_width=True)
@@ -1139,7 +1139,7 @@ with tabs[4]:
             height=400, barmode="overlay", showlegend=False,
             xaxis_title="Price per 10 Billion Particles (USD)",
             yaxis_title="", margin=dict(t=50, b=10),
-            title=None,
+            title="",
         )
         st.plotly_chart(fig_10b, use_container_width=True)
         st.caption("🟢 Green = independently confirmed by retail sources | 🟠 Amber = estimated from supplier/wholesale data")
@@ -1283,7 +1283,7 @@ with tabs[4]:
         fig_cee2.update_traces(textposition="outside")
         fig_cee2.update_layout(height=380, margin=dict(t=20, b=70), xaxis_tickangle=-15,
                                yaxis_title="OOP Price (USD)", legend_title="",
-                               title=None,
+                               title="",
                                legend=dict(orientation="h", yanchor="top", y=-0.18, xanchor="center", x=0.5))
         st.plotly_chart(fig_cee2, use_container_width=True)
         st.caption("CEE pricing represents ~30–50% discount vs US. High-volume CEE channel compensates for lower per-session margin with throughput from W. European medical tourists.")
@@ -1583,7 +1583,7 @@ with tabs[4]:
             height=420, margin=dict(t=20, b=90),
             xaxis_title="Year",
             yaxis=dict(title="COGS per 10B-particle dose (USD, log scale)", type="log"),
-            title=None,
+            title="",
             legend=dict(orientation="h", yanchor="top", y=-0.20, xanchor="center", x=0.5),
         )
         st.plotly_chart(fig_traj, use_container_width=True)
