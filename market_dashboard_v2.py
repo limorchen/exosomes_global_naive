@@ -783,6 +783,21 @@ with tabs[2]:
             dist_df = dist_df.rename(columns={col.lower(): col})
     live_badge(dist_is_live, last_run)
 
+    # ── NEW flag for distributors ─────────────────────────────────
+    def _is_new_row(da_val):
+        da = str(da_val or "").strip()
+        if not da or not prev_last_run:
+            return ""
+        try:
+            import datetime as _dt
+            return "🆕 NEW" if _dt.date.fromisoformat(da[:10]) > _dt.date.fromisoformat(prev_last_run[:10]) else ""
+        except Exception:
+            return ""
+    dist_df["🆕"] = dist_df.get("date_added", pd.Series([""] * len(dist_df))).apply(_is_new_row)
+    dist_new_count = (dist_df["🆕"] == "🆕 NEW").sum()
+    if dist_new_count:
+        st.markdown(f'<div class="success-card">🆕 <strong>{dist_new_count} distributor record(s) updated since last run</strong></div>', unsafe_allow_html=True)
+
     col_f1, col_f2 = st.columns([1, 3])
     with col_f1:
         region_opts = ["All"] + sorted(dist_df["Region"].unique().tolist())
@@ -798,7 +813,7 @@ with tabs[2]:
         if channel_sel  != "All": filtered = filtered[filtered["Channel"]  == channel_sel]
         if priority_sel != "All": filtered = filtered[filtered["Priority"] == priority_sel]
         st.dataframe(
-            filtered[["Distributor","Region","Territory","Brands","Approach","Priority","Channel"]],
+            filtered[["🆕","Distributor","Region","Territory","Brands","Approach","Priority","Channel"]],
             hide_index=True, use_container_width=True, height=320,
         )
 
@@ -938,19 +953,27 @@ with tabs[3]:
             reg_is_live = False
     live_badge(reg_is_live, last_run)
 
+    # ── NEW flag for regulation ───────────────────────────────────
+    reg_df["🆕"] = reg_df.get("date_added", pd.Series([""] * len(reg_df))).apply(_is_new_row)
+    reg_new_count = (reg_df["🆕"] == "🆕 NEW").sum()
+    if reg_new_count:
+        st.markdown(f'<div class="success-card">🆕 <strong>{reg_new_count} regulatory record(s) updated since last run</strong></div>', unsafe_allow_html=True)
+
     risk_filter = st.multiselect(
         "Filter by Risk Level",
         options=["🔴 HIGH","🟡 MEDIUM","🟡 LOW-MED","🟢 LOW"],
         default=["🔴 HIGH","🟡 MEDIUM","🟡 LOW-MED","🟢 LOW"],
     )
+    reg_display_cols = ["🆕","Territory","Body","Topical/Cosmetic","Soft Indications","IV/Therapeutic","Risk","Conf.","Source URL"]
+    reg_display_cols = [c for c in reg_display_cols if c in reg_df.columns]
     st.dataframe(
-        reg_df[reg_df["Risk"].isin(risk_filter)],
+        reg_df[reg_df["Risk"].isin(risk_filter)][reg_display_cols],
         hide_index=True, use_container_width=True, height=380,
         column_config={
             "Source URL": st.column_config.LinkColumn("Source", display_text="🔗 Link"),
         },
     )
-    st.caption("Conf. = Confidence score 0–100 based on validation against official sources. 🟢 70+ = High (govt/peer-reviewed); 🟡 50–69 = Medium (industry sources); 🔴 <50 = Low (unverified).")
+    st.caption("🆕 NEW = updated since last auto-run. Conf. = Confidence score 0–100. 🟢 70+ = High (govt/peer-reviewed); 🟡 50–69 = Medium (industry sources); 🔴 <50 = Low (unverified).")
 
     col_r1, col_r2 = st.columns(2)
 
