@@ -180,7 +180,7 @@ def append_to_csv(new_rows: list) -> None:
     os.makedirs(DATA_DIR, exist_ok=True)
     file_exists = os.path.exists(SIGNALS_FILE)
     headers = ["date", "type", "event", "impact", "sentiment",
-               "source", "territory", "auto_generated", "hash"]
+               "source", "territory", "auto_generated", "hash", "date_added"]
     with open(SIGNALS_FILE, "a", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=headers)
         if not file_exists:
@@ -196,13 +196,21 @@ def update_meta() -> None:
         with open(META_FILE, "r", encoding="utf-8") as f:
             rows = list(csv.reader(f))
     now_str = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
-    updated = False
+    prev_val = ""
+    updated_last = False
+    updated_prev = False
     for row in rows:
         if row and row[0] == "last_run":
+            prev_val = row[1]
             row[1] = now_str
-            updated = True
-    if not updated:
+            updated_last = True
+        elif row and row[0] == "prev_last_run":
+            row[1] = prev_val
+            updated_prev = True
+    if not updated_last:
         rows.append(["last_run", now_str])
+    if not updated_prev:
+        rows.append(["prev_last_run", prev_val])
     with open(META_FILE, "w", newline="", encoding="utf-8") as f:
         csv.writer(f).writerows(rows)
 
@@ -247,6 +255,7 @@ def main():
             "territory":      result.get("territory", "Global"),
             "auto_generated": "auto",
             "hash":           article["hash"],
+            "date_added":     datetime.datetime.utcnow().strftime("%Y-%m-%d"),
         })
 
     append_to_csv(new_signals)

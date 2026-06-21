@@ -46,12 +46,19 @@ def load_csv(filename):
         return None, str(e)
 
 @st.cache_data(ttl=3600)
-def load_last_run():
+def load_meta():
     df, err = load_csv("meta.csv")
     if err or df is None:
-        return "Not yet run"
-    row = df[df["key"] == "last_run"]
-    return row["value"].values[0] if not row.empty else "Unknown"
+        return "Not yet run", ""
+    last_run_row  = df[df["key"] == "last_run"]
+    prev_run_row  = df[df["key"] == "prev_last_run"]
+    last_run  = last_run_row["value"].values[0]  if not last_run_row.empty  else "Unknown"
+    prev_run  = prev_run_row["value"].values[0]  if not prev_run_row.empty  else ""
+    return last_run, prev_run
+
+def load_last_run():
+    last_run, _ = load_meta()
+    return last_run
 
 def get_live_or_static(live_df, static_df):
     """Return live data if available, fall back to static."""
@@ -70,7 +77,7 @@ live_signals,      signals_err  = load_csv("signals.csv")
 live_distributors, dist_err     = load_csv("distributors.csv")
 live_regulatory,   reg_err      = load_csv("regulatory.csv")
 live_pricing,      price_err    = load_csv("pricing.csv")
-last_run                        = load_last_run()
+last_run, prev_last_run         = load_meta()
 
 # ── CUSTOM CSS ─────────────────────────────────────────────────
 st.markdown("""
@@ -134,6 +141,7 @@ st.markdown("""
   .badge-critical { background:#c62828; color:#fff; border-radius:4px; padding:2px 7px; font-size:.75rem; font-weight:700; }
   .badge-high     { background:#e05c2a; color:#fff; border-radius:4px; padding:2px 7px; font-size:.75rem; font-weight:700; }
   .badge-medium   { background:#f0a030; color:#fff; border-radius:4px; padding:2px 7px; font-size:.75rem; font-weight:700; }
+  .badge-new      { background:#7c3aed; color:#fff; border-radius:4px; padding:2px 7px; font-size:.75rem; font-weight:700; letter-spacing:.3px; }
 
   /* ── Tab strip ── */
   [data-testid="stTabs"] > div:first-child { gap:4px; }
@@ -2040,14 +2048,33 @@ with tabs[5]:
     signals_display = signals.rename(columns={
         "date":"Date","type":"Type","event":"Event",
         "impact":"Impact","sentiment":"Sentiment","territory":"Territory",
-        "source":"Source",
+        "source":"Source","date_added":"Date Added",
     })
 
-    col_sm = st.columns(4)
+    # ── NEW flag: mark signals added after prev_last_run ─────────
+    def _is_new(row):
+        da = str(row.get("Date Added", "") or "").strip()
+        if not da or not prev_last_run:
+            return False
+        try:
+            import datetime as _dt
+            added = _dt.date.fromisoformat(da[:10])
+            prev  = _dt.date.fromisoformat(prev_last_run[:10])
+            return added > prev
+        except Exception:
+            return False
+
+    signals_display["🆕"] = signals_display.apply(_is_new, axis=1).map(
+        {True: "🆕 NEW", False: ""}
+    )
+    new_count = (signals_display["🆕"] == "🆕 NEW").sum()
+
+    col_sm = st.columns(5)
     col_sm[0].metric("🟢 Positive Signals", len(signals_display[signals_display["Sentiment"].str.contains("Positive", na=False)]))
     col_sm[1].metric("🔴 Risk Signals",     len(signals_display[signals_display["Sentiment"].str.contains("Risk",     na=False)]))
     col_sm[2].metric("🟡 Neutral/Watch",    len(signals_display[signals_display["Sentiment"].str.contains("Neutral",  na=False)]))
     col_sm[3].metric("📋 Total Tracked",    len(signals_display))
+    col_sm[4].metric("🆕 New This Update",  int(new_count))
 
     type_filter = st.multiselect(
         "Filter by Signal Type",
@@ -2055,12 +2082,12 @@ with tabs[5]:
         default=sorted(signals_display["Type"].dropna().unique().tolist()),
     )
 
-    display_cols = [c for c in ["Date","Type","Event","Impact","Sentiment","Territory","Source"] if c in signals_display.columns]
+    display_cols = [c for c in ["🆕","Date","Type","Event","Impact","Sentiment","Territory","Source"] if c in signals_display.columns]
     st.dataframe(
         signals_display[signals_display["Type"].isin(type_filter)][display_cols],
         hide_index=True, use_container_width=True, height=320,
     )
-    st.caption("Source column shows citation for manually curated baseline signals. Auto-fetched signals include source URL from Google News RSS.")
+    st.caption("🆕 NEW = added since last auto-update run. Flag clears automatically on the next update cycle. Source column shows citation for manually curated baseline signals.")
 
     col_t1, col_t2 = st.columns(2)
     with col_t1:
