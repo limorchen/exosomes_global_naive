@@ -45,7 +45,6 @@ def load_csv(filename):
     except Exception as e:
         return None, str(e)
 
-@st.cache_data(ttl=3600)
 def load_meta():
     df, err = load_csv("meta.csv")
     if err or df is None:
@@ -55,10 +54,6 @@ def load_meta():
     last_run  = last_run_row["value"].values[0]  if not last_run_row.empty  else "Unknown"
     prev_run  = prev_run_row["value"].values[0]  if not prev_run_row.empty  else ""
     return last_run, prev_run
-
-def load_last_run():
-    last_run, _ = load_meta()
-    return last_run
 
 def get_live_or_static(live_df, static_df):
     """Return live data if available, fall back to static."""
