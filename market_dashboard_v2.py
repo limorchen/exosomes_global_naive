@@ -7,6 +7,7 @@ and adaptable data config for live updating.
 Run with: streamlit run market_dashboard_v2.py
 """
 
+import datetime
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -69,15 +70,13 @@ def live_badge(is_live, last_run, manual=False):
     else:
         st.caption("🟡 Showing static baseline data")
 
-import datetime as _dt_module
-
 def _is_new_row(da_val):
     """Return '🆕 NEW' if da_val (ISO date string) is after prev_last_run."""
     da = str(da_val or "").strip()
     if not da or not prev_last_run:
         return ""
     try:
-        return "🆕 NEW" if _dt_module.date.fromisoformat(da[:10]) > _dt_module.date.fromisoformat(prev_last_run[:10]) else ""
+        return "🆕 NEW" if datetime.date.fromisoformat(da[:10]) > datetime.date.fromisoformat(prev_last_run[:10]) else ""
     except Exception:
         return ""
 
@@ -2082,9 +2081,8 @@ with tabs[5]:
         if not da or not prev_last_run:
             return False
         try:
-            import datetime as _dt
-            added = _dt.date.fromisoformat(da[:10])
-            prev  = _dt.date.fromisoformat(prev_last_run[:10])
+            added = datetime.date.fromisoformat(da[:10])
+            prev  = datetime.date.fromisoformat(prev_last_run[:10])
             return added > prev
         except Exception:
             return False
