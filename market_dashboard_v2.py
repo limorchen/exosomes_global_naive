@@ -66,11 +66,25 @@ def get_live_or_static(live_df, static_df):
         return live_df, True
     return static_df, False
 
-def live_badge(is_live, last_run):
-    if is_live:
+def live_badge(is_live, last_run, manual=False):
+    if is_live and manual:
+        st.caption(f"🔵 Manually maintained — last updated: {last_run}")
+    elif is_live:
         st.caption(f"🟢 Live data — last auto-updated: {last_run}")
     else:
         st.caption("🟡 Showing static baseline data")
+
+import datetime as _dt_module
+
+def _is_new_row(da_val):
+    """Return '🆕 NEW' if da_val (ISO date string) is after prev_last_run."""
+    da = str(da_val or "").strip()
+    if not da or not prev_last_run:
+        return ""
+    try:
+        return "🆕 NEW" if _dt_module.date.fromisoformat(da[:10]) > _dt_module.date.fromisoformat(prev_last_run[:10]) else ""
+    except Exception:
+        return ""
 
 # ── Load all live data once at startup ───────────────────────
 live_signals,      signals_err  = load_csv("signals.csv")
@@ -781,18 +795,10 @@ with tabs[2]:
     for col in ["Distributor","Region","Territory","Brands","Approach","Priority","Channel"]:
         if col.lower() in dist_df.columns and col not in dist_df.columns:
             dist_df = dist_df.rename(columns={col.lower(): col})
-    live_badge(dist_is_live, last_run)
+    live_badge(dist_is_live, last_run, manual=True)
+    st.caption("🔵 Distributor data is manually maintained. To flag new entries, set `date_added` to today's date in distributors.csv.")
 
     # ── NEW flag for distributors ─────────────────────────────────
-    def _is_new_row(da_val):
-        da = str(da_val or "").strip()
-        if not da or not prev_last_run:
-            return ""
-        try:
-            import datetime as _dt
-            return "🆕 NEW" if _dt.date.fromisoformat(da[:10]) > _dt.date.fromisoformat(prev_last_run[:10]) else ""
-        except Exception:
-            return ""
     dist_df["🆕"] = dist_df.get("date_added", pd.Series([""] * len(dist_df))).apply(_is_new_row)
     dist_new_count = (dist_df["🆕"] == "🆕 NEW").sum()
     if dist_new_count:
@@ -951,7 +957,8 @@ with tabs[3]:
         if not expected.issubset(set(reg_df.columns)):
             reg_df = reg_df_static
             reg_is_live = False
-    live_badge(reg_is_live, last_run)
+    live_badge(reg_is_live, last_run, manual=True)
+    st.caption("🔵 Regulatory data is manually maintained. To flag new entries, set `date_added` to today's date in regulatory.csv.")
 
     # ── NEW flag for regulation ───────────────────────────────────
     reg_df["🆕"] = reg_df.get("date_added", pd.Series([""] * len(reg_df))).apply(_is_new_row)
