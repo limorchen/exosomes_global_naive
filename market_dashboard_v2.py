@@ -364,6 +364,17 @@ with tabs[0]:
             "this is not the addressable market for a B2B vial manufacturer.</div>",
             unsafe_allow_html=True,
         )
+        st.markdown(
+            '<div class="success-card">🆕 <strong>12 new distributor/channel entrants identified (2025–26)</strong> — '
+            "confirms active geographic widening beyond the tracked baseline: <strong>India</strong> opened for the first time "
+            "(Leader Medical Systems = ExoCoBio's exclusive national distributor; Privé Luxe Delhi clinics), the "
+            "<strong>Caribbean/LATAM</strong> gained a manufacturing hub (RMTG/Cellgenic, Dominican Republic), "
+            "<strong>UAE/GCC</strong> added a second major anchor (HealthNet MEA / Botanical EX), "
+            "<strong>Australia/NZ</strong> gained a device-bundled entry route (InMode x ExoCoBio) plus three more wholesale "
+            "channels, and the <strong>US</strong> saw new domestic clinic networks and B2B serum brands enter "
+            "(Springs Rejuvenation, Exora/JuveXO, Aurecell Labs). See the Distributors tab for full detail.</div>",
+            unsafe_allow_html=True,
+        )
         st.markdown("")
         # Note: Rest of APAC includes Korea, Japan, China (not separately tracked in dashboard)
         fig_addr = px.bar(
@@ -679,12 +690,22 @@ with tabs[1]:
             {"Territory":"Singapore",   "Region":"SEA",   "Maturity":"Medium",   "Note":"HSA approval = ASEAN reliance gateway"},
             {"Territory":"Brazil",      "Region":"LATAM", "Maturity":"High",     "Note":"2nd-largest aesthetic market globally"},
             {"Territory":"Mexico",      "Region":"LATAM", "Maturity":"High",     "Note":"Medical tourism; COFEPRIS-ANVISA MoU"},
-            {"Territory":"UAE/GCC",     "Region":"ME",    "Maturity":"Premium",  "Note":"Luxury longevity; DUBIMED 40yr network"},
+            {"Territory":"Dominican Republic", "Region":"LATAM", "Maturity":"Emerging", "Note":"🆕 RMTG/Cellgenic mfg hub + distribution deal (Oct 2025); full-scale mfg live Mar 2026"},
+            {"Territory":"UAE/GCC",     "Region":"ME",    "Maturity":"Premium",  "Note":"Luxury longevity; DUBIMED 40yr network + 🆕 HealthNet MEA (Botanical EX, May 2026)"},
+            {"Territory":"India",       "Region":"Asia",  "Maturity":"Emerging", "Note":"🆕 Leader Medical Systems = ExoCoBio exclusive national distributor (2025); Privé Luxe Delhi clinics"},
         ])
         st.dataframe(apac_df, hide_index=True, use_container_width=True)
 
         st.markdown('<div class="section-header">Australia Detail</div>', unsafe_allow_html=True)
         st.markdown('<div class="warning-card">🇦🇺 <strong>Australia (TGA):</strong> High regulatory barrier — TGA-registered clinics only; PBAC risk-sharing model for ATMPs. Entry via Biogenix-style TGA-compliant partnership. Market ~$2M (2024), restricted channel.</div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="success-card">🆕 <strong>ANZ distributor field is widening (2025–26):</strong> '
+            "InMode Australia now bundles ExoCoBio ASCE+ exosomes with its Morpheus8 device install base (NZ launch Jun 2025); "
+            "Xytide distributes Korean adipose-MSC-derived Exomide into NZ clinics; Enesi and Austramedex both run "
+            "general cosmetic-medical wholesale channels carrying multiple exosome lines. Four active distribution routes now exist "
+            "beyond Biogenix/InterMed — worth benchmarking against before committing to a single ANZ partner.</div>",
+            unsafe_allow_html=True,
+        )
 
         st.markdown('<div class="section-header">🆕 Central & Eastern Europe (CEE) — Emerging Hub</div>', unsafe_allow_html=True)
         cee_df = pd.DataFrame([
@@ -783,6 +804,19 @@ with tabs[2]:
         {"Distributor":"Elevai Labs / BENEV",  "Region":"USA",      "Territory":"USA",             "Brands":"Elevai E30, ExoCoBio",         "Approach":"OEM/white-label cosmetic topical",    "Priority":"🟢 High",  "Channel":"Aesthetic"},
         {"Distributor":"Medical Spa chains",   "Region":"USA",      "Territory":"USA (TX,FL,AZ)",  "Brands":"Post-procedure adjuncts",      "Approach":"Direct clinic supply — cosmetic only","Priority":"🟡 Medium","Channel":"Aesthetic"},
         {"Distributor":"US CDMO channel",      "Region":"USA",      "Territory":"USA",             "Brands":"Biotech/pharma clinical",      "Approach":"GMP supply for Phase I/II trials",   "Priority":"🟡 Medium","Channel":"Research/CDMO"},
+        # New entrants — 2025-2026
+        {"Distributor":"HealthNet MEA",        "Region":"UAE/GCC",  "Territory":"UAE (GCC-wide)",  "Brands":"Botanical EX (Precision Biotech Taiwan)","Approach":"Exclusive regional import/distribution partner","Priority":"🟢 High","Channel":"Pharma/Import"},
+        {"Distributor":"RMTG / Cellgenic",     "Region":"LATAM",    "Territory":"Dominican Republic","Brands":"Cellgenic exosome + MSC lyo",  "Approach":"Mfg hub + regional distribution; ISSCA-certified", "Priority":"🟢 High",  "Channel":"Medical/Longevity"},
+        {"Distributor":"Leader Medical Systems","Region":"Asia",    "Territory":"India",           "Brands":"ExoCoBio ASCEplus",            "Approach":"Exclusive national distributor to premium derm clinics","Priority":"🟢 High","Channel":"Pharma/Import"},
+        {"Distributor":"Privé Luxe",           "Region":"Asia",     "Territory":"India (Delhi)",   "Brands":"Korean PDRN + Exosome therapy","Approach":"Medical-tourism-adjacent luxury clinic; first-mover","Priority":"🟡 Medium","Channel":"Aesthetic/Medical"},
+        {"Distributor":"Springs Rejuvenation", "Region":"USA",      "Territory":"USA (5-city)",    "Brands":"In-house Stem 3 Protocol",     "Approach":"Domestic network capturing medical-tourism patients","Priority":"🟢 High","Channel":"Medical/Longevity"},
+        {"Distributor":"Exora / JuveXO",       "Region":"USA",      "Territory":"USA (national)",  "Brands":"JuveXO (ExoCM secretome)",     "Approach":"B2B luxury skin/haircare brand to aesthetic practices","Priority":"🟡 Medium","Channel":"Aesthetic"},
+        {"Distributor":"Aurecell Laboratories","Region":"USA",      "Territory":"USA (national)",  "Brands":"AureExo",                      "Approach":"Pharma-grade serum direct to medspas",  "Priority":"🟡 Medium","Channel":"Aesthetic"},
+        {"Distributor":"EMA Aesthetics",       "Region":"Europe",   "Territory":"AMWC Monaco (global)","Brands":"BLŪPRIN (UC blood plasma exosomes)","Approach":"Platform/ingredient brand for clinic/derm channel","Priority":"🟡 Medium","Channel":"Aesthetic"},
+        {"Distributor":"InMode Australia",     "Region":"Pacific",  "Territory":"Australia/NZ",    "Brands":"ExoCoBio ASCE+ Exosomes",      "Approach":"Exclusive distributor bundled with Morpheus8 device","Priority":"🟢 High","Channel":"Aesthetic/Medical"},
+        {"Distributor":"Xytide",               "Region":"Pacific",  "Territory":"Australia/NZ",    "Brands":"Exomide (adipose-MSC)",        "Approach":"Local biotech distributor; clinic-exclusive",  "Priority":"🟡 Medium","Channel":"Aesthetic"},
+        {"Distributor":"Enesi",                "Region":"Pacific",  "Territory":"Australia/NZ",    "Brands":"Multiple exosome lines + Juvasonic","Approach":"Device/product supplier bundling exosomes with training","Priority":"🟡 Medium","Channel":"Aesthetic"},
+        {"Distributor":"Austramedex",          "Region":"Pacific",  "Territory":"Australia/NZ",    "Brands":"E-50 Exosomes",                "Approach":"Regional wholesale supplier",           "Priority":"🟡 Medium","Channel":"Aesthetic"},
     ])
     dist_df, dist_is_live = get_live_or_static(live_distributors, dist_df_static)
     # Ensure expected columns exist when reading from CSV
@@ -859,6 +893,19 @@ with tabs[2]:
             ("🌏 SEA — Vanguard Aesthetics (Philippines)", "signal-card",
              "Use Philippines as ASEAN gateway. Jan 2026 PH FDA cosmetic notification validates ASEAN entry blueprint. "
              "B2B target: $75–125/vial (10B particles)."),
+            ("🇮🇳 India — Leader Medical Systems (NEW, 2025)", "success-card",
+             "NEW: ExoCoBio's exclusive national distributor into premium dermatology/aesthetic clinics — validates a national-exclusive "
+             "licensing model as the fastest path into India. Privé Luxe (Delhi) confirms early clinic-side demand for Korean PDRN+exosome "
+             "protocols. No B2B benchmark pricing yet — flag as a priced-TBD opportunity."),
+            ("🇦🇪 UAE/GCC — HealthNet MEA (NEW, May 2026)", "success-card",
+             "NEW: Exclusive GCC import/distribution partner for Precision Biotech Taiwan Corp's Botanical EX — a second major "
+             "anchor alongside DUBIMED. Confirms GCC appetite for exclusive long-term distribution deals over spot sales."),
+            ("🇦🇺 Australia/NZ — InMode x ExoCoBio (NEW, Jun 2025)", "success-card",
+             "NEW: Device-bundled entry model — exosomes sold alongside InMode's Morpheus8 device install base. Consider a similar "
+             "device-partnership pitch (vs. Biogenix's TGA-compliant standalone model) to fast-track ANZ clinic adoption."),
+            ("🇩🇴 Caribbean/LATAM — RMTG / Cellgenic (NEW, Oct 2025–Mar 2026)", "success-card",
+             "NEW: Dominican Republic distribution deal plus a newly commissioned full-scale manufacturing hub (with a Dubai clinic "
+             "arm) signals LATAM/Caribbean consolidation — a potential competitor or CDMO partner to watch alongside Giostar/R3."),
         ]
         for title, cls, text in approaches:
             st.markdown(f'<div class="{cls}"><strong>{title}</strong><br>{text}</div>', unsafe_allow_html=True)
@@ -1427,14 +1474,16 @@ with tabs[4]:
         # Cosmetic grade ~40% lower = $90–190. Source: Exosome_COGS_Model_Sourced.xlsx, Sheet 3.
         attr_df = pd.DataFrame([
             {"Market":"Germany/EU",     "B2B Range (S6)":"$140–225/10B",  "Max COGS for 40% Margin":"<$84–135",  "Grade Needed":"Clinical GMP or cosmetic", "Key Pitch":"BM-MSC clinical lit; CD73/CD90 CoA; NTA data","Source":"S6 MedicaDepot EU pricing"},
-            {"Market":"UAE/GCC",        "B2B Range (S6)":"$175–300/10B",  "Max COGS for 40% Margin":"<$105–180", "Grade Needed":"Clinical GMP",             "Key Pitch":"Longevity angle; high-dose IV protocols",       "Source":"S6 EDEN Aesthetics/DUBIMED est."},
+            {"Market":"UAE/GCC",        "B2B Range (S6)":"$175–300/10B",  "Max COGS for 40% Margin":"<$105–180", "Grade Needed":"Clinical GMP",             "Key Pitch":"Longevity angle; high-dose IV protocols",       "Source":"S6 EDEN Aesthetics/DUBIMED est.; 🆕 reinforced by HealthNet MEA exclusive deal May 2026"},
             {"Market":"USA (aesthetic)","B2B Range (S6)":"$150–275/10B",  "Max COGS for 40% Margin":"<$90–165",  "Grade Needed":"Cosmetic/professional",    "Key Pitch":"CoA CD63/CD81; no therapeutic claims; GMP",     "Source":"S6 Stem Nova/BENEV pricing"},
-            {"Market":"Australia",      "B2B Range (S6)":"$175–300/10B",  "Max COGS for 40% Margin":"<$105–180", "Grade Needed":"Clinical GMP (TGA)",       "Key Pitch":"TGA compliance documentation; Biogenix model",  "Source":"S6 derived from AU premium channel"},
+            {"Market":"Australia",      "B2B Range (S6)":"$175–300/10B",  "Max COGS for 40% Margin":"<$105–180", "Grade Needed":"Clinical GMP (TGA)",       "Key Pitch":"TGA compliance documentation; Biogenix model",  "Source":"S6 derived from AU premium channel; 🆕 reinforced by InMode x ExoCoBio device-bundled deal Jun 2025"},
             {"Market":"Mexico/LATAM",   "B2B Range (S6)":"$100–175/10B",  "Max COGS for 40% Margin":"<$60–105",  "Grade Needed":"Cosmetic grade",           "Key Pitch":"Lyophilized; ANVISA-COFEPRIS MoU compliance",   "Source":"S6 LATAM wholesale est."},
             {"Market":"Thailand",       "B2B Range (S6)":"$90–150/10B",   "Max COGS for 40% Margin":"<$54–90",   "Grade Needed":"Cosmetic grade",           "Key Pitch":"Thai FDA cosmetic notification; ASEAN docs",    "Source":"S6 TH clinic pricing"},
             {"Market":"Philippines/SEA","B2B Range (S6)":"$75–125/10B",   "Max COGS for 40% Margin":"<$45–75",   "Grade Needed":"Cosmetic grade",           "Key Pitch":"PH FDA notification gateway; ASEAN directive",  "Source":"S6 SEA wholesale est."},
+            {"Market":"India","B2B Range (S6)":"TBD — new entrant","Max COGS for 40% Margin":"TBD","Grade Needed":"Clinical GMP or cosmetic","Key Pitch":"ExoCoBio ASCEplus benchmark via Leader Medical Systems; premium derm clinic channel","Source":"🆕 No confirmed B2B pricing yet — flagged opportunity, 2025"},
         ])
         st.dataframe(attr_df, hide_index=True, use_container_width=True)
+        st.caption("🆕 India row added as a flagged opportunity following ExoCoBio's exclusive national distributor appointment (Leader Medical Systems, 2025) — no verified B2B price point found yet; do not treat as a benchmark.")
 
         # ── B2B mid-range chart ───────────────────────────────────
         st.markdown('<div class="section-header">Estimated B2B Price Midpoint by Market (per 10B particles)</div>', unsafe_allow_html=True)
@@ -2180,9 +2229,17 @@ with tabs[6]:
          "Target Teoxane Polska (already EPICEXOSOME distributor) and Romanian aesthetic distributors. CEE session prices ($320–800) vs US ($4,900) drive volume. Romania's $300.9M cosmetic surgery market attracts W. European medical tourists. LaserMe+ASCE+ Poland protocol active at ~$500/session."),
         ("MEDIUM",   "signal-card",   "Thailand: appoint local licensed importer",
          "All imports require locally registered Thai entity holding import license. Foreign manufacturers must appoint local representative."),
+        ("MEDIUM",   "signal-card",   "🆕 Evaluate India entry via ExoCoBio/Leader Medical Systems precedent",
+         "ExoCoBio's exclusive national distributor model (Leader Medical Systems, 2025) into premium dermatology clinics is the first confirmed exosome distribution play in India. Privé Luxe (Delhi) confirms early clinic-side demand for Korean PDRN+exosome protocols. No B2B pricing benchmark exists yet — first-mover risk and opportunity."),
+        ("MEDIUM",   "signal-card",   "🆕 Target HealthNet MEA as a second GCC anchor alongside DUBIMED",
+         "HealthNet MEA's exclusive May 2026 GCC distribution deal for Precision Biotech Taiwan's Botanical EX shows GCC distributors will commit to long-term exclusive partnerships — approach with the same 'longevity module' pitch used for DUBIMED."),
+        ("MEDIUM",   "signal-card",   "🆕 Consider a device-bundled entry model for Australia/NZ",
+         "InMode's exclusive bundling of ExoCoBio ASCE+ exosomes with its Morpheus8 device install base (NZ, Jun 2025) is a faster path to clinic adoption than a standalone TGA-compliant distributor relationship (Biogenix model). Evaluate device-maker partnerships as an alternative ANZ entry route."),
+        ("LOW",      "signal-card",   "🆕 Monitor RMTG/Cellgenic's Caribbean/LATAM manufacturing build-out",
+         "Cellgenic's new Dominican Republic distribution deal (Oct 2025) plus a full-scale manufacturing hub (Mar 2026, alongside an existing Mexico site and Dubai clinic arm) signals a competitor consolidating LATAM/Caribbean supply — track as either a competitive threat or a potential CDMO/co-manufacturing conversation."),
     ]
 
-    priority_colors = {"CRITICAL": "#c62828", "HIGH": "#e05c2a", "MEDIUM": "#f0a030"}
+    priority_colors = {"CRITICAL": "#c62828", "HIGH": "#e05c2a", "MEDIUM": "#f0a030", "LOW": "#7ec8e3"}
 
     for priority, css_class, title, detail in checklist:
         color = priority_colors[priority]
@@ -2200,11 +2257,12 @@ with tabs[6]:
     st.markdown('<div class="section-header">Priority Summary</div>', unsafe_allow_html=True)
     pri_counts = {"CRITICAL": sum(1 for p, *_ in checklist if p=="CRITICAL"),
                   "HIGH":     sum(1 for p, *_ in checklist if p=="HIGH"),
-                  "MEDIUM":   sum(1 for p, *_ in checklist if p=="MEDIUM")}
+                  "MEDIUM":   sum(1 for p, *_ in checklist if p=="MEDIUM"),
+                  "LOW":      sum(1 for p, *_ in checklist if p=="LOW")}
     fig_pri = px.bar(
         x=list(pri_counts.keys()), y=list(pri_counts.values()),
         color=list(pri_counts.keys()),
-        color_discrete_map={"CRITICAL":"#c62828","HIGH":"#e05c2a","MEDIUM":"#f0a030"},
+        color_discrete_map={"CRITICAL":"#c62828","HIGH":"#e05c2a","MEDIUM":"#f0a030","LOW":"#7ec8e3"},
         text=list(pri_counts.values()),
     )
     fig_pri.update_traces(textposition="outside")
