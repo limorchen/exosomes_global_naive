@@ -219,14 +219,14 @@ tabs = st.tabs([
 # ════════════════════════════════════════════════════════════════
 with tabs[0]:
     # ── KPI row ─────────────────────────────────────────────────
-    st.markdown('<div class="section-header">Global Market KPIs — Triangulated from 5 Independent Sources</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">Global Market KPIs — Triangulated from 8 Independent Sources</div>', unsafe_allow_html=True)
 
     kpis = [
         ("$81M–$218M", "2024 Addressable Market",    "Professional/clinical channel — 5-source range"),
         ("~$150M",     "2024 Midpoint Estimate",      "Triangulated from InsightAce + Insight Partners"),
         ("17–36%",     "CAGR Range Across Sources",   "CMI 9.9% → InsightAce 35.9%"),
         ("$155–315",   "BM-MSC COGS/Dose (2026)",     "Commercial mid scale · Per 10B-particle dose · S1+G2"),
-        ("$418M–$852M","Broader Skincare Market 2025","Incl. retail serums, creams, DTC"),
+        ("$460M–$852M","Broader Skincare Market 2025","Incl. retail serums, creams, DTC"),
         ("$218M",      "Insight Partners 2024",       "Most specifically scoped to aesthetics"),
     ]
     cols = st.columns(6)
@@ -246,14 +246,16 @@ with tabs[0]:
     col_a, col_b = st.columns([1, 1])
 
     with col_a:
-        st.markdown('<div class="section-header">Market Size Synthesis — 5 Independent Sources</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">Market Size Synthesis — 8 Independent Sources</div>', unsafe_allow_html=True)
         st.markdown(
             '<div class="signal-card">📊 <strong>Why sources disagree:</strong> Each measures a different slice of the market. '
             "A BM-MSC exosome vial manufacturer competes in the <strong>professional/clinical channel</strong> — "
             "not the retail serum or DTC cosmetic space. The relevant range is therefore "
             "<strong>$81M–$218M (2024)</strong>, with a triangulated midpoint of ~$150M. "
-            "The $418M–$852M figures include retail skincare serums sold to consumers — "
-            "revenue a bulk vial supplier does not capture directly.</div>",
+            "The $460M–$852M figures include retail skincare serums sold to consumers — "
+            "revenue a bulk vial supplier does not capture directly. A newer, narrowly-scoped Grand View Research "
+            "estimate ($39.7M, 2025) sits below this range and flags APAC — not North America — as the largest "
+            "aesthetic-exosome region; see the reconciliation table for detail.</div>",
             unsafe_allow_html=True,
         )
         st.markdown("")
@@ -261,11 +263,12 @@ with tabs[0]:
         recon_df = pd.DataFrame([
             {"Research Firm":"The Insight Partners",    "Segment":"Aesthetic Exosomes (clinical)",          "2024/25 Value":"$218.3M (2024)", "2031/35 Forecast":"$669.9M (2031)", "CAGR":"17.4%","Scope":"Skin rejuvenation, post-procedure, hair restoration — clinical/medspa channel", "Relevant?":"✅ HIGH — closest scope"},
             {"Research Firm":"InsightAce Analytic",     "Segment":"Regen Aesthetics Exosomes",              "2024/25 Value":"$81.1M (2024)",  "2031/35 Forecast":"$1.69B (2034)",  "CAGR":"35.9%","Scope":"Regen aesthetics exosome products specifically", "Relevant?":"✅ HIGH — narrowly scoped"},
-            {"Research Firm":"Coherent Market Insights","Segment":"Exosomes Skincare (broad)",              "2024/25 Value":"$417.8M (2025)", "2031/35 Forecast":"$809.5M (2032)", "CAGR":"9.9%", "Scope":"Serums, creams, masks, lotions — professional + retail", "Relevant?":"⚠️ PARTIAL — includes retail"},
+            {"Research Firm":"Coherent Market Insights","Segment":"Exosomes Skincare (broad)",              "2024/25 Value":"$460.0M (2025)", "2031/35 Forecast":"$819.4M (2033)", "CAGR":"10.1%", "Scope":"Serums, creams, masks, lotions — professional + retail; updated report Apr 2026", "Relevant?":"⚠️ PARTIAL — includes retail"},
             {"Research Firm":"Future Market Insights",  "Segment":"Exosome-Based Skincare",                 "2024/25 Value":"$852.3M (2025)", "2031/35 Forecast":"$3,952.7M (2035)","CAGR":"16.6%","Scope":"Full skincare incl. DTC consumer products, retail channels", "Relevant?":"⚠️ PARTIAL — broadest scope"},
             {"Research Firm":"BioInformant",            "Segment":"Exosome Cosmeceuticals",                 "2024/25 Value":"No hard figure", "2031/35 Forecast":"—",              "CAGR":"—",    "Scope":"Qualitative: hundreds of products in market; no FDA-approved; used by dermatologists, hair restoration, medspas", "Relevant?":"ℹ️ Qualitative context"},
             {"Research Firm":"Grand View Research",     "Segment":"Total Exosomes (all B2B)",               "2024/25 Value":"$177.4M (2024)", "2031/35 Forecast":"$794.2M (2030)", "CAGR":"28.7%","Scope":"All B2B: kits, reagents, isolation services — includes research/diagnostic", "Relevant?":"⚠️ PARTIAL — includes non-aesthetic"},
-            {"Research Firm":"Precedence Research",     "Segment":"Exosome Therapy (full sector)",          "2024/25 Value":"$58,120M (2025)","2031/35 Forecast":"$307,040M (2035)","CAGR":"~35%","Scope":"Hospital labor + procedure fees + capital equipment — NOT product B2B", "Relevant?":"❌ NOT product market"},
+            {"Research Firm":"Grand View Research",     "Segment":"Aesthetic Exosomes (new, Mar 2026)",     "2024/25 Value":"$39.7M (2025)",  "2031/35 Forecast":"$139.8M (2033)", "CAGR":"18.0%", "Scope":"Aesthetic-specific: topical 74.9% share, injectable fastest-growing (25.5% CAGR); hair restoration leading application; APAC largest region (46.2%, not NA)", "Relevant?":"✅ HIGH — narrowly scoped, newest report"},
+            {"Research Firm":"Precedence Research",     "Segment":"Exosome Therapy (full sector)",          "2024/25 Value":"$58,120M (2025)","2031/35 Forecast":"$307,040M (2035)","CAGR":"18.11%","Scope":"Hospital labor + procedure fees + capital equipment — NOT product B2B", "Relevant?":"❌ NOT product market"},
         ])
         st.dataframe(recon_df, hide_index=True, use_container_width=True)
         st.markdown("")
@@ -298,7 +301,7 @@ with tabs[0]:
             title="",
         )
         st.plotly_chart(fig_tri, use_container_width=True)
-        st.caption("Orange = triangulated synthesis of two most specifically-scoped sources. Blue = individual source values. Broader retail market ($418M–$852M) excluded as it measures DTC consumer products, not B2B vial sales.")
+        st.caption("Orange = triangulated synthesis of two most specifically-scoped sources. Blue = individual source values. Broader retail market ($460M–$852M) excluded as it measures DTC consumer products, not B2B vial sales. A third narrowly-scoped source — Grand View Research's new Aesthetic Exosomes report ($39.7M, 2025) — sits below this range; see reconciliation table below.")
 
         # ── Log-scale chart showing all sources ───────────────────
         st.markdown('<div class="section-header">All Sources — Full Range ($81M to $58B, log scale)</div>', unsafe_allow_html=True)
@@ -306,13 +309,14 @@ with tabs[0]:
             "Scope":  [
                 "InsightAce\n(Regen Aesthetics)",
                 "Insight Partners\n(Aesthetic Exosomes)",
+                "Grand View\n(Aesthetic Exosomes, new)",
                 "Grand View\n(All Exosome B2B)",
                 "CMI\n(Exosome Skincare)",
                 "FMI\n(Exosome Skincare broad)",
                 "Precedence\n(Therapy sector total)",
             ],
-            "Value":  [81.1, 218.3, 177.4, 417.8, 852.3, 58120],
-            "Type":   ["Clinical channel","Clinical channel","B2B broad","Retail incl.","Retail incl.","Service sector"],
+            "Value":  [81.1, 218.3, 39.7, 177.4, 460.0, 852.3, 58120],
+            "Type":   ["Clinical channel","Clinical channel","Clinical channel","B2B broad","Retail incl.","Retail incl.","Service sector"],
         })
         fig_recon = px.bar(
             recon_chart, x="Scope", y="Value",
@@ -360,7 +364,7 @@ with tabs[0]:
         st.markdown(
             '<div class="signal-card">📊 <strong>Total addressable market (professional/clinical channel): ~$150M (2024)</strong> — '
             "triangulated from InsightAce $81.1M (regen aesthetics) and The Insight Partners $218.3M (aesthetic exosomes clinical). "
-            "Broader exosome skincare market including retail DTC: $418M–$852M (CMI, FMI) — "
+            "Broader exosome skincare market including retail DTC: $460M–$852M (CMI, FMI) — "
             "this is not the addressable market for a B2B vial manufacturer.</div>",
             unsafe_allow_html=True,
         )
@@ -442,11 +446,12 @@ with tabs[0]:
     sources_tab1 = [
         ("The Insight Partners", "Aesthetic Exosomes Market to 2031, Dec 2025 (TIPRE00041701)", "$218.3M (2024) → $669.9M (2031); CAGR 17.4%; clinical/medspa channel; North America dominant; APAC fastest-growing"),
         ("InsightAce Analytic", "Regenerative Aesthetics Exosome Products Market, Nov 2025", "$81.1M (2024); CAGR 35.9% (2025–2034); North America leading region; regen aesthetics specifically"),
-        ("Coherent Market Insights", "Exosomes Skincare Market Size, Share and Forecast 2025–2032 (CMI7649)", "$417.8M (2025) → $809.5M (2032); CAGR 9.9%; NA 38.7%; APAC 32.0%; serums 42.6% of market; human-derived 35.6%"),
+        ("Coherent Market Insights", "Exosomes Skincare Market Size, Share and Forecast 2026–2033 (CMI7649), updated Apr 2026", "$460.0M (2025) → $819.4M (2033); CAGR 10.1%; NA 38.7%; APAC 32.0%; serums 43.6% of market; human-derived 36.6%; anti-aging 27.6% of applications"),
         ("Future Market Insights", "Exosome-Based Skincare Market 2025–2035, Sep 2025", "$852.3M (2025) → $3,952.7M (2035); CAGR 16.6%; anti-aging 53.5% share; $1,835.5M by 2030"),
         ("BioInformant", "The Rise of Exosome-Based Cosmeceuticals in 2026, Oct 2025", "Qualitative industry overview; hundreds of products in market; no FDA-approved products; professional use by dermatologists, hair restoration, medspas"),
         ("Grand View Research", "Exosomes Market Size and Share — Industry Report 2030, 2024", "$177.4M total exosome market (2024); $794.2M forecast (2030); B2B kits/reagents/isolation; all segments"),
-        ("Precedence Research", "Exosome Therapeutics Market Size 2025–2034, Nov 2025", "$58.12B Exosome Therapy sector (2025) including procedure fees and hospital labor — service sector total, not product B2B"),
+        ("Grand View Research", "Aesthetic Exosomes Market Size, Share Report 2026–2033, new report Mar 2026", "$39.7M (2025) → $139.8M (2033); CAGR 18.0%; topical 74.9% share; injectable fastest-growing (25.5% CAGR); hair restoration leading application; APAC largest region at 46.2% — contrasts with NA-led assumption used elsewhere in this tab, worth monitoring"),
+        ("Precedence Research", "Exosome Therapy Market Size and Industry Dynamics 2026–2035", "$58.12B Exosome Therapy sector (2025) → $307.04B (2035); CAGR 18.11% (corrected — previously mislabeled ~35% in this dashboard) including procedure fees and hospital labor — service sector total, not product B2B"),
         ("DelveInsight", "Exosome Diagnostics Market Insights and Forecast 2034, 2025", "$119.3M diagnostics (2024); $2.56B (2032); IVD channel only"),
         ("Transparency Market Research", "Exosome Market for Cosmetic Applications, 2024", "$1.8B cosmetic applications (2024); $26.6B (2035); includes retail cosmeceuticals"),
         ("Statifacts / Precedence Research", "U.S. Exosome-Based Therapy Market, 2025", "$15.61M U.S.-specific therapeutic service revenues (2024); $79.67M (2034)"),
