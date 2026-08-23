@@ -959,7 +959,7 @@ with tabs[2]:
 # TAB 4 — REGULATION
 # ════════════════════════════════════════════════════════════════
 with tabs[3]:
-    st.markdown('<div class="section-header">Global Regulatory Framework — B2B Cosmetic & Soft Medical Channel (May 2026)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">Global Regulatory Framework — B2B Cosmetic & Soft Medical Channel (August 2026)</div>', unsafe_allow_html=True)
     st.markdown(
         '<div class="signal-card">📋 <strong>Channel context:</strong> Risk ratings reflect the <em>non-IND, non-therapeutic</em> channel — '
         'topical cosmetic B2B, physician-dispensed aesthetic, and soft medical (no drug claims). '
@@ -969,18 +969,18 @@ with tabs[3]:
     )
 
     reg_df_static = pd.DataFrame([
-        {"Territory":"USA",         "Body":"FDA",          "Topical/Cosmetic":"✅ Active B2B market — no drug claims; AnteAGE/BENEV/Stem Nova operate legally","Soft Indications":"Physician discretion (grey); no IV drug claims","IV/Therapeutic":"🔴 IND required; 12+ warning letters; DOJ active — IV/injectable only","Risk":"🟡 MEDIUM",  "Conf.":"🟢 90","Source URL":"https://www.armstrongbradylyons.com/library/fda-warning-letters-exosome-product"},
+        {"Territory":"USA",         "Body":"FDA",          "Topical/Cosmetic":"✅ Active B2B market — no drug claims; AnteAGE/BENEV/Stem Nova operate legally","Soft Indications":"Physician discretion (grey); no IV drug claims","IV/Therapeutic":"🔴 IND required; Q1 2026 new wave of letters (FL/CA/TX); DOJ Health & Safety Unit active since Dec 2025 — criminal prosecutions, FTC deceptive ad actions, debarment orders","Risk":"🟡 MEDIUM",  "Conf.":"🟢 90","Source URL":"https://www.armstrongbradylyons.com/library/fda-warning-letters-exosome-product"},
         {"Territory":"EU",          "Body":"EMA",          "Topical/Cosmetic":"✅ EU Cosmetics Reg 1223/2009 — notification + safety assessment + responsible person","Soft Indications":"Cosmetic grade — dermatology, aesthetics active","IV/Therapeutic":"🔴 ATMP required — 0 exosome-based approved globally; EMA Jul 2025 guideline","Risk":"🟡 LOW-MED","Conf.":"🟢 85","Source URL":"https://www.regulatoryrapporteur.org/industry-news/ema-accepts-new-guidelines-on-investigational-atmps/843.article"},
         {"Territory":"Australia",   "Body":"TGA/ACCC",     "Topical/Cosmetic":"✅ Cosmetics = ACCC (consumer law), not TGA — no registration required","Soft Indications":"Practitioner aesthetic channel active — cosmetic claims only","IV/Therapeutic":"🔴 TGA-restricted; ATMP / PBAC risk-sharing model","Risk":"🟡 MEDIUM",  "Conf.":"🟢 80","Source URL":"https://www.atlantisbioscience.com/blog/commercialising-exosome-therapeutics-key-regulatory-pathways/"},
         {"Territory":"Germany",     "Body":"BfArM",        "Topical/Cosmetic":"✅ EU cosmetics notification — active medical spa market","Soft Indications":"Medical spa / aesthetic clinic channel active","IV/Therapeutic":"ATMP pathway; EMA Jul 2025 guideline applies","Risk":"🟡 LOW-MED","Conf.":"🟢 80","Source URL":"https://www.regulatoryrapporteur.org/industry-news/ema-accepts-new-guidelines-on-investigational-atmps/843.article"},
         {"Territory":"France",      "Body":"ANSM",         "Topical/Cosmetic":"✅ EU cosmetics notification — dermatology & aesthetics active","Soft Indications":"Dermatology protocols active","IV/Therapeutic":"ATMP pathway; EMA Jul 2025 guideline applies","Risk":"🟡 LOW-MED","Conf.":"🟢 80","Source URL":"https://www.regulatoryrapporteur.org/industry-news/ema-accepts-new-guidelines-on-investigational-atmps/843.article"},
         {"Territory":"Switzerland", "Body":"Swissmedic",   "Topical/Cosmetic":"High-value cosmetic",         "Soft Indications":"Longevity clinics (private)",     "IV/Therapeutic":"Clinical registration",            "Risk":"🟡 MEDIUM",  "Conf.":"🟢 70","Source URL":"https://www.atlantisbioscience.com/blog/commercialising-exosome-therapeutics-key-regulatory-pathways/"},
         {"Territory":"Brazil",      "Body":"ANVISA",       "Topical/Cosmetic":"RDC 949/2024 notification",  "Soft Indications":"IOR required",                    "IV/Therapeutic":"AFE license required",             "Risk":"🟡 MEDIUM",  "Conf.":"🟢 70","Source URL":"https://www.emergobyul.com/news/brazil-anvisa-announces-priorities-2026-2027-year"},
-        {"Territory":"South Korea", "Body":"MFDS",         "Topical/Cosmetic":"K-beauty cosmetic framework","Soft Indications":"Hospital partnerships",           "IV/Therapeutic":"Clinical approval route",          "Risk":"🟡 MEDIUM",  "Conf.":"🟡 60","Source URL":"https://stylestory.com.au/blogs/podcast/why-korea-banned-exosome-skincare-ads-and-what-it-means-for-the-industry"},
+        {"Territory":"South Korea", "Body":"MFDS",         "Topical/Cosmetic":"K-beauty framework active; 'exosome' ad term banned Jan 2025; MFDS Mar 2026: mandatory safety assessments + e-labeling rollout (phased 2028–2031); SME support programme launched Apr 2026","Soft Indications":"Hospital partnerships","IV/Therapeutic":"Clinical approval route","Risk":"🟡 MEDIUM",  "Conf.":"🟢 75","Source URL":"https://globalcosing.chemradar.com/news/detail/fgyo3b2uzsao"},
         {"Territory":"UAE",         "Body":"MOHAP/DHA",    "Topical/Cosmetic":"CE/FDA-cert device",         "Soft Indications":"Clinic-based IV protocols — active","IV/Therapeutic":"Strict cosmetic procedure standards","Risk":"🟡 MEDIUM","Conf.":"🟡 65","Source URL":"https://www.atlantisbioscience.com/blog/commercialising-exosome-therapeutics-key-regulatory-pathways/"},
         {"Territory":"Mexico",      "Body":"COFEPRIS",     "Topical/Cosmetic":"Cosmetic compliant",          "Soft Indications":"Physician dispensing — active",   "IV/Therapeutic":"MoU reliance with ANVISA",         "Risk":"🟢 LOW",     "Conf.":"🟢 75","Source URL":"https://www.atlantisbioscience.com/blog/commercialising-exosome-therapeutics-key-regulatory-pathways/"},
-        {"Territory":"Thailand",    "Body":"Thai FDA",     "Topical/Cosmetic":"Cosmetic notif. + post-audit","Soft Indications":"Gray — active physician use",     "IV/Therapeutic":"Drug Act B.E. 2510 — no explicit guideline","Risk":"🟡 LOW-MED","Conf.":"🟢 80","Source URL":"https://www.cirs-group.com/en/cosmetics/global-cosmetics-regulatory-updates-vol-32-october-2025"},
-        {"Territory":"Philippines", "Body":"PH FDA",       "Topical/Cosmetic":"✅ Notif. approved Jan 2026", "Soft Indications":"ASEAN compliant",                 "IV/Therapeutic":"Emerging",                         "Risk":"🟢 LOW",     "Conf.":"🟢 80","Source URL":"https://www.fda.gov.ph/fda-circular-no-2025-002-updates-and-amendments-to-the-asean-cosmetic-directive-acd-as-adopted-during-the-39th-asean-cosmetic-committee-acc-meeting-and-its-related-meetings/"},
+        {"Territory":"Thailand",    "Body":"Thai FDA",     "Topical/Cosmetic":"Cosmetic notif. + post-audit","Soft Indications":"Gray — active physician use; May 2026: MoPH national ATMP coordination; Jul 2026: Thai FDA–PMDA (Japan) ATMP harmonization talks","IV/Therapeutic":"🆕 New decree: advanced cell therapies (incl. MSCs) now classified as medicines under Drug Act — full registration required for therapeutic use","Risk":"🟡 MEDIUM",  "Conf.":"🟢 80","Source URL":"https://www.nationthailand.com/health-wellness/40066728"},
+        {"Territory":"Philippines", "Body":"PH FDA",       "Topical/Cosmetic":"✅ ACD-compliant products only from May 14 2026 (FDA Circular 2026-0001); non-compliant must be withdrawn — clear, enforced pathway", "Soft Indications":"ASEAN compliant",  "IV/Therapeutic":"Emerging",                         "Risk":"🟢 LOW",     "Conf.":"🟢 85","Source URL":"https://www.fda.gov.ph/fda-circular-no-2026-0001-consolidated-amendments-to-the-asean-cosmetic-directive-acd-as-adopted-during-the-40th-to-42nd-asean-cosmetic-committee-acc-meeting-and-their-related-meetings/"},
         {"Territory":"Malaysia",    "Body":"NPRA",         "Topical/Cosmetic":"ASEAN aligned",              "Soft Indications":"cGMP research active",             "IV/Therapeutic":"Early stage",                      "Risk":"🟢 LOW",     "Conf.":"🟢 75","Source URL":"https://www.atlantisbioscience.com/blog/commercialising-exosome-therapeutics-key-regulatory-pathways/"},
         {"Territory":"Indonesia",   "Body":"BPOM",         "Topical/Cosmetic":"ASEAN cosmetic directive",   "Soft Indications":"Physician training pathway",       "IV/Therapeutic":"BPOM engaged",                     "Risk":"🟢 LOW",     "Conf.":"🟢 70","Source URL":"https://www.atlantisbioscience.com/blog/commercialising-exosome-therapeutics-key-regulatory-pathways/"},
         {"Territory":"Colombia",    "Body":"INVIMA",       "Topical/Cosmetic":"2025 Regional Reform",       "Soft Indications":"LATAM integration",                "IV/Therapeutic":"Streamlined pathway",              "Risk":"🟢 LOW",     "Conf.":"🟡 60","Source URL":"https://www.atlantisbioscience.com/blog/commercialising-exosome-therapeutics-key-regulatory-pathways/"},
@@ -1042,14 +1042,17 @@ with tabs[3]:
     with col_r2:
         st.markdown('<div class="section-header">Key Regulatory Milestones</div>', unsafe_allow_html=True)
         milestones = [
+            ("🆕 Jul 2026",  "success-card", "Thai FDA + Japan PMDA ATMP harmonization talks — signals Asia-wide convergence on ATMP oversight; watch for Thai reliance route on JP approvals"),
+            ("🆕 May 2026",  "warning-card", "Thailand new decree: MSC/advanced cell therapies classified as medicines — IV exosome therapy now requires full drug registration; cosmetic channel unaffected"),
+            ("🆕 May 2026",  "success-card", "Philippines ACD compliance fully enforced (FDA Circular 2026-0001) — non-compliant exosome cosmetics must be withdrawn; clean, predictable channel now"),
+            ("🆕 Mar 2026",  "signal-card",  "South Korea MFDS 3-pillar cosmetics strategy: mandatory safety assessments (→2028), e-labeling, inter-ministerial council; SME consulting programme launched Apr 2026"),
+            ("🆕 Q1 2026",   "warning-card", "FDA new enforcement wave — warning letters to FL/CA/TX clinics; named: Evolutionary Biologics, Chara Biologics, Supreme Rejuvenation, New Life Medical, Innate Healthcare, Dynamic Stem Cell Therapy"),
+            ("🆕 Dec 2025",  "warning-card", "DOJ establishes Health & Safety Unit (Criminal Division / Fraud Section) — centralized criminal enforcement of FD&C Act; exosome IV players now face debarment, injunctions, prosecution"),
+            ("✅ Jul 2025",  "signal-card",  "EMA ATMP Guideline on investigational ATMPs comes into effect — GMP, batch variability, immunogenicity now formally codified for EU clinical trial applications"),
             ("✅ Jan 2026",  "signal-card",  "Philippines FDA cosmetic notification (UnicoCell) — ASEAN entry blueprint validated"),
             ("✅ Late 2025", "signal-card",  "ANVISA-COFEPRIS MoU operational — Brazil↔Mexico mutual recognition active"),
-            ("✅ 2021",      "signal-card",  "Thai FDA launches HSA Reliance Route — Singapore approval fast-tracks SEA entry"),
-            ("✅ Mar 2024",  "signal-card",  "Croma-Pharma × Aesthetic Mgmt Partners — confirms EU distribution appetite"),
-            ("⚠️ May 2025", "warning-card", "FDA warning letter to Florida IV exosome clinic — US IV channel high risk"),
-            ("⚠️ Ongoing",  "warning-card", "FDA 12+ warning letters total — US market = cosmetic channel only 2025–2028+"),
-            ("⚠️ Ongoing",  "warning-card", "EU: <2 dozen ATMPs authorized, zero exosome-based — zero approved globally"),
-            ("ℹ️ Jan 2025", "signal-card",  "Thai FDA drafting new health product import/export policy — favourable window now"),
+            ("⚠️ Ongoing",  "warning-card", "FDA 12+ warning letters + DOJ active — US market = cosmetic/topical channel only; IV channel carries criminal risk 2026+"),
+            ("⚠️ Ongoing",  "warning-card", "EU/EMA: zero exosome ATMPs approved globally — ATMP route requires IND-equivalent trial submission"),
         ]
         for date_str, cls, text in milestones:
             st.markdown(f'<div class="{cls}"><strong>{date_str}</strong> — {text}</div>', unsafe_allow_html=True)
@@ -1066,17 +1069,20 @@ with tabs[3]:
     st.markdown('<div class="section-header">Regulation — Data Sources</div>', unsafe_allow_html=True)
     sources_tab4 = [
         ("FDA.gov", "Is It a Cosmetic, a Drug, or Both?", "Cosmetics cannot carry therapeutic claims; FDA cosmetics are not FDA-approved by definition"),
-        ("FDA.gov", "Public Safety Notification on Exosome Products (updated 2025)", "12+ warning letters issued; allogeneic MSC exosomes classified as unlicensed biologics"),
+        ("FDA.gov / Armstrong & Bradylyons", "Warning Letters on Exosome Products (updated Q1 2026)", "Q1 2026 wave: FL/CA/TX clinics warned; named companies: Evolutionary Biologics, Chara Biologics, Supreme Rejuvenation, New Life Medical, Innate Healthcare Institute, Dynamic Stem Cell Therapy"),
+        ("DOJ Criminal Division", "Health & Safety Unit established Dec 2025", "New unit in Fraud Section centralises criminal enforcement of FD&C Act — exosome IV channel now faces debarment, injunctions, and prosecution"),
+        ("IAPAM", "Exosome Therapy in Aesthetic Practice: FDA Regulations 2026", "US enforcement pattern: warning letters + DOJ criminal, FTC deceptive-advertising actions, permanent debarment orders, federal court injunctions"),
         ("Atlantis Bioscience", "Regulatory Roadmap for Exosome-Based Therapeutics, Oct 2025", "FDA, EMA & ASEAN regulatory guide; warning letter database"),
-        ("EMA", "Advanced Therapy Medicinal Products Authorization, 2022", "Fewer than 2 dozen ATMPs authorized total; zero exosome-based globally"),
+        ("EMA", "Guideline on Investigational ATMPs — effective 1 Jul 2025", "Formally codifies GMP, batch variability, immunogenicity requirements for ATMP clinical trial applications; CAT 2026 work plan includes assessor training"),
+        ("GlobalCosing / MFDS Korea", "South Korea 2026 Cosmetics Policy — 3 Pillars, Mar 2026", "Mandatory safety assessments (phased 2028→2031), nationwide e-labeling, inter-ministerial council; SME support programme Apr 2026 for 1,500 companies"),
+        ("StyleStory / MFDS", "Why Korea Banned 'Exosome' Skincare Ads, Jan 2025", "Prohibition on using 'exosome' in cosmetic advertising effective Jan 2025; rebranding required for K-beauty export"),
         ("TGA Australia", "Regulation of Stem Cell Treatments — Information for Practitioners", "GMP licensing required for clinical exosome therapies; PBAC risk-sharing"),
         ("ANVISA / COFEPRIS", "DIA Global Forum Nov 2025 — MoU signed August 2025", "Mutual recognition for medicines, medical devices, and GMP between Brazil and Mexico"),
-        ("UnicoCell Biomed / PH FDA", "Press Release Jan 2026; FDA Circular 2025-002", "Philippine FDA cosmetic notification approved; ASEAN Cosmetic Directive compliance"),
+        ("Philippines FDA", "Circular No. 2026-0001 — ACD Amendments (40th–42nd ACC)", "Full ACD compliance enforced from May 14 2026; non-compliant exosome cosmetics must be withdrawn"),
+        ("Nation Thailand / Thai FDA", "Landmark Stem Cell Decree 2026", "New Thai decree classifies MSC/advanced cell therapies as medicines under Drug Act; ATMP = full drug registration required; May 2026 MoPH coordination; Jul 2026 Thai FDA–PMDA harmonization talks"),
         ("HSA Singapore", "ASEAN Cosmetic Directive", "Harmonized cosmetics laws across ASEAN; Thai FDA HSA reliance route since 2021"),
-        ("Siam Trade Development", "Cosmetic Product Registration Thailand (updated May 2024)", "Thai FDA post-market audit requirement for all cosmetic notifications"),
-        ("ClinRegs NIAID", "Clinical Research Regulation for Thailand, Aug 2025", "Drug Act B.E. 2510 — no explicit exosome guideline as of March 2026"),
-        ("PMC12007658", "Exosomes: A Comprehensive Review for the Practicing Dermatologist, 2025", "CD63 and CD81 confirmed as standard exosome surface markers"),
         ("PMC12371722", "Exploring Regulatory Frameworks for Exosome Therapy, 2025", "Global regulatory comparison; biomarker standards"),
+        ("PMC12389065", "Navigating the Global Regulatory Landscape for Exosome Therapy, 2025", "Cross-jurisdictional analysis; classification challenges across FDA/EMA/ASEAN"),
     ]
     col_r_s1, col_r_s2 = st.columns(2)
     for i, (firm, title, detail) in enumerate(sources_tab4):
