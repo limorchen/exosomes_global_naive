@@ -1,51 +1,60 @@
 """
 fetch_signals_csv.py
-Fetches exosome market signals from bot-friendly RSS/Atom feeds,
-categorizes with Groq AI, and appends new signals to data/signals.csv.
+Fetches exosome market signals from bot-friendly RSS/Atom feeds plus the
+NCBI E-utilities API, categorizes with Groq AI, and appends new signals
+to data/signals.csv.
 
-Replaces Google News RSS (which blocks GitHub Actions IPs) with:
-  - PubMed RSS         (NIH — always accessible from CI)
-  - FDA RSS            (FDA.gov — always accessible from CI)
-  - EMA RSS            (EMA.europa.eu — always accessible from CI)
-  - BioSpace RSS       (biotech news — no bot-blocking)
-  - GlobeNewswire RSS  (press releases — no bot-blocking)
-  - PRNewswire RSS     (press releases — no bot-blocking)
+Sources:
+  - PubMed          (NIH E-utilities esearch/esummary — NOT RSS; PubMed's
+                      term-based RSS URL serves an HTML search page, not a
+                      feed, so feedparser silently got 0 entries from it.
+                      See fetch_pubmed_articles().)
+  - FDA RSS          (FDA.gov press releases — the old biologics/warning-
+                      letters RSS paths 404 after FDA's site redesign)
+  - BioSpace RSS      (biotech news — old /rss/news path 404s; now /all-news.rss)
+  - GlobeNewswire RSS (press releases — no bot-blocking)
+  - PRNewswire RSS    (press releases — no bot-blocking)
   - ClinicalTrials.gov RSS (trial updates — no bot-blocking)
+
+  Dropped: EMA — europa.eu no longer publishes a working sitewide news RSS
+  (every URL we could find is an HTML landing page for a per-medicine RSS
+  builder, not a feed itself).
+
+NOTE ON SILENT FAILURE: feedparser does not raise on a 404 — it just parses
+whatever HTML comes back, finds no <item> elements, and returns an empty
+entries list. A dead feed URL therefore looks identical in the logs to "no
+new articles today". Always verify a feed change with a direct curl check
+of the URL before trusting "0 relevant entries" as a healthy result.
 
 Requirements: pip install feedparser groq
 """
 
-import os, csv, json, hashlib, datetime, feedparser
+import os, csv, json, hashlib, datetime, urllib.request, urllib.parse, feedparser
 from groq import Groq
 
 DATA_DIR     = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 SIGNALS_FILE = os.path.join(DATA_DIR, "signals.csv")
 META_FILE    = os.path.join(DATA_DIR, "meta.csv")
 GROQ_KEY     = os.environ["GROQ_API_KEY"]
+GROQ_MODEL   = "openai/gpt-oss-120b"  # llama-3.3-70b-versatile was decommissioned by Groq 2026-08-16
 LOOKBACK_DAYS = 10   # slightly wider window for safety
+
+# ── PubMed — via NCBI E-utilities, not RSS (see module docstring) ─
+PUBMED_QUERIES = [
+    ("exosome MSC therapy",              "Structural"),
+    ("extracellular vesicle clinical trial", "Regulatory"),
+    ("exosome aesthetic skin",           "Structural"),
+]
 
 # ── Bot-friendly RSS feeds ────────────────────────────────────────
 FEEDS = [
-    # PubMed — NIH RSS, never blocked from CI
-    ("https://pubmed.ncbi.nlm.nih.gov/rss/search/?term=exosome+MSC+therapy&format=abstract&limit=20",
-     "Structural", "PubMed"),
-    ("https://pubmed.ncbi.nlm.nih.gov/rss/search/?term=extracellular+vesicle+clinical+trial&format=abstract&limit=20",
-     "Regulatory", "PubMed"),
-    ("https://pubmed.ncbi.nlm.nih.gov/rss/search/?term=exosome+aesthetic+skin&format=abstract&limit=20",
-     "Structural", "PubMed"),
-
-    # FDA news & safety alerts — always open
-    ("https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/biologics-blood-vaccines/rss.xml",
-     "Enforcement", "FDA"),
-    ("https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/warning-letters/rss.xml",
+    # FDA press releases — the old biologics/warning-letters RSS paths 404;
+    # this one is confirmed live
+    ("https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml",
      "Enforcement", "FDA"),
 
-    # EMA news
-    ("https://www.ema.europa.eu/en/news-events/rss-feeds",
-     "Regulatory", "EMA"),
-
-    # BioSpace — biotech news, no bot-blocking
-    ("https://www.biospace.com/rss/news",
+    # BioSpace — biotech news; old /rss/news path 404s, this one is confirmed live
+    ("https://www.biospace.com/all-news.rss",
      "Investment", "BioSpace"),
 
     # GlobeNewswire — press releases
@@ -105,9 +114,63 @@ def load_existing_hashes() -> set:
     return hashes
 
 
+def fetch_pubmed_articles() -> list:
+    """PubMed has no working ad-hoc term-based RSS (the old URL serves an
+    HTML search page, not a feed — see module docstring), so we go through
+    NCBI's E-utilities JSON API instead: esearch for matching PMIDs in the
+    lookback window, then esummary for titles/dates."""
+    articles = []
+    for query, hint_type in PUBMED_QUERIES:
+        try:
+            esearch_url = (
+                "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?"
+                + urllib.parse.urlencode({
+                    "db": "pubmed", "term": query, "retmax": 20,
+                    "retmode": "json", "datetype": "pdat", "reldate": LOOKBACK_DAYS,
+                })
+            )
+            with urllib.request.urlopen(esearch_url, timeout=15) as resp:
+                ids = json.loads(resp.read())["esearchresult"]["idlist"]
+
+            if not ids:
+                print(f"  [PubMed] {hint_type} ({query!r}): 0 relevant entries")
+                continue
+
+            esummary_url = (
+                "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?"
+                + urllib.parse.urlencode({"db": "pubmed", "id": ",".join(ids), "retmode": "json"})
+            )
+            with urllib.request.urlopen(esummary_url, timeout=15) as resp:
+                result = json.loads(resp.read())["result"]
+
+            count_added = 0
+            for pmid in result.get("uids", []):
+                item = result[pmid]
+                title = item.get("title", "")
+                link = f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/"
+                articles.append({
+                    "title":        title,
+                    "summary":      title,  # esummary has no abstract text; title carries the signal
+                    "link":         link,
+                    "date":         datetime.date.today().isoformat(),
+                    "hint_type":    hint_type,
+                    "source_label": "PubMed",
+                    "hash":         make_hash(title),
+                })
+                count_added += 1
+            print(f"  [PubMed] {hint_type} ({query!r}): {count_added} relevant entries")
+        except Exception as e:
+            print(f"  Feed error (PubMed {query!r}): {e}")
+    return articles
+
+
 def fetch_articles() -> list:
     cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=LOOKBACK_DAYS)
     articles, seen_links = [], set()
+
+    articles.extend(fetch_pubmed_articles())
+    for a in articles:
+        seen_links.add(a["link"])
 
     for url, hint_type, source_label in FEEDS:
         try:
@@ -156,11 +219,16 @@ def fetch_articles() -> list:
     return articles
 
 
+class GroqCallError(Exception):
+    """Raised when the Groq API call itself fails (bad model, auth, rate limit, etc.)
+    — distinct from the model legitimately judging an article 'not relevant'."""
+
+
 def categorize(client: Groq, article: dict) -> dict | None:
     prompt = f"Title: {article['title']}\nSource: {article['source_label']}\nSummary: {article['summary']}"
     try:
         r = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model=GROQ_MODEL,
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user",   "content": prompt},
@@ -168,11 +236,16 @@ def categorize(client: Groq, article: dict) -> dict | None:
             temperature=0.1,
             max_tokens=250,
         )
+    except Exception as e:
+        print(f"  Groq error: {e}")
+        raise GroqCallError(str(e)) from e
+
+    try:
         raw = r.choices[0].message.content.strip()
         raw = raw.replace("```json", "").replace("```", "").strip()
         return json.loads(raw)
     except Exception as e:
-        print(f"  Groq error: {e}")
+        print(f"  Response parse error: {e}")
         return None
 
 
@@ -218,7 +291,7 @@ def update_meta() -> None:
 def main():
     print(f"\n{'='*60}")
     print(f"Exosome Signal Fetcher — {datetime.date.today()}")
-    print(f"Sources: PubMed, FDA, EMA, BioSpace, GlobeNewswire, PRNewswire, ClinicalTrials")
+    print(f"Sources: PubMed (E-utilities), FDA, BioSpace, GlobeNewswire, PRNewswire, ClinicalTrials")
     print(f"{'='*60}\n")
 
     existing_hashes = load_existing_hashes()
@@ -235,11 +308,16 @@ def main():
 
     client = Groq(api_key=GROQ_KEY)
     new_signals = []
+    groq_errors = 0
     sentiment_map = {"Positive": "🟢 Positive", "Risk": "🔴 Risk", "Neutral": "🟡 Neutral"}
 
     for i, article in enumerate(new_articles, 1):
         print(f"  [{i}/{len(new_articles)}] {article['title'][:70]}")
-        result = categorize(client, article)
+        try:
+            result = categorize(client, article)
+        except GroqCallError:
+            groq_errors += 1
+            continue
 
         if not result or not result.get("relevant", False):
             print("         → not relevant, skipped")
@@ -258,8 +336,18 @@ def main():
             "date_added":     datetime.datetime.utcnow().strftime("%Y-%m-%d"),
         })
 
+    # If every single Groq call failed (bad model id, revoked key, outage),
+    # committing "0 signals added" would look identical to a quiet news day.
+    # Fail the workflow loudly instead so it doesn't rot silently again.
+    if groq_errors > 0 and groq_errors == len(new_articles):
+        print(f"\n❌ All {groq_errors} Groq API calls failed — treating this as a hard failure, "
+              f"not 'nothing new'. Check GROQ_API_KEY and GROQ_MODEL.")
+        raise SystemExit(1)
+
     append_to_csv(new_signals)
     update_meta()
+    if groq_errors:
+        print(f"\n⚠️  {groq_errors}/{len(new_articles)} articles skipped due to Groq API errors.")
     print(f"\n✅ Done — {len(new_signals)} signals added.\n")
 
 
