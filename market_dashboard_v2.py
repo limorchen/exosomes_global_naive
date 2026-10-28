@@ -8,6 +8,7 @@ Run with: streamlit run market_dashboard_v2.py
 """
 
 import datetime
+import re
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -2134,6 +2135,30 @@ with tabs[5]:
         "impact":"Impact","sentiment":"Sentiment","territory":"Territory",
         "source":"Source","date_added":"Date Added",
     })
+
+    # ── Normalise the Date column to a single "Mon YYYY" format ──
+    # Auto-fetched signals carry full ISO dates (e.g. "2026-03-19"),
+    # manually curated ones carry "Mon YYYY" (e.g. "Jan 2026") — align
+    # both to "Mon YYYY". Entries with no real date (e.g. "Ongoing",
+    # "Active", "Late 2025") have nothing to normalise to, so pass through.
+    def _format_signal_date(raw):
+        s = str(raw or "").strip()
+        if not s:
+            return s
+        try:
+            return datetime.date.fromisoformat(s[:10]).strftime("%b %Y")
+        except ValueError:
+            pass
+        m = re.match(r"^([A-Za-z]{3,9})\.?\s+(\d{4})$", s)
+        if m:
+            mon_raw, year = m.groups()
+            try:
+                return f"{datetime.datetime.strptime(mon_raw[:3], '%b').strftime('%b')} {year}"
+            except ValueError:
+                pass
+        return s
+
+    signals_display["Date"] = signals_display["Date"].apply(_format_signal_date)
 
     # ── NEW flag: mark signals added after prev_last_run ─────────
     def _is_new(row):
