@@ -89,6 +89,13 @@ enforcement action, approval, ban, classification decision) in that territory th
 the row does not already reflect. Clinic marketing, product launches, general
 explainers, research papers and other territories do NOT count.
 
+The development must directly concern at least one of: exosomes / extracellular
+vesicles; MSC, stem-cell or other human cell/tissue-derived products; ATMP or
+cell & gene therapy frameworks; or cosmetic rules on human-derived ingredients.
+Approvals, filings or designations for unrelated drugs (small molecules,
+oncology CAR-T, gene-corrected blood therapies, etc.) are NOT material.
+If in doubt, return "material": false.
+
 Return ONLY valid JSON with these exact fields:
 {{
   "material": true or false,
