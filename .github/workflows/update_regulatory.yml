@@ -1,0 +1,64 @@
+name: Propose Regulatory Updates
+
+# Weekly: search news per territory, let Groq draft edits to regulatory.csv,
+# and open (or refresh) a pull request for human review. Never pushes to main.
+#
+# Requires: Settings → Actions → General → "Allow GitHub Actions to create
+# and approve pull requests" enabled, and the GROQ_API_KEY secret.
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'   # Mondays 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  propose:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install feedparser groq
+
+      - name: Run regulatory fetcher
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python scripts/fetch_regulatory_updates.py "$RUNNER_TEMP/regulatory_summary.md"
+
+      - name: Check for proposed changes
+        id: diff
+        run: |
+          if git diff --quiet data/regulatory.csv; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No regulatory changes proposed this week."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # The seen-log rides along in the PR so reviewed articles are only
+      # marked done once the PR merges; while a PR is open, next week's run
+      # re-proposes them and the PR branch is refreshed with everything.
+      - name: Open / update pull request
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: auto/regulatory-updates
+          add-paths: |
+            data/regulatory.csv
+            data/regulatory_seen.csv
+          commit-message: "auto: propose regulatory updates ${{ github.run_id }}"
+          title: "Regulatory updates for review"
+          body-path: ${{ runner.temp }}/regulatory_summary.md
+          labels: regulatory
+          delete-branch: true

@@ -1005,7 +1005,7 @@ with tabs[3]:
             reg_df = reg_df_static
             reg_is_live = False
     live_badge(reg_is_live, last_run, manual=True)
-    st.caption("🔵 Regulatory data is manually maintained. To flag new entries, set `date_added` to today's date in regulatory.csv.")
+    st.caption("🔵 Regulatory data is reviewed by hand: a weekly job proposes AI-drafted edits as a pull request, merged only after review. To flag manual edits, set `date_added` to today's date in regulatory.csv.")
 
     # ── NEW flag for regulation ───────────────────────────────────
     reg_df["🆕"] = reg_df.get("date_added", pd.Series([""] * len(reg_df))).apply(_is_new_row)
